@@ -1,0 +1,136 @@
+* Log of development
+** General outline of project
+*** TODO Extract 3D skeleton of subject
+**** DONE Get openpose to work
+     CLOSED: [2017-08-29 火 16:52]
+     OpenPose still crashes on exit, but it's almost working.
+     The next step now will be to read more about the library
+     before I move on to the next item.
+     The issue is being discussed [[https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/185][here]].
+**** TODO Extend openpose functionality to work with kinect
+***** TODO Write an openpose_bridge file.
+      This should publish the required informaiton from openpose as
+      topics wich other ROS nodes can subscribe to. 
+
+      | INPUT           | TASKS               | OUTPUT      |
+      |-----------------+---------------------+-------------|
+      | Camera topic    | Give it to openpose | Pose Topics |
+      | Track selection |                     |             |
+**** TODO Get 3D pose from the kinect depth camera
+     Write a publisher where pose is published as something gazebo can render.
+**** TODO Estimate pose from multiple kinect cameras (ROS-TMS integration)
+
+*** TODO Preform Human Activity Recognition
+**** TODO Find implementation of HAR form 3D pose
+**** TODO Find dataset for HAR from 3D pose
+     Possible [[https://link.springer.com/chapter/10.1007/978-1-4471-4640-7_10][dataset]].
+**** TODO Get HAR algorithms to recognize a fall
+
+*** TODO Calculate risk of falling
+**** TODO Create network for short-time evaluation
+***** TODO Train network using the output form HAR as ground truth
+**** TODO Create network for long-time evaluation
+
+* Other notes
+** OpenPose ROS integration
+   There are some frameworks for integrating openpose with ROS, but 
+   I choose to write my own. The reason for this is because I can 
+   directly start writing it to work with Kinect and so on. 
+   (i.e. subscribe to the right topics)
+
+** Different activities
+   To predict the long term probabilities, we have to also be able to 
+   recognize the current activity/state.
+   
+   | Time  | Activity/state | Network type     | Desired Output        |
+   |-------+----------------+------------------+-----------------------|
+   | Short | Walking        | Convolutional NN | Recognize activity    |
+   |       | Sitting        |                  |                       |
+   |       | Standing       |                  |                       |
+   |       | FALL           |                  |                       |
+   |       | Vitals?        |                  |                       |
+   |-------+----------------+------------------+-----------------------|
+   | Long  | Posture        | Hidden Markov M. | Prob. next activity   |
+   |       | Mood           |                  | Report of development |
+   |       | FALL           |                  |                       |
+   |       | Vitals?        |                  |                       |
+
+** Installation and configuration
+*** For the project
+**** Libfreenect2
+     Didn't do 'cmake -Dfreenect2_DIR=$HOME/freenect2/lib/cmake/freenect2'
+     but catkin_make found it for the iai_kinect2 package, so I didn't 
+     bother. (this is because iai_kinect2 just assumes that was where you
+     installed it. If I had installed it somewhere else, I would have to 
+     specify it.
+***** TODO recompile this with ENABLE_CXX11=ON since IAI_kinect2 demands it.
+**** IAI_kinect 							 :NB:CITATION:
+     This requires opencv 2.4! It will compile with opencv 3, but it uses
+     opencv_bridge, so it doesn't work. Either I have to write something 
+     myself, or I'll have to recompile everything...
+     CITATION:
+     @misc{iai_kinect2,
+       author = {Wiedemeyer, Thiemo},
+       title = {{IAI Kinect2}},
+       organization = {Institute for Artificial Intelligence},
+       address = {University Bremen},
+       year = {2014 -- 2015},
+       howpublished = {\url{https://github.com/code-iai/iai\_kinect2}},
+       note = {Accessed June 12, 2015}
+     }
+**** OpenCV
+     Probably a good idea to compile this with ENABLE_CXX11=ON as well.
+***** TODO opencv2.4.x
+      Need to install opencv2.4.x as well, and understand how to make them
+      work side by side. 
+**** CUDA/cuDNN
+     Follow [[http://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#axzz4rDjGDFcR][instructions]]. Also install [[https://developer.nvidia.com/cudnn][cuDNN]].
+     cuDNN-8 requires graphics cards with the driver 384.59 or higher, 
+     I've gone with cuDNN-5.1. This is because the current proprietary tested
+     driver for NVIDIA GeForce GTX 1080 Ti is 375.66
+     | Commands for merging cuDNN after installing cuda-8      |
+     | (All commands from inside where you extracted cuDNN)    |
+     |---------------------------------------------------------|
+     | sudo cp -P include/cudnn.h /usr/local/cuda-8.0/include/ |
+     | sudo cp -P lib64/libcudnn* /usr/lib/x86_64-linux-gnu/   |
+     | sudo chmod a+r /usr/lib/x86_64-linux-gnu/libcudnn*      |
+     | (cd .. && sudo rm -r cuda) we don't need this anymore   |
+**** Caffe
+     Be prepared for shenanigans with hdf5 and ld. Creating symbolic links 
+     for the appropriate libraries will fix it. 
+     sudo ln -s /path/to/dir/foolibrary.so.10.0.1 /path/to/dir/foolibrary.so
+     This can be installed via script inside the openpose installation.
+**** OpenPose
+     If you install via scripts, remember to remove the script lines that copies
+     the Makefile.config files. (That is if you manually edit these files 
+     beforehand.)
+     Also, it /almost/ works with OpenCV 3.x it just crashes 
+     CITATION:
+     @inproceedings{cao2017realtime,
+       author = {Zhe Cao and Tomas Simon and Shih-En Wei and Yaser Sheikh},
+       booktitle = {CVPR},
+       title = {Realtime Multi-Person 2D Pose Estimation using Part Affinity Fields},
+       year = {2017}
+     }
+
+     @inproceedings{simon2017hand,
+       author = {Tomas Simon and Hanbyul Joo and Iain Matthews and Yaser Sheikh},
+       booktitle = {CVPR},
+       title = {Hand Keypoint Detection in Single Images using Multiview Bootstrapping},
+       year = {2017}
+     }
+
+     @inproceedings{wei2016cpm,
+       author = {Shih-En Wei and Varun Ramakrishna and Takeo Kanade and Yaser Sheikh},
+       booktitle = {CVPR},
+       title = {Convolutional pose machines},
+       year = {2016}
+     }
+***** TODO try to compile openpose with OpenCV 2.4 as discussed earlier.
+
+*** Other things
+    
+
+
+
+
