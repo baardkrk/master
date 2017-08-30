@@ -83,7 +83,7 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
        howpublished = {\url{https://github.com/code-iai/iai\_kinect2}},
        note = {Accessed June 12, 2015}
      }
-**** OpenCV
+**** [[https://github.com/opencv/opencv][OpenCV]]
      Probably a good idea to compile this with ENABLE_CXX11=ON as well.
 ***** TODO opencv2.4.x
       Need to install opencv2.4.x as well, and understand how to make them
@@ -100,12 +100,12 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
      | sudo cp -P lib64/libcudnn* /usr/lib/x86_64-linux-gnu/   |
      | sudo chmod a+r /usr/lib/x86_64-linux-gnu/libcudnn*      |
      | (cd .. && sudo rm -r cuda) we don't need this anymore   |
-**** Caffe
+**** [[https://github.com/BVLC/caffe][Caffe]]
      Be prepared for shenanigans with hdf5 and ld. Creating symbolic links 
      for the appropriate libraries will fix it. 
      sudo ln -s /path/to/dir/foolibrary.so.10.0.1 /path/to/dir/foolibrary.so
      This can be installed via script inside the openpose installation.
-**** OpenPose
+**** [[https://github.com/CMU-Perceptual-Computing-Lab/openpose][OpenPose]]
      If you install via scripts, remember to remove the script lines that copies
      the Makefile.config files. (That is if you manually edit these files 
      beforehand.)
