@@ -1,0 +1,46 @@
+* Log of development
+** General outline of project
+*** TODO Extract 3D skeleton of subject
+**** DONE Get openpose to work
+     CLOSED: [2017-08-29 火 16:52]
+     OpenPose still crashes on exit, but it's almost working.
+     The next step now will be to read more about the library
+     before I move on to the next item.
+     The issue is being discussed [[https://github.com/CMU-Perceptual-Computing-Lab/openpose/issues/185][here]].
+
+**** TODO Extend openpose functionality to work with kinect
+**** TODO Get 3D pose from the kinect depth camera
+**** TODO Estimate pose from multiple kinect cameras (ROS-TMS integration)
+*** TODO Preform Human Activity Recognition
+**** TODO Find implementation of HAR form 3D pose
+**** TODO Find dataset for HAR from 3D pose
+     Possible [[https://link.springer.com/chapter/10.1007/978-1-4471-4640-7_10][dataset]].
+**** TODO Get HAR algorithms to recognize a fall
+*** TODO Calculate risk of falling
+**** TODO Create network for short-time evaluation
+***** TODO Train network using the output form HAR as ground truth
+**** TODO Create network for long-time evaluation
+
+* Other notes
+** OpenPose ROS integration
+   There are some frameworks for integrating openpose with ROS, but 
+   I choose to write my own. The reason for this is because I can 
+   directly start writing it to work with Kinect and so on. 
+   (i.e. subscribe to the right topics)
+
+** Different activities
+   To predict the long term probabilities, we have to also be able to 
+   recognize the current activity/state.
+   
+   | Time  | Activity/state | Network type     | Desired Output        |
+   |-------+----------------+------------------+-----------------------|
+   | Short | Walking        | Convolutional NN | Recognize activity    |
+   |       | Sitting        |                  |                       |
+   |       | Standing       |                  |                       |
+   |       | FALL           |                  |                       |
+   |       | Vitals?        |                  |                       |
+   |-------+----------------+------------------+-----------------------|
+   | Long  | Posture        | Hidden Markov M. | Prob. next activity   |
+   |       | Mood           |                  | Report of development |
+   |       | FALL           |                  |                       |
+   |       | Vitals?        |                  |                       |
