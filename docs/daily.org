@@ -40,6 +40,12 @@ on the Jetson, it won't go as fast.. (but, then again, I'll have to look
 into having both 2.4.x and 3.x on the system at the same time. Apparently 
 it should be possible. Also, it is only the data aquisition that relies
 on opencv2.4.x which means it can afford to go a bit slower.)
+*** Installation procedure
+    Went pretty OK, just followed the recomended procedure.
+    However, when I was going to install ros-kinetic rosdep init wouldn't work.
+    This was fixed by running
+    "sudo c_rehash /etc/ssl/certs"
+
 ** Kinect v2
 Since this is what is used in ROS-TMS I'm continuing to use this sensor.
 * Other notes
