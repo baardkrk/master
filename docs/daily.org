@@ -115,7 +115,10 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
 **** [[https://github.com/BVLC/caffe][Caffe]]
      Be prepared for shenanigans with hdf5 and ld. Creating symbolic links 
      for the appropriate libraries will fix it. 
-     sudo ln -s /path/to/dir/foolibrary.so.10.0.1 /path/to/dir/foolibrary.so
+     sudo ln -s /path/to/dir/foolibrary_serial.so.10.0.1 \
+     /path/to/dir/foolibrary.so
+     the libraries will be under your systems architecture in the 
+     /usr/lib/<yourarchitecture>
      This can be installed via script inside the openpose installation.
 **** [[https://github.com/CMU-Perceptual-Computing-Lab/openpose][OpenPose]]
      If you install via scripts, remember to remove the script lines that copies
@@ -145,8 +148,19 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
      }
 ***** TODO try to compile openpose with OpenCV 2.4 as discussed earlier.
 
+**** ROS
+     If you get trouble with installing ROS at the 'sudo rosdep init', run
+     sudo sudo c_rehash /etc/ssl/certs
+     sudo update-ca-certificates
 *** Other things
-    
+** On motivation and statistics
+   Trying to find some statistics to back up the motivation for the project.
+   I.e. WHY we are trying to detect falls, and not other aliments. I found 
+   some [[https://www.cdc.gov/nchs/data/hus/hus16.pdf#020][statistics]], which places "Unintentional injuries" as the 7th leading
+   cause of deaths in elderly people over the age of 65 in 2015.
+   Unintentional injuries accounted for 2% of the deaths in this age group.
+   [[https://www.cdc.gov/nchs/data/nvsr/nvsr65/nvsr65_04.pdf][Another study]] places Accidents alot higher (but this includes traffic 
+   accidents and other. See table 10 for a breakdown where falls is included.)
 
 
 
