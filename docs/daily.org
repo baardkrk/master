@@ -161,7 +161,13 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
    Unintentional injuries accounted for 2% of the deaths in this age group.
    [[https://www.cdc.gov/nchs/data/nvsr/nvsr65/nvsr65_04.pdf][Another study]] places Accidents alot higher (but this includes traffic 
    accidents and other. See table 10 for a breakdown where falls is included.)
+   
+   [[https://www.fhi.no/nettpub/hin/helse-i-ulike-befolkningsgrupper/helse-hos-eldre-i-norge---folkehels/][FHI]] also had some good articles on prevention, though they are in Norwegian.
+   WHO have published a [[http://www.who.int/ageing/publications/Falls_prevention7March.pdf][brochure]] about it.
 
-
+** Sources
+   [[http://ieeexplore.ieee.org/abstract/document/5370804/?reload=true][Human Activity Recognition and Pattern Discovery]]
+   [[https://link.springer.com/chapter/10.1007%2F978-3-540-88682-2_42?LI=true][Human Activity Recognition with Metric Learning]]
+   
 
 
