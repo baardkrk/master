@@ -30,7 +30,6 @@
 **** TODO Create network for short-time evaluation
 ***** TODO Train network using the output form HAR as ground truth
 **** TODO Create network for long-time evaluation
-
 * Hardware
 ** Jetson TX2
 [[http://developer2.download.nvidia.com/embedded/L4T/r27_Release_v1.0/Docs/Jetson_X2_Developer_Kit_User_Guide.pdf?iFRaJEZ3YucsGFMWZCWP21KPf9fxj3OxfELI3dKwDRDYVVwYef8g3xtwaQ_pQvAlaHtn-er4stwWG931xV5VoQEZENp2jSD9VdRzdR4oAqmYBxyOuaysX_pmbpYiK3W1HP0Jpt0uI4UQm0dQ364LJP94d_0y5CEQGm4ZElTk_dIvoOEGazHjHQ][NVIDIA Jetson TX2 Developer Kit]]
