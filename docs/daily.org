@@ -54,6 +54,17 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
    directly start writing it to work with Kinect and so on. 
    (i.e. subscribe to the right topics)
 
+   Got OpenPose to work with my own location for opencv.
+   I still have the problem with 
+   /usr/bin/ld: cannot find -lopencv_dep_cudart
+   when running make (for all opencv programs) but it can be fixed by 
+   removing
+   set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
+   from the CMakeLists.txt file after running cmake and before running make.
+   To note -- this is only when building for opencv2.4
+
+   OpenPose built with opencv2.4 yields around 12-15 fps on 2x GTX 1080 Ti
+
 ** Different activities
    To predict the long term probabilities, we have to also be able to 
    recognize the current activity/state.

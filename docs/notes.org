@@ -30,9 +30,14 @@
    in real-world condition and waiting for accidents to happen. 
    
    #+BEGIN_QUOTE
-   Nothing is particurlarly hard, if you divide it into small jobs -- Henry Ford
+   Nothing is particularly hard if you divide it into small jobs.
+   -- Henry Ford
    #+END_QUOTE
 
    However, one could think of the learning a bit different. As in the beginning
    of AI we had something called Knowledge-based Computing. Although, the 
-   system wouldn't 
+   system wouldn't be trained in the normal sense (that it figures out what 
+   features are important itself) we could feed it with a-priori knowledge about
+   risk factors that could lead to falls. 
+   Then, It could be able to reckognize these risk factors, and provide an
+   estimate of the likelyhood of a fall occurring.
