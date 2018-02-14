@@ -1,0 +1,13 @@
+\documentclass[a4paper]{amsart}
+\usepackage[utf8]{inputenc}
+
+\author{Bård-Kristian Krohg \\ \texttt{baardkrk@student.matnat.uio.no}}
+
+\begin{document}
+\maketitle
+
+\section{Hellpo}
+
+
+\end{document}
+
