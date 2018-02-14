@@ -30,7 +30,6 @@
 **** TODO Create network for short-time evaluation
 ***** TODO Train network using the output form HAR as ground truth
 **** TODO Create network for long-time evaluation
-
 * Hardware
 ** Jetson TX2
 [[http://developer2.download.nvidia.com/embedded/L4T/r27_Release_v1.0/Docs/Jetson_X2_Developer_Kit_User_Guide.pdf?iFRaJEZ3YucsGFMWZCWP21KPf9fxj3OxfELI3dKwDRDYVVwYef8g3xtwaQ_pQvAlaHtn-er4stwWG931xV5VoQEZENp2jSD9VdRzdR4oAqmYBxyOuaysX_pmbpYiK3W1HP0Jpt0uI4UQm0dQ364LJP94d_0y5CEQGm4ZElTk_dIvoOEGazHjHQ][NVIDIA Jetson TX2 Developer Kit]]
@@ -56,6 +55,18 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
    directly start writing it to work with Kinect and so on. 
    (i.e. subscribe to the right topics)
 
+   Got OpenPose to work with my own location for opencv.
+   I still have the problem with 
+   /usr/bin/ld: cannot find -lopencv_dep_cudart
+   when running make (for all opencv programs) but it can be fixed by 
+   removing
+   set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
+   from the CMakeLists.txt file after running cmake and before running make.
+   To note -- this is only when building for opencv2.4
+
+   OpenPose built with opencv2.4 yields around 12-15 fps on 2x GTX 1080 Ti
+
+   Changed to computer with 1 GTX 1080, getting around 7.5 fps
 ** Different activities
    To predict the long term probabilities, we have to also be able to 
    recognize the current activity/state.
@@ -116,7 +127,10 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
 **** [[https://github.com/BVLC/caffe][Caffe]]
      Be prepared for shenanigans with hdf5 and ld. Creating symbolic links 
      for the appropriate libraries will fix it. 
-     sudo ln -s /path/to/dir/foolibrary.so.10.0.1 /path/to/dir/foolibrary.so
+     sudo ln -s /path/to/dir/foolibrary_serial.so.10.0.1 \
+     /path/to/dir/foolibrary.so
+     the libraries will be under your systems architecture in the 
+     /usr/lib/<yourarchitecture>
      This can be installed via script inside the openpose installation.
 **** [[https://github.com/CMU-Perceptual-Computing-Lab/openpose][OpenPose]]
      If you install via scripts, remember to remove the script lines that copies
@@ -146,9 +160,26 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
      }
 ***** TODO try to compile openpose with OpenCV 2.4 as discussed earlier.
 
+**** ROS
+     If you get trouble with installing ROS at the 'sudo rosdep init', run
+     sudo sudo c_rehash /etc/ssl/certs
+     sudo update-ca-certificates
 *** Other things
-    
+** On motivation and statistics
+   Trying to find some statistics to back up the motivation for the project.
+   I.e. WHY we are trying to detect falls, and not other aliments. I found 
+   some [[https://www.cdc.gov/nchs/data/hus/hus16.pdf#020][statistics]], which places "Unintentional injuries" as the 7th leading
+   cause of deaths in elderly people over the age of 65 in 2015.
+   Unintentional injuries accounted for 2% of the deaths in this age group.
+   [[https://www.cdc.gov/nchs/data/nvsr/nvsr65/nvsr65_04.pdf][Another study]] places Accidents alot higher (but this includes traffic 
+   accidents and other. See table 10 for a breakdown where falls is included.)
+   
+   [[https://www.fhi.no/nettpub/hin/helse-i-ulike-befolkningsgrupper/helse-hos-eldre-i-norge---folkehels/][FHI]] also had some good articles on prevention, though they are in Norwegian.
+   WHO have published a [[http://www.who.int/ageing/publications/Falls_prevention7March.pdf][brochure]] about it.
 
-
+** Sources
+   [[http://ieeexplore.ieee.org/abstract/document/5370804/?reload=true][Human Activity Recognition and Pattern Discovery]]
+   [[https://link.springer.com/chapter/10.1007%2F978-3-540-88682-2_42?LI=true][Human Activity Recognition with Metric Learning]]
+   
 
 

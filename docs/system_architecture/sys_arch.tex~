@@ -1,0 +1,12 @@
+\documentclass[a4paper]{amsart}
+
+\usepackage[utf8]{inputenc}
+
+\author{Baard-Kristian Krohg}
+\title{System Architecture}
+
+\begin{document}
+\maketitle
+hello
+
+\end{document}

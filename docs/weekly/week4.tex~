@@ -1,0 +1,13 @@
+\documentclass[a4paper]{amsart}
+\usepackage[utf8]{inputenc}
+
+\title{Report week 4}
+\author{Bård-Kristian Krohg \\ \texttt{baard.krohg@gmail.com}}
+
+\begin{document}
+\date
+\maketitle
+\section{some}
+hei
+
+\end{document}

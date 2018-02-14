@@ -1,0 +1,50 @@
+\documentclass[a4paper,UKenglish]{report}     %% ... or USenglish or norsk or nynorsk
+\usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
+\usepackage[T1]{fontenc,url}
+\urlstyle{sf}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx}
+\usepackage[backend=biber,style=numeric-comp]{biblatex}
+
+\title{Modelling Human Behavior and State}        %% ... or whatever
+\subtitle{A machine learning approach}         %% ... if any
+\author{Bård-Kristian Krohg}                      %% ... or whoever 
+
+\bibliography{mybib}                  %% ... or whatever
+
+\begin{document}
+\duoforside[dept={Institute for informatics},
+  program={Informatics: Robotics and Intelligent Systems},
+  long,
+  printer={X-press printing house},
+  image={img/kanji_samurai.png}]{}
+%\frontmatter{}
+\maketitle{}
+% 悟 - enlightenment, percieve
+% 徴 - indication, sign, symptom
+
+\chapter*{Abstract}                   %% ... or Sammendrag or Samandrag
+
+\tableofcontents{}
+\listoffigures{}
+\listoftables{}
+
+\chapter*{Preface}                    %% ... or Forord
+
+%\mainmatter{}
+\part{Introduction}                   %% ... or Innledning or Innleiing
+
+\include{tex/Ch_Background}
+
+\part{The project}                    %% ... or ??
+
+\chapter{Planning the project}        %% ... or ??
+
+
+\part{Conclusion}                     %% ... or Konklusjon
+
+\chapter{Results}                     %% ... or ??
+
+
+%\backmatter{}
+\printbibliography
+\end{document}

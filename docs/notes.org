@@ -1,0 +1,43 @@
+* Modelling human behavior and state
+
+** Goals
+   The ultimate goal of this project is to recognize and predict risk of 
+   falling for older adults. 
+   Many factors may contribute to this. First and foremost we think the system
+   should be able to monitor the older adult to get a detailed image of 
+   the adults behavior patterns and states.
+
+*** Joint angle recognition
+    Using OpenPose in connection with a depth camera (Microsoft Kinect v2)
+    to calculate the 3D joint positions. Publish these to the ROS-TMS.
+    (Some work has already been done in this area, however in this project
+    we want to try to use the new OpenPose framework, as a sister project in 
+    Norway also would benefit from this.)
+
+*** Implement Human Activity Recognition
+    HAR based on 3D joint angles. Then, publish the current activity to the 
+    ROS-TMS.
+
+*** ML algorithms to predict falls
+    Using available information (activity, vitals++) stored in the ROS-TMS
+    to predict falls.
+
+** Challenges
+   Predicitng falls is a quite challenging problem, as there are many factors
+   that can play in to the outcome. 
+   In addition getting a dataset might prove challenging, as it could be 
+   nearly impossible to get reliable training data without deploying the system
+   in real-world condition and waiting for accidents to happen. 
+   
+   #+BEGIN_QUOTE
+   Nothing is particularly hard if you divide it into small jobs.
+   -- Henry Ford
+   #+END_QUOTE
+
+   However, one could think of the learning a bit different. As in the beginning
+   of AI we had something called Knowledge-based Computing. Although, the 
+   system wouldn't be trained in the normal sense (that it figures out what 
+   features are important itself) we could feed it with a-priori knowledge about
+   risk factors that could lead to falls. 
+   Then, It could be able to reckognize these risk factors, and provide an
+   estimate of the likelyhood of a fall occurring.
