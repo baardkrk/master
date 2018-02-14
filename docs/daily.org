@@ -65,6 +65,7 @@ Since this is what is used in ROS-TMS I'm continuing to use this sensor.
 
    OpenPose built with opencv2.4 yields around 12-15 fps on 2x GTX 1080 Ti
 
+   Changed to computer with 1 GTX 1080, getting around 7.5 fps
 ** Different activities
    To predict the long term probabilities, we have to also be able to 
    recognize the current activity/state.

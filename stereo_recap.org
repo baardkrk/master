@@ -1,0 +1,52 @@
+* Short Recap on Stereo Imaging
+  This will be used to recap stereo imaging course material from
+  UNIK4690. This will then be used to calibrate multiple view stereo
+  for the kinects v2.
+
+** Epipolar Geometry
+   Observing the same points from two views gives us a strong
+   geometrical constraint on the cameras. This epipolar constraint is
+   usually represented by two related 3x3 matrices:
+
+   the fundamental matrix F gives us the relation between the observed
+   point in the two pixel images. 
+
+   the essential matrix E gives us the relation between the observed
+   point in the normalized image planes.
+
+   The relation between the pixel images and the normalized image
+   plane is given by each cameras' own calibration matrix, K.
+
+*** The Essential matrix
+    Since we already get the camera matrix K from the ROS topics of
+    the kinect, it suffices to find the essential matrix between the
+    normalized image planes to determine the pose of the cameras.
+
+    Using the OpenCV functions cv::Mat cv::findEssentialMatrix and the
+    int cv::recoverPose.
+
+**** TODO Chessboard identification
+     create a system that finds and correlates N >= 5 points in both
+     camera images.
+     We need to create cv::Mat s points1 points2 of the same size and
+     type. Assuming the index is the identification between the
+     different images.
+     
+     extracting the points using the chessboard, so we get 48 points
+     in each image.
+
+
+     NB! THERE IS PROBABLY A FUNCTION FOR EXTRACTING THE CHESSBOARD
+     POINTS ALREADY MADE, SO GOOGLE HOW TO DO THIS!!
+
+
+     Then, it should pass these points to the essentialMatrix.
+
+**** cv::Mat cv::findEssentialMatrix
+     The output from this is passed to recoverPose.
+
+**** int cv::recoverPose
+     the R and t parameters gives us the rotation and translation for
+     the cameras.
+     we use the same points for findEssentialMatrix as for recoverPose.
+     

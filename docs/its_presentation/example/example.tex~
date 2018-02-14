@@ -1,0 +1,63 @@
+\documentclass[xcolor=pdftex,dvipsnames,table]{beamer}
+\usepackage[utf8]{inputenc}
+
+% \usepackage{beamerthemesplit}
+% \usetheme{Madrid}
+% \usecolortheme{structure}
+% \usefonttheme{professionalfonts}
+
+\title{A tiny example}
+
+\author{Krohg, Bård-Kristian}
+\date{December 6, 2017}
+
+\begin{document}
+\maketitle
+
+\begin{frame}
+  \frametitle{First Slide}
+  Contents for this first slide
+\end{frame}
+
+\begin{frame}
+  \frametitle{Second Slide}
+  Content of the second slide
+\end{frame}
+
+\begin{frame}
+  \frametitle{A table}
+  \begin{center}
+    \rowcolors{1}{gray!16}{gray!4}
+    \begin{tabular}{l c}
+      J.\ S.\ Bach   & 1685--1750 \\
+      W.\ A.\ Mozart & 1756--1791 \\
+      L.\ Beethoven  & 1770--1827 \\
+      F.\ Chopin     & 1810--1849 \\
+      R.\ Schumann   & 1810--1856 \\
+      %% B.\ Bart\’{o}k & 1881--1945Z
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Two column layout}
+
+  \begin{columns}[c]
+    \column{1.5in}
+    In this first column we will discuss some of the interesting parts of having long text in a slide.
+
+    Actually, one of the design rules for this kind of thing tells us that we really shouldn't do this. It is way too much information for the reader to process at one time.
+
+    Instead, we should present information like we do in the next column.
+    \column{1.5in}
+    Text should be:
+    \begin{itemize}
+    \item Consise
+    \item Succinct
+    \item On topic
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+
+\end{document}

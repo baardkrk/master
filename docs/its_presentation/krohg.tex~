@@ -1,0 +1,24 @@
+\documentclass[xcolor=pdftex,dvipsnames,table]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{textpos,tikz,calc}
+
+\pgfdeclareimage[interpolate=true,height=\paperheight]{background}{graphics/DSC_0913.png}
+
+% \usepackage{beamerthemesplit}
+\usetheme{Copenhagen}
+% \usecolortheme{structure}
+\usefonttheme{professionalfonts}
+
+\setbeamertemplate{background}{
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\the\paperwidth, \the\paperheight);
+    \pgftext[at=\pgfpoint{0}{0},left,base]{\pgfuseimage{background}};
+    \ifnum\thepage>1\relax%
+    \useasboundingbox (0,0) rectangle (\the\paperwidth,\the\paperheight);
+    \fill[white, opacity=1](0,\the\paperheight)--(\the\paperwidth,\the\paperheight)--(\the\paperwidth,0)--(0,0)--(0,\the\paperheight);
+    \fi
+  \end{tikzpicture}
+}
+
+
+

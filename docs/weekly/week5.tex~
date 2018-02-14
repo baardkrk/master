@@ -1,0 +1,37 @@
+\documentclass[a4paper, total={150cm, 250cm}]{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{tikz, sidecap, graphicx}
+\usetikzlibrary{positioning, shapes}
+
+
+\title{Report week 4}
+\author{Bård-Kristian Krohg \\ \texttt{baard.krohg@gmail.com}}
+
+
+\begin{document}
+\maketitle
+
+\section{Lorem Ipsum}
+
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum elit ac mi sagittis ornare. Integer a fermentum urna. Nullam vitae nisl quis eros fringilla faucibus. Sed hendrerit turpis tincidunt risus tincidunt, a pharetra elit consequat. Vivamus porta viverra auctor. Nunc vestibulum lectus nisl, accumsan dignissim nulla venenatis non. Pellentesque porttitor dolor sem, ac euismod erat vulputate id. Nulla convallis vestibulum ante nec mattis. Phasellus lobortis congue eros, vel lobortis risus eleifend ut.
+
+Curabitur placerat augue consequat risus mattis fermentum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce id sapien euismod, pulvinar ante facilisis, faucibus urna. Nulla feugiat turpis in magna ultricies cursus. Aliquam at tristique enim. Proin congue odio turpis, non interdum quam aliquet non. Aliquam sagittis massa est, quis viverra enim auctor at. Nam nec magna enim. Integer dapibus ex ac posuere venenatis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean scelerisque sed mauris sed maximus. Suspendisse vulputate velit non nulla egestas congue. In ac maximus odio, eu tempus nulla.
+
+Donec ac lorem sit amet turpis molestie cursus eu eu tortor. Suspendisse magna leo, egestas id dolor nec, posuere accumsan eros. Nunc tempus ultrices sapien vitae aliquet. Suspendisse luctus nisi est. Pellentesque dictum lectus posuere, molestie ex eget, auctor sapien. In vel sapien tempor, varius urna et, finibus augue. Curabitur porttitor, ipsum in tempus tincidunt, tellus est feugiat mi, vel suscipit risus eros eu nisi. Ut auctor vitae sem in euismod.
+
+Nam sit amet viverra sapien. Donec condimentum rhoncus molestie. Sed faucibus dapibus malesuada. Donec id varius arcu. Vivamus posuere urna id leo semper, ut eleifend leo ultricies. Praesent fringilla sollicitudin magna sed viverra. Nullam in fermentum diam, id maximus augue. Vestibulum at pellentesque dui. Pellentesque posuere fermentum purus a convallis. Donec vitae justo semper, ultricies odio et, porta lacus. Nam ex velit, mattis vel diam in, mattis pretium tellus. Mauris ullamcorper erat purus, vitae egestas ipsum interdum quis. In semper pharetra dui at mattis. Vivamus ornare augue eget elit consectetur mollis. Morbi in nisi dolor.
+
+Vestibulum quis bibendum risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean tristique faucibus erat vitae sagittis. Maecenas eget nulla ac erat semper viverra. Phasellus consequat, nisi eget faucibus tempus, velit augue ornare felis, non elementum nisl augue in purus. Cras eget ornare neque. Sed rhoncus, est in scelerisque eleifend, nisl lorem hendrerit nisi, in elementum tortor libero ac lectus. In ultricies, ipsum eget condimentum fringilla, magna est vestibulum enim, at volutpat diam felis ac mauris.
+
+Nam vulputate laoreet nisi in imperdiet. Vestibulum ac urna nec orci egestas lacinia vitae nec urna. Aenean at ligula commodo, vulputate arcu in, facilisis magna. Quisque faucibus velit sit amet magna vehicula varius. Proin id arcu quis eros sodales lobortis. Curabitur sit amet magna in nulla commodo porttitor id in erat. Proin eget urna vel nunc mollis imperdiet. Duis at semper ipsum. Praesent interdum porttitor lacus in sodales. Etiam vel venenatis tortor. Integer vehicula eros leo, non sodales risus dictum non. Ut nec nisi lacinia, ultricies magna non, malesuada metus. Fusce id ante sed magna tristique varius. Proin at feugiat ligula. Integer ut pharetra ex. Donec eu nisl in ligula rhoncus auctor at nec purus.
+
+Donec sollicitudin, enim et gravida dapibus, est urna mollis neque, non tincidunt purus lorem ut turpis. Aenean malesuada ante nulla, eget interdum nibh consequat sed. Proin enim metus, mollis vel pretium ac, vehicula sit amet quam. Nullam justo magna, fermentum sed est eu, sodales mattis justo. Donec fringilla tortor nec ante varius mattis. Suspendisse vehicula pretium est, eu euismod dui aliquam in. Nulla sodales ullamcorper placerat. Duis tristique consequat sodales. Quisque malesuada turpis metus, eu gravida justo vestibulum commodo. Donec pretium tincidunt finibus. Nunc rhoncus consequat est id tristique. Donec pharetra, ante a rhoncus aliquam, urna tellus posuere neque, eu cursus elit est at augue. Nunc nec massa eget sapien fringilla euismod quis ac quam.
+
+Etiam dolor eros, consectetur eget congue id, mattis ut risus. Fusce et tortor nunc. Suspendisse at imperdiet lectus, id rhoncus tellus. Integer justo enim, sagittis eu imperdiet a, pretium a ex. Fusce eget ligula ut metus volutpat eleifend at eu justo. Aliquam mi nisi, dapibus eu risus id, fringilla dignissim leo. Ut et nunc purus. In hac habitasse platea dictumst. In scelerisque nibh at pulvinar volutpat. Nulla facilisi. Ut in fringilla odio. Donec at leo lorem.
+
+In pellentesque nunc vitae euismod ullamcorper. Pellentesque et neque id nisi sodales mollis eu ac leo. Quisque eget imperdiet odio. Proin eu aliquam neque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam egestas suscipit odio sit amet suscipit. Mauris a tortor nisl. In condimentum justo eu felis commodo, in finibus risus vestibulum. Ut pretium vitae ipsum ut aliquam. In hac habitasse platea dictumst. Integer tempor mi nibh, vel aliquam nisl tincidunt et. In feugiat dui quis sem elementum tristique. Pellentesque quam lacus, accumsan at suscipit fringilla, aliquam ac ante.
+
+Quisque dignissim non mi sit amet placerat. Etiam varius dictum felis, vitae fringilla nibh fermentum ut. Maecenas ac lectus dolor. Praesent tincidunt eleifend purus nec tempor. Curabitur non rutrum lorem, eget convallis nisi. Donec ut semper ipsum. Fusce velit mauris, gravida quis ante sed, ornare viverra est. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque mattis nunc ante. 
+\end{document}
