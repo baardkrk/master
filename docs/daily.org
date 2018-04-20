@@ -41,6 +41,7 @@ it should be possible. Also, it is only the data aquisition that relies
 on opencv2.4.x which means it can afford to go a bit slower.)
 *** Installation procedure
     Went pretty OK, just followed the [[docs.nvidia.com/jetpack-l4t/3.1/index.html#developertools/mobile/jetpack/l4t/3.1/jetpack_l4t_install.htm][recomended procedure]] for JetPack 3.1.
+    I'll also report that it ran smoothly from a ubuntu 16.04 machine!
     However, when I was going to install ros-kinetic rosdep init wouldn't work.
     This was fixed by running
     "sudo c_rehash /etc/ssl/certs"
