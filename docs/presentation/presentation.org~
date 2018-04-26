@@ -1,0 +1,10 @@
+* 
+
+** Robotic Operating System
+
+Why ROS?
+ROS gives us a plethora of different drivers and libraries to use 
+when working with robotic sensors. In addition, it gives us 
+a convenient workflow to control and inspect communication 
+between different programmes called Nodes, and is widley used
+by companies and research institutions alike. 
