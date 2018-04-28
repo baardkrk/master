@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
 \usepackage[T1]{fontenc,url}
 \urlstyle{sf}
-\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,acro}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,acro,hyperref}
 \usepackage[backend=biber,style=numeric-comp]{biblatex}
 
 \usepackage[inner=3.5cm, outer=2.5cm, a4paper]{geometry} %% if not enough materials, change outer to 4.5
@@ -101,8 +101,10 @@ often the only thing that is read by people who are just looking at the thesis.
 \end{itemize}
 \chapter{Future Work}
 What research is missing, what do we want to know more about, what other methods should be tried out
-\backmatter
 
+\include{tex/preliminary_notes_and_papers}
+
+\backmatter
 \printbibliography
 
 \clearpage
