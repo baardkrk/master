@@ -1,0 +1,160 @@
+* Introduction 
+
+** Abstract
+In this work we propose an easy to use 3D pose estimation system
+developed for ROS to be used for further reaserach in the 
+Humanitude project.
+We propose a markerless robust real-time multi-person pose detection
+system that features a manual 2d-3d mapping and proportion 
+constrainment to ensure that plausible poses are generated.
+
+** Humanitude Teaching Assistant
+The ultimate goal for the Humanitude system is to create an 
+automatic teaching system to instruct healthcare personell/
+caretakers in the Humanitude method and special techniques.
+
+The different techniques can be ways to preform various 
+tasks such as helping a person up from a chair, how to 
+position yourself when talking to a patient, and so on.
+
+To train new emploees in these techniques an automatic teaching
+system has been proposed. To realize this system the project 
+will rely on many different data-points, such as pressure sensors
+to find the pressure in different parts of the feet, face 
+reckognition and 3d pose estimation. This work will focus on
+mainly the 3D pose estimation for this system.
+
+** 3D Keypoints
+The pose of both the caregiver and the patient should be 
+recorded.
+
+To create data that can be used when evaluating the preformance
+of a student we propose to use 3D pose estimation to ensure that
+the actions/Humanitude techniques are preformed correctly. 
+The advantage of using 3D keypoints is that the data created will be 
+setup agnostic. By this we mean that the system can be set up
+in different configurations; the cameras can view the subject
+from a different angle to the angle that was used when recording
+the professional preforming the action.
+
+This also means that we can gather data not only in a controlled
+environment in a lab, but also on location in real world environments.
+
+
+** Detecting Humans in images
+To detect humans in images a popular method has been the Histogram
+of Oriented Gradients for many years. This method relies training
+some machine learning algorithm (such as an Support Vector Machine) 
+to recognize the outline of a human in an image. 
+This proven and quite fast method works well for many applications, 
+such as pedestrian detection in self driving cars, but for our 
+system we need more information than just the location.
+
+Open Pose was developed at the Carnegie Mellon University and 
+provides individual keypoint locations for each person in the image.
+
+The program works by generating Confidence maps for each keypoint.
+The confidence map is a 2D representation of the probability that there
+is a keypoint in that particurlar location. (we utilize this later)
+If there is only one person in the image, a single peak should exist
+in each confidence map. 
+Then, we connect these keypoints by what they call Part Affinity Fields.
+These are 2D vector fields pointing in the direction along each limb.
+Both the confidence maps and the PAFs are found using CNNs.
+
+
+** Depth Perception
+
+*** Structured Light
+
+
+** Multiple cameras
+
+
+** Body part Constraints
+
+
+The 
+
+* Implementation
+
+** Third party software and frameworks
+*** Robotic Operating System
+What is ROS
+ROS is a framework for building robotic applications. It provides
+the user with a wide variety of tools libraries and conventions
+we can rely on to create complicated robot behavior. 
+
+Why ROS?
+ROS is developed as a collaborative effort between many different
+laboratories. This means we have access to high quality packages
+created by highly specialized researchers from all over the world 
+when creating applications. 
+For example could one lab specialize in navigation algorithms, 
+while another is focusing on providing accurate SLAM and a third
+provides frameworks for object recognition.
+In addition, it provides us with a convenient workflow to control 
+and inspect communication between different programs called Nodes, 
+and is widley used by companies and research institutions alike. 
+
+What packages are we using?
+In addition to many of the standard packages such as Markers,
+frames and synchronization, we are sepecially relying on the 
+IAI Kinect package for this project.
+
+The IAI Kinect package provides us with access to the Kinect v2's 
+different data streams from the OpenNI driver in the ROS
+environment. This means we can freely use the color (RGB), IR and 
+depth images from the Kinect sensors in our node.
+
+*** Nodes
+    Kinect subscriber -- synchronize signals, decide which message to use
+    Info Extractor -- Runs Openpose, refines 3D skeleton, RoIs are calculated
+    Tracker -- Assigns IDs to each person based on last location
+    Renderer -- publishes the information from the tracker as marker arrays
+
+*** Open Pose
+Not much was done to Open Pose once it was running in ROS, However some
+local variables will have to be changed when the program is installed.
+The OpenPose network was scaled to fit the smaller sd image from the 
+Kinect sensor, which resulted in a lot higher framerates, and
+smoother motion. 
+Open Pose runs one time for each videoframe, so data structures 
+used by the program is reused in each frame. (i.e. we only
+initialize them once.)
+
+*** Constraints and keypoint placement
+OpenPose is quite good at generating confidence maps, and can sometimes extrapolate 
+and place a keypoint even if the keypoint is occluded by another object. Although
+this sometimes creates failure cases, it was enough of a problem that we wanted
+to constrain the 3D skeletons generated.
+
+
+The constraints are divided into three different subgraphs, 
+head, upper body and legs. 
+We start by finding the best seed keypoint (the keypoint that
+has the highest value in the confidence map) for each subgraph.
+Then, we place out each of the child nodes the defined distance
+away from the seed node. 
+We use some different techniques for this; we can either 
+push/pull the keypoint in the z direction (when Z is pointing into 
+the scene) move it as closed to the observed line as possible,
+or, if it is occluded, but the next keypoint is observed, we can 
+do keypoint interpolation 
+**** Keypoint interpolation
+/**
+ * Moves the point c_id. This is used if the next point in a constrained subgraph (n_id) is
+ * well observed, but the child point (c_id) is not. 
+ * This works by setting c_id to the point on the circle of intersection between the spheres
+ * with origin in p_id and n_id and the appropriate limb lengths. 
+ *
+ * TODO: if there is NO INTERSECTION between the spheres, this just runs the unobserved child
+ * algorithm.
+ */
+
+* Future Work
+Tracker using Kalman Filter
+NN trained on 
+
+
+

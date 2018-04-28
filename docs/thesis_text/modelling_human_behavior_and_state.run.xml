@@ -82,7 +82,7 @@
       <file>modelling_human_behavior_and_state.bcf</file>
     </requires>
     <requires type="editable">
-      <file>mybib.bib</file>
+      <file>bib/sources.bib</file>
     </requires>
   </external>
 </requests>

@@ -1,52 +1,121 @@
-\documentclass[a4paper,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
+\documentclass[twoside,a4paper,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
+
 \usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
 \usepackage[T1]{fontenc,url}
 \urlstyle{sf}
-\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,acro,hyperref}
 \usepackage[backend=biber,style=numeric-comp]{biblatex}
+
+\usepackage[inner=3.5cm, outer=2.5cm, a4paper]{geometry} %% if not enough materials, change outer to 4.5
+%\usepackage{showframe}
+\usepackage{lipsum}
 
 \title{Modelling Human Behavior and State}        %% ... or whatever
 \subtitle{A ROS package for Human Robot interaction}         %% ... if any
 \author{Bård-Kristian Krohg}                      %% ... or whoever 
 
-\bibliography{mybib}                  %% ... or whatever
+\addbibresource{bib/sources.bib}                  %% ... or whatever
+%%\addbibresource{sources.bib}
+%%\bibstyle{plain}
+%%% ------- front, main and backmatter
+\makeatletter
+
+\newcommand\frontmatter{%
+    \cleardoublepage
+  %\@mainmatterfalse
+  \pagenumbering{roman}}
+
+\newcommand\mainmatter{%
+    \cleardoublepage
+ % \@mainmattertrue
+  \pagenumbering{arabic}}
+
+\newcommand\backmatter{%
+  \if@openright
+    \cleardoublepage
+  \else
+    \clearpage
+  \fi
+ % \@mainmatterfalse
+   }
+
+\makeatother
+
 
 \begin{document}
 \duoforside[dept={Institute for informatics},
   program={Informatics: Robotics and Intelligent Systems},
   long,
-  printer={X-press printing house}
-  %image={img/bksym.png}
-]{}
-%\frontmatter{}
+  printer={X-press printing house},
+  image={img/vitruvian.png}]{}
+%% 悟 - enlightenment, percieve
+%% 徴 - indication, sign, symptom
+\frontmatter
 \maketitle{}
-% 悟 - enlightenment, percieve
-% 徴 - indication, sign, symptom
 
 \chapter*{Abstract}                   %% ... or Sammendrag or Samandrag
 \input{tex/Abstract}
 
+\chapter*{Preface}                    %% ... or Forord
+\input{tex/Preface}
+
+\include{tex/Ch_Abstract}                   %% ... or Sammendrag or Samandrag
+\include{tex/Ch_Preface}
 \tableofcontents{}
 \listoffigures{}
 \listoftables{}
+\input{tex/decl_acronyms}
+\printacronyms[include-classes=abbrev, name=Abbrevations]{}
+\printacronyms[include-classes=nomencl, name=Nomenclature]{}
 
-\chapter*{Preface}                    %% ... or Forord
-\input{tex/Preface}
-%\mainmatter{}
+\mainmatter
 \part{Introduction}                   %% ... or Innledning or Innleiing
-\include{tex/Ch_Background}
 
-\part{The project}                    %% ... or ??
+\include{tex/Ch_Background}
+\chapter{Earlier work}
+%% \section{lorem}
+%% \lipsum
+%% \section{ipsum}
+%% \lipsum
+%% \subsection{dolor sit amet}
+%% \lipsum
+
+%%\part{The project}                    %% ... or ??
 
 \chapter{Planning the project}        %% ... or ??
 
+%%\part{Conclusion}                     %% ... or Konklusjon
+\chapter{Method}
+USE A DESCRIPRIVE TITLE! (ie. Robot Brain Implementation)
+See your choises in birds eye perspective. how you can discuss what youve done.
 
 
-\part{Conclusion}                     %% ... or Konklusjon
+What was made, why is it good. document all choices. The rule is that a different scientist with the same resources should be able to get the same results based on your description. Dont write about the methods in general, but exactly what youre doing. discuss your own approach. Show that youre aware there are other alternatives to what you did, and what advantages a different method may have. Did you have any influence over how things were solved. what is strengths and weaknesses about your work. what would you do different if you were to do it again? be open about weaknesses, but defend your choices. Refer to other researchers who has done the same. 
+\chapter{Experiments}                     %% ... or ??
+What did we find out. dont overcomplicate the explanation. this could be the longest part of the thesis. about 15-20 pages? If you have more questions, use that as structure for this section. You can divide this into multiple chapters: subsidiary questions to the main theme, hypothesies, themes. One to three chapters are usually OK. the most important first, main findings. small neuances exceptions and discussions. discuss what youve found. this could be a chapter in itself.
+\section{Results}
+the main finings, as simply put as possible.
+\section{Discussion}
+Look at the results critically, weaknesses to the method. discuss how the findings can be explained. reasons to why you found what you found. how it compares to earier research. can reference some earlier theory.
+\chapter{Conclusion}
+About 10\% of the lenght (means \~8 pages)
+often the only thing that is read by people who are just looking at the thesis.
+\begin{itemize}
+\item tell in short version what youve found. main findings first. short, simply put. the neuances and details can be fleshed out in the following sections.
+\item how your findings fit with earlier work and research. (dont repeat too much from the ``earlier research'' or ``theory'' chapters. ) What fits, and suggestions as to why.
+\item The way your finings can have significance. Can we see the subject in a new way? should one change something in practice or how one does things because of your research? can the finds benefit society. Youre going to tell the world, and see what youre writing about in a bigger picture. Can other people learn something from this?
+\item OpenPose~\cite{cao2017realtime}
+\end{itemize}
+\chapter{Future Work}
+What research is missing, what do we want to know more about, what other methods should be tried out
 
-\chapter{Results}                     %% ... or ??
+\include{tex/preliminary_notes_and_papers}
 
-
-%\backmatter{}
+\backmatter
 \printbibliography
+
+\clearpage
+\newpage
+\chapter*{Notes}
+
 \end{document}
