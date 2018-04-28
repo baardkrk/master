@@ -1,4 +1,4 @@
-\documentclass[a4paper,UKenglish]{report}     %% ... or USenglish or norsk or nynorsk
+\documentclass[a4paper,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
 \usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
 \usepackage[T1]{fontenc,url}
 \urlstyle{sf}
@@ -6,7 +6,7 @@
 \usepackage[backend=biber,style=numeric-comp]{biblatex}
 
 \title{Modelling Human Behavior and State}        %% ... or whatever
-\subtitle{A machine learning approach}         %% ... if any
+\subtitle{A ROS package for Human Robot interaction}         %% ... if any
 \author{Bård-Kristian Krohg}                      %% ... or whoever 
 
 \bibliography{mybib}                  %% ... or whatever
@@ -15,29 +15,31 @@
 \duoforside[dept={Institute for informatics},
   program={Informatics: Robotics and Intelligent Systems},
   long,
-  printer={X-press printing house},
-  image={img/kanji_samurai.png}]{}
+  printer={X-press printing house}
+  %image={img/bksym.png}
+]{}
 %\frontmatter{}
 \maketitle{}
 % 悟 - enlightenment, percieve
 % 徴 - indication, sign, symptom
 
 \chapter*{Abstract}                   %% ... or Sammendrag or Samandrag
+\input{tex/Abstract}
 
 \tableofcontents{}
 \listoffigures{}
 \listoftables{}
 
 \chapter*{Preface}                    %% ... or Forord
-
+\input{tex/Preface}
 %\mainmatter{}
 \part{Introduction}                   %% ... or Innledning or Innleiing
-
 \include{tex/Ch_Background}
 
 \part{The project}                    %% ... or ??
 
 \chapter{Planning the project}        %% ... or ??
+
 
 
 \part{Conclusion}                     %% ... or Konklusjon
