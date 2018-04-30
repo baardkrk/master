@@ -26,7 +26,7 @@
 %\usepackage{showframe}
 \usepackage{lipsum}
 
-\title{Modeling Human Behavior and State}        %% ... or whatever
+\title{Modelling Human Behavior and State}        %% ... or whatever
 \subtitle{A ROS package for Human Robot interaction}         %% ... if any
 \author{Bård-Kristian Krohg}                      %% ... or whoever 
 
@@ -85,7 +85,7 @@
 \listoffigures{}
 \listoftables{}
 \input{tex/decl_acronyms}
-\printacronyms[include-classes=abbrev, name=Abbreviations]{}
+\printacronyms[include-classes=abbrev, name=Abbrevations]{}
 \printacronyms[include-classes=nomencl, name=Nomenclature]{}
 
 \mainmatter

@@ -56,6 +56,94 @@ We could make the training data synthetically to train the model, and then retra
 
 \section{Open Pose}
 
+\begin{figure}
+  \begin{floatrow}
+    \ffigbox{
+      \begin{tikzpicture}[
+          every node/.style={draw,circle,minimum size=.06cm, inner sep=1.3pt}
+        ]
+        \tiny
+        %% \draw[help lines, step=5mm, gray!20] (-4,-4) grid (3,4);
+        
+        \node[label={[label distance=-.2mm]200:{0}}] (nose) at (0,3.25) {};
+        \node[label={[label distance=-.2mm]140:{1}}] (neck) at (0,2.54) {};
+        
+        \node[label={[label distance=-.1mm]90:{14}}] (reye) at (-.3,3.5) {};
+        \node[label={[label distance=-.1mm]90:{15}}] (leye) at (.3,3.5) {};
+
+        \node[label={[label distance=-.1mm]180:{16}}] (rear) at (-.5,3.35) {};
+        \node[label={[label distance=-.1mm]0:{17}}] (lear) at (.5,3.35) {};
+
+        \node[label={[label distance=-.2mm]140:{2}}] (rshoulder) at (-1.05,2.54) {};
+        \node[label={[label distance=-.2mm]50:{5}}] (lshoulder) at (1.05,2.54) {};
+        
+        \node[label={[label distance=-.1mm]180:{3}}] (relbow) at (-1.36,1.06) {};
+        \node[label={[label distance=-.1mm]0:{6}}] (lelbow) at (1.36,1.06) {};
+
+        \node[label={[label distance=-.1mm]180:{4}}] (rwrist) at (-1.36,-.12) {};
+        \node[label={[label distance=-.1mm]0:{7}}] (lwrist) at (1.36,-.12) {};
+
+        \node[label={[label distance=-.2mm]140:{8}}] (rhip) at (-.78,.2) {};
+        \node[label={[label distance=-.2mm]50:{11}}] (lhip) at (.78,.2) {};
+
+        \node[label={[label distance=-.1mm]180:{9}}] (rknee) at (-1.02,-1.78) {};
+        \node[label={[label distance=-.1mm]0:{12}}] (lknee) at (1.02,-1.78) {};
+
+        \node[label={[label distance=-.1mm]180:{10}}] (rankle) at (-1.02,-3.78) {};
+        \node[label={[label distance=-.1mm]0:{13}}] (lankle) at (1.02,-3.78) {};
+
+        %% \draw[blue] (0,0) circle [radius=.06cm];
+
+        \draw (nose) -- (neck);
+        \draw (reye) -- (nose); \draw (leye) -- (nose);
+        \draw (reye) -- (rear); \draw (leye) -- (lear);
+        
+        \draw (neck) -- (rshoulder); \draw (neck) -- (lshoulder);
+        \draw (neck) -- (rhip); \draw (neck) -- (lhip);
+
+        \draw (rshoulder) -- (relbow); \draw (lshoulder) -- (lelbow);
+        \draw (rwrist) -- (relbow); \draw (lwrist) -- (lelbow);
+
+        \draw (rhip) -- (rknee); \draw (lhip) -- (lknee);
+        \draw (rknee) -- (rankle); \draw (lknee) -- (lankle);
+      \end{tikzpicture}
+    }
+    {
+      \label{fig:openpose_skeleton}
+      \caption[Numbering for OpenPose's keypoint markers]{Numbering for OpenPose's keypoint markers.}
+    }
+    %% \end{figure}
+    %% \begin{table}
+    \capbtabbox{
+      \begin{tabular}[H]{r l}
+        ID & Name \\ \hline
+        0  & Nose \\
+        1  & Neck \\
+        2  & Right Shoulder \\
+        3  & Right Elbow \\
+        4  & Right Wrist \\
+        5  & Left Shoulder \\
+        6  & Left Elbow \\
+        7  & Left Wrist \\
+        8  & Right Hip \\
+        9  & Right Knee \\
+        10 & Right Ankle \\
+        11 & Left Hip \\
+        12 & Left Knee \\
+        13 & Left Ankle \\
+        14 & Right Eye \\
+        15 & Left Eye \\
+        16 & Right Ear \\
+        17 & Left Ear \\
+        \hline
+      \end{tabular}
+    }{
+      \label{tab:openpose_body_ids}
+      \caption[IDs for OpenPose keypoint markers]{IDs for OpenPose's keypoint markers.}
+    }
+  \end{floatrow}
+\end{figure}
+
 \section{Depth perception}
 
 \section{Structured Light}

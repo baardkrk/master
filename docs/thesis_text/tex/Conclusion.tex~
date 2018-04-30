@@ -1,0 +1,9 @@
+\chapter{Conclusion}
+About 10\% of the lenght (means \~8 pages)
+often the only thing that is read by people who are just looking at the thesis.
+\begin{itemize}
+\item tell in short version what youve found. main findings first. short, simply put. the neuances and details can be fleshed out in the following sections.
+\item how your findings fit with earlier work and research. (dont repeat too much from the ``earlier research'' or ``theory'' chapters. ) What fits, and suggestions as to why.
+\item The way your finings can have significance. Can we see the subject in a new way? should one change something in practice or how one does things because of your research? can the finds benefit society. Youre going to tell the world, and see what youre writing about in a bigger picture. Can other people learn something from this?
+\item OpenPose~\cite{cao2017realtime}
+\end{itemize}
