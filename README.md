@@ -3,10 +3,15 @@ Fremdriftsplan 2020
 
 **Delmål:**
  - [ ] Laste ned datasett *(1 uke)*
- - [ ] Laste inn datasett på trenbart format *(2 uker)*
+ - [ ] Oversette datasett til trenbart format *(2 uker)*
+   - Pare opp ground-truth landemerker med dybdebilder
+   - Flytte origo av hvert koordinatsystem til kameraets senter
+   - Rotasjon av input -- det er *formen* på mennesker vi er ute etter
  - [ ] Plukke ut treningsverdier fra datasettene *(1 uke)*
+   - Dele opp i trening/validering/testsett
+   - Muligens lage et testsett som ikke har roterte data
  - [ ] Skrive arkitektur for ML algoritme (kraftig GPU) *(4 uker)*
-   - [ ] Optimere for vanlige ML feil (vanishing gradient++) *(2 uker)*
+   - Optimere for vanlige ML feil (vanishing gradient++)
  - [ ] Sette opp arbeidsområde på skolens GPU-maskin *(.5 uke)*
  - [ ] Trene modell på GPU-maskin *(1.5 uke)*
  - [ ] Vurdere resultater fra testsett *(1 uke)*
@@ -14,5 +19,10 @@ Fremdriftsplan 2020
  - [ ] Optimering av forward-algoritme for portabel HW *(1 uke)*
  - [ ] Implementasjon på portabel hardware *(1.5 uke)*
  - [ ] Test av algoritme på protabel HW *(.5 uke)*
+ 
+**Dersom tid:**
+ - [ ] Lage noen enkle treningssett med aktivitetsgjenkjenning
+ - [ ] Skrive algoritme for aktivitetsgjennkjenning av noen utvalgte aktiviteter
+ - [ ] Teste på portabel HW
 
-Totalt allokert tid: 18 uker
+Totalt allokert tid: 16 uker
