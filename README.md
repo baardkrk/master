@@ -1,5 +1,11 @@
+Skeleton Extraction with Convolutional Neural Networks
+======================================================
+
+Ekstrahere mennesklig posering/skjelett fra dybdebilder med CNNs.
+
+
 Fremdriftsplan 2020
-============================
+-------------------
 
 **Delmål:**
  - [ ] Laste ned datasett *(1 uke)*
@@ -25,4 +31,4 @@ Fremdriftsplan 2020
  - [ ] Skrive algoritme for aktivitetsgjennkjenning av noen utvalgte aktiviteter
  - [ ] Teste på portabel HW
 
-Totalt allokert tid: 16 uker
+*Totalt allokert tid: 16 uker*
