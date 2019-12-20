@@ -8,7 +8,7 @@ Fremdriftsplan 2020
 -------------------
 
 **Delmål:**
- - [ ] Laste ned datasett *(1 uke)*
+ - [x] Laste ned datasett *(1 uke)*
  - [ ] Oversette datasett til trenbart format *(2 uker)*
    - Pare opp ground-truth landemerker med dybdebilder
    - Flytte origo av hvert koordinatsystem til kameraets senter
@@ -17,9 +17,11 @@ Fremdriftsplan 2020
    - Dele opp i trening/validering/testsett
    - Muligens lage et testsett som ikke har roterte data
  - [ ] Skrive arkitektur for ML algoritme (kraftig GPU) *(4 uker)*
+   - Sette seg inn i utviklingsverktøy (PyTorch, Tensorflow, ..)
+   - Sette opp arkitektur
    - Optimere for vanlige ML feil (vanishing gradient++)
  - [ ] Sette opp arbeidsområde på skolens GPU-maskin *(.5 uke)*
- - [ ] Trene modell på GPU-maskin *(1.5 uke)*
+ - [ ] Trene modell på GPU-maskin *(2 uker)*
  - [ ] Vurdere resultater fra testsett *(1 uke)*
  - [ ] Skrive om arkitektur *(2 uker)*
  - [ ] Optimering av forward-algoritme for portabel HW *(1 uke)*
