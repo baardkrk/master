@@ -34,4 +34,3 @@ Fremdriftsplan 2020
  - [ ] Teste på portabel HW
 
 *Totalt allokert tid: 16 uker*
-
