@@ -1,0 +1,25 @@
+\chapter{Experiments}                     %% ... or ??
+
+{\color{red}What did we find out. dont overcomplicate the explanation. this could be the longest part of the thesis. about 15-20 pages? If you have more questions, use that as structure for this section. You can divide this into multiple chapters: subsidiary questions to the main theme, hypothesies, themes. One to three chapters are usually OK. the most important first, main findings. small neuances exceptions and discussions. discuss what youve found. this could be a chapter in itself.}
+
+%% \section{Set up}
+\section{Individual module experiments}
+Because of the breadth of this work, a multitude of setups was used to test each part of the system. We also compare our results to ground truth, and established methods.
+
+\subsection{Pose and joint angle detection}
+In this experiment we wanted to uncover the accuracy of the 3d joint angles produced by the system, and compare them to other methods and the ground truth. The {\color{red}Human3.6m} dataset was used to obtain ground truth for joint positions as well as providing the depth maps and RGBD images for the algorithm. A wide variety of poses were tested, although detection on a variety of ranges from the sensor were not possible using this dataset.
+
+\subsection{Human Activity Recognition}
+The dataset in \cite{berkeley_mhad} was used to provide training and test data. A few selected behaviors were chosen and recognized. 
+
+\subsection{Facial emotion recognition}
+We used \cite{radboud_faces} for training and testing our recognition algorithm. The faces were also scaled down to simulate recognition on a variety of distances from the sensor.
+
+\subsection{Pulse detection}
+The pulse was obtained from the forehead, and tested in a variety of lighting conditions. Ground truth and timing was obtained using an in-frame heart rate monitor. 
+
+
+\section{Complete system test}
+The complete system was tested in lab conditions on limited hardware, see Appendix~\ref{appendix:hardware}. 
+
+\section{}

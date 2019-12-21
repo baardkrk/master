@@ -1,0 +1,20 @@
+\chapter{Human 3D pose from depth images}
+
+Skeleton models
+
+
+\section{2D detection transfer}
+
+(First ideas.)
+
+Torso placement and tree structure for placing.
+
+Fit to human standard model (rules for symmetry and lengths)
+
+Occlusion problem, and interpolated points, visual hull constraints
+
+We train the network on both depth images and a kinematic model of each 3D ground truth location.
+
+\section{Pose from CNN over depth maps}
+
+We create a separate 'side-view' detection map for each 'frontal' detection map. This reduces the convolution operations, since we don't have to convolve over the whole 3D space.

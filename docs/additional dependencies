@@ -1,0 +1,11 @@
+# CAFFE
+
+sudo apt-get install libgoogle-glog-dev libgflags-dev liblmdb-dev
+sudo ln -s libhdf5_serial.so.10.1.0 libhdf5.so
+sudo ln -s libhdf5_serial_hl.so.10.0.2 libhdf5_hl.so
+
+change INCLUDE DIRS in Makefile.config
+INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/
+
+possibly
+CUSTOM_CXX := g++-4.6

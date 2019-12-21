@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/terminal_colors.h
+
+/home/baard/master/training_data/src/bvh2cam_origin.cpp
+terminal_colors.h
+/home/baard/master/training_data/src/terminal_colors.h
+stdio.h
+-
+

@@ -1,0 +1,3 @@
+/home/baard/master/training_data/build/CMakeFiles/edit_cache.dir
+/home/baard/master/training_data/build/CMakeFiles/rebuild_cache.dir
+/home/baard/master/training_data/build/CMakeFiles/prep_data.dir

@@ -1,5 +1,0 @@
-[0] Config.pm:340> INFO - This is Biber 2.4
-[0] Config.pm:343> INFO - Logfile is 'modelling_human_behavior_and_state.blg.blg'
-[32] biber:287> INFO - === 土  4月 28, 2018, 22:09:10
-[99] Utils.pm:163> ERROR - Cannot find control file 'modelling_human_behavior_and_state.blg.bcf'! - did you pass the "backend=biber" option to BibLaTeX?
-[99] Biber.pm:113> INFO - ERRORS: 1

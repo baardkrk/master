@@ -1,0 +1,26 @@
+ROS specific programs
+=====================
+
+For displaying depth images, the GT skeletons and the estimated skeleton
+ - Fixed frame for each kinect frame
+ - Topic for PCL2 (camera/depth_registered/points)
+
+A ros program running the prediction real-time
+ - Must be able to subscribe to a depth-topic
+ - Possibility for support from multiple depth topics 
+    - Automatic stitching from ICP matching or provided transform between
+      cameras
+
+
+Machine Learning part
+=====================
+
+Datapreprocessing
+ - Take frame from every 5 second of each clip as input to the trainingset
+ - Program for refining GT bvh files to 16 keypoint GT joint locations
+ - Refine GT joint locations into GT location evidence maps with gaussian
+   distributions around each point. 2 sets: coplanar evidence to the camera
+   plane, and perpendicular evidence (depth locations).
+
+Create architecture for Object recognition
+
