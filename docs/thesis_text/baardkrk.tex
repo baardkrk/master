@@ -5,7 +5,7 @@
 \urlstyle{sf}
 \usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,hyperref,xcolor,longtable}
 \usepackage[backend=biber,style=numeric-comp]{biblatex}
-\usepackage[toc,page]{appendix}
+\usepackage[toc,page,title]{appendix}
 \usepackage[nonumberlist,acronym,nomain]{glossaries}
 
 \usepackage{mathtools}
@@ -91,17 +91,19 @@
 %% \include{tex/Project}
 %% \include{tex/Experiments}
 
+\include{tex/experiments}
+
 %%\part{Conclusion}
 %% \include{tex/Results}
 %% \include{tex/Discussion}
 %% \include{tex/Conclusion}
 \include{tex/future_work}
 
+\include{tex/conclusions}
 %% \include{tex/preliminary_notes_and_papers}
 
 \backmatter
-
-%% \include{tex/Appendices}
+\include{tex/appendices}
 \printglossary[type=definition,title=Glossary]
 \addcontentsline{toc}{chapter}{Glossary}   %% or use toc option for package. (but all glossaries will apperar)
 \printbibliography[heading=bibintoc]

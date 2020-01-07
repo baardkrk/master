@@ -1,0 +1,32 @@
+
+\begin{appendices}
+  
+\section{Depth sensors}
+
+Since depth sensors are widely used in different robotics applications for tasks such as SLAM, odometry and object detection, we selected this as our main source of information for monitoring the user. There are mainly three different technologies to choose from: \emph{Structured light}, \emph{\gls{tof}} and \emph{Stereo vision}. 
+
+\subsection{Stereo vision} uses two cameras that are observing parts of the same scene. In commercial packages the cameras are usually calibrated, so we have measurements to put into the camera matrix as well as the rotation and translation between the two camera matrices.
+
+However, to get a 3D structure, we need to find common feature points between the two cameras. To do this, we can use various feature descriptors such as ORB, SWIFT and SURF. When good matches has been found between the images, we measure the disparity between the points, and triangulate the distance. The depth measurements for the rest of the image are then calculated by matching pixels close to the found featurepoints.
+
+Since this is an optically based technology, it will work well in well-lit scenes that contain many unique featurepoints. If we operate in an homogenous environment with few, or similar textures it will be difficult to find featurepoints to map the environment. An example of this could be on the seabed or inside buildings with limited light conditions, for example during a blackout.
+
+\subsection{Structured light} uses a projected pattern of light points onto the scene which is registered by a calibrated camera. Usually, the projected light pattern and camera operate in the infrared part of the electromagnetic spectrum\footnote{The Microsoft Kinect V2 sensor uses a wavelength around \~827-850nm stated by a developer in \href{https://social.msdn.microsoft.com/Forums/en-US/e92e6f9b-4800-4b48-8ae7-5c8b1353d661/infrared-wavelength?forum=kinectv2sdk}{this forum}. {\color{red} TODO : fix source}}. This means that in locations where one can expect a lot of IR radiation, this technology will not work very well. Since the IR radiation from the sun usually is much stronger than the one emitted from the projector on the sensor, this technology will not work well outside in well-lit conditions. It will however work inside and in conditions where no external light source are provided.
+
+In addition, since the light is structured and the sensor is calibrated, we can skip the step where we find common featurepoints to triangulate the distance which we have to do in the stereo vision case.
+
+\subsection{\acrlong{tof}} cameras uses the known constant of \gls{sol} to calculate distances in the image, by measuring the time a light-pulse emitted from the camera uses to be reflected onto the camera sensor. For example, Microsofts Kinect v2 uses a specialized \gls{tof}-pixel array in conjunction with a timing generator and modulated laser diodes to obtain per-pixel depth images~\cite{hotchipsTalk}.
+
+As with structured light sensors, this is susceptible to interferrence from external light sources, or specular surfaces, and has limited range because of light fall-off. However, since the distance calculations are timing based, we can obtain framerates up to 30 fps in the Kinect v2 sensor~\cite{Lachat_2015}.
+
+
+
+\section{Robotic Operating System}
+
+In order to make the system easier to use and available to as many platforms as possible, it was decided to create it for the Robotic Operating System (ROS). ROS is a collection of libraries and a runtime environment making communication with different modules and programs on the robot possible. 
+
+\section{Classifiers}
+
+write a bit about what classifiers are, and how we use them to find the different keypoints in the image.
+
+\end{appendices}

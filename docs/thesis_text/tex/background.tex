@@ -1,8 +1,50 @@
 \chapter{Background}
 
-Human pose estimation is an active and fast moving area of research, but many focus on estimating pose in 2D images. 
+\section{Convolutional Neural Networks}
+
+
 
 \section{Pose Estimation}
+In this work we are heavily inspired by \cite{cao2017realtime} that uses two convolutional neural networks to find human pose. One of the networks finds the probability for the 2D location of a set of joints, we get $N$ confidence maps for the locations of each $N$ number of joints. The other creates $M$ \gls{paf} the probability maps for $M$ number of limbs\footnote{In this work we'll stick to the convention of using the term limb to describe any connection between any pair of body landmarks, which we call joints.}. We then use the results from this \gls{paf} to find out which joints from the first result should be connected.
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.25\textwidth}
+    \includegraphics[width=0.9\linewidth]{img/openpose_pipeline_a}
+    \label{fig:oppA}
+    \caption{Input Image}
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{0.25\textwidth}
+    \centering
+    \begin{subfigure}[b]{1\textwidth}
+      \includegraphics[width=0.9\linewidth]{img/openpose_pipeline_b}
+      \label{fig:oppB}
+      \caption{Part Confidence Maps}
+    \end{subfigure}
+    
+    \begin{subfigure}[b]{1\textwidth}
+      \includegraphics[width=0.9\linewidth]{img/openpose_pipeline_c}
+      \label{fig:oppC}
+      \caption{Part Affinity Fields}
+    \end{subfigure}    
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{0.25\textwidth}
+    \includegraphics[width=0.9\linewidth]{img/openpose_pipeline_d}
+    \label{fig:oppD}
+    \caption{Bipartite Matching}
+  \end{subfigure}
+  
+  \begin{subfigure}[b]{0.25\textwidth}
+    \includegraphics[width=0.9\linewidth]{img/openpose_pipeline_e}
+    \label{fig:oppE}
+    \caption{Parsing Results}
+  \end{subfigure}
+  \caption{The pipeline described in \cite{cao2017realtime}. The input image \ref{fig:oppA} is fed into the two networks which produce joint detections in confidence maps \ref{fig:oppB} and \gls{paf}s \ref{fig:oppC}. They then preform bipartite matching in \ref{fig:oppD} to determine which detected joints should be connected by a limb. \ref{fig:oppE} shows the finished results.}
+\end{figure}
+
+Using the method described in \cite{cao2017realtime} we however don't get any information if some pairs of joints are missing, leading to an incomplete skeleton. 
+
 
 A lot of research\footnote{TODO: Cite Research} has been going into extracting human pose either from RGB images, or using depth images. Although many methods exists such as \emph{Histogram of Gradients (HoG)} classifiers,
 
@@ -15,32 +57,4 @@ A lot of research has been done in estimating human pose in two dimensions, as t
 
 \textbf{Motivation for 3D pose} To train any network using supervised learning, we need large amounts of training data. One of the goals for the MECS project is to do \emph{Human Activity Recognition (HAR)}, so one can track the user from day to day and look for patterns that could lead to worsening living conditions. We also want to be able to recognize the activity from any viewpoint, and this is where a 2D approach will lack robustness. This is because any HAR model trained solely on 2D data, will only be able to recognize the activity from the views it has seen the activity being preformed. A 3D approach will provide us with robustness in respect to view-independentness.
 
-\section{Depth sensors}
 
-Since depth sensors are widely used in different robotics applications for tasks such as SLAM, odometry and object detection, we selected this as our main source of information for monitoring the user. There are mainly three different technologies to choose from: \emph{Structured light}, \emph{\gls{tof}} and \emph{Stereo vision}. 
-
-\subsection{Stereo vision} uses two cameras that are observing parts of the same scene. In commercial packages the cameras are usually calibrated, so we have measurements to put into the camera matrix as well as the rotation and translation between the two camera matrices.
-
-However, to get a 3D structure, we need to find common feature points between the two cameras. To do this, we can use various feature descriptors such as ORB, SWIFT and SURF. When good matches has been found between the images, we measure the disparity between the points, and triangulate the distance. The depth measurements for the rest of the image are then calculated by matching pixels close to the found featurepoints.
-
-Since this is an optically based technology, it will work well in well-lit scenes that contain many unique featurepoints. If we operate in an homogenous environment with few, or similar textures it will be difficult to find featurepoints to map the environment. An example of this could be on the seabed or inside buildings with limited light conditions, for example during a blackout.
-
-\subsection{Structured light} uses a projected pattern of light points onto the scene which is registered by a calibrated camera. Usually, the projected light pattern and camera operate in the infrared part of the electromagnetic spectrum\footnote{The Microsoft Kinect V2 sensor uses a wavelength around \~827-850nm stated by a developer in \href{https://social.msdn.microsoft.com/Forums/en-US/e92e6f9b-4800-4b48-8ae7-5c8b1353d661/infrared-wavelength?forum=kinectv2sdk}{this forum}. {\color{red} TODO : fix source}}. This means that in locations where one can expect a lot of IR radiation, this technology will not work very well. Since the IR radiation from the sun usually is much stronger than the one emitted from the projector on the sensor, this technology will not work well outside in well-lit conditions. It will however work inside and in conditions where no external light source are provided.
-
-In addition, since the light is structured and the sensor is calibrated, we can skip the step where we find common featurepoints to triangulate the distance which we have to do in the stereo vision case.
-
-\subsection{\acrlong{tof}} cameras uses the known constant of \gls{sol} to calculate distances in the image, by measuring the time a light-pulse emitted from the camera uses to be reflected onto the camera sensor. For example, Microsofts Kinect v2 uses a specialized \gls{tof}-pixel array in conjunction with a timing generator and modulated laser diodes to obtain per-pixel depth images~\cite{hotchipsTalk}.
-
-As with structured light sensors, this is susceptible to interferrence from external light sources, or specular surfaces, and has limited range because of light fall-off. However, since the distance calculations are timing based, we can obtain framerates up to 30 fps in the Kinect v2 sensor~\cite{Lachat_2015}.
-
-
-
-
-
-\section{Robotic Operating System}
-
-In order to make the system easier to use and available to as many platforms as possible, it was decided to create it for the Robotic Operating System (ROS). ROS is a collection of libraries and a runtime environment making communication with different modules and programs on the robot possible. 
-
-\section{Classifiers}
-
-write a bit about what classifiers are, and how we use them to find the different keypoints in the image. 

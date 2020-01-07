@@ -4,7 +4,6 @@ Cumulative Notes
 
 Related work
 ------------
-
  - Hand crafted features: local shape context (pictoral?), HoG, segmentation
  - Pose from 2D images where joint locations are important will have
    problems with different size people, occlusion, and view-dependentness.

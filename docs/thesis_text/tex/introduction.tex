@@ -1,25 +1,31 @@
 \chapter{Introduction}
 
 \section{Multimodal Elderly Care System}
-As life expectancy increases in Norway, so does the population who needs geriatric care
-either at home, or in a specialized geriatric facility. Accodring to \cite{oslohelsa}, it
-is projected that mainly the elderly population in Oslo will increase in the coming years,
-and that this will lead to increased pressure on the healthcare services. \gls{cnn}s are
-widely used.
+\subsection{Motivation}
+As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to \cite{oslohelsa}, it is projected that mainly the elderly population in Oslo will increase in the coming years, and that this will lead to increased pressure on the healthcare services.
 
-As part of the effort to let people live independently at home for as long as possible, we propose a \gls{mecs}. One of the goals for the \gls{mecs} is to function as an autonomous safety alarm, a device that lets elderly living at home call for help in an emergency. However, if the emergency is an accident which renders the user incapacitated, or otherwise unconscious, the manual safety alarms will not be of much help. In contrast the \gls{mecs} can monitor a user, and warn healthcare personnel in case of an occuring, or predicted, emergency.
+As part of the effort to let people live independently at home for as long as possible, we propose a \gls{mecs}. One of the goals for the \gls{mecs} is to function as an autonomous safety alarm, a device that lets elderly living at home call the emergency services at the click of a button. However, if the emergency is an accident which renders the user incapacitated, or otherwise unconscious, an alarm that requires interaction will not be of much help. In contrast, the \gls{mecs} can monitor a user, and warn healthcare personnel in case of an occuring, or predicted, emergency. The \gls{mecs} will even be able to send contextual information to first-responders, which lets them better prepare for the situation.
 
-We also stribe to make the system non-invasive, as this will increase the convenience for the user, and takes the user out of the loop in terms of running the system. For example, a monitoring system in the form of a smartwatch, will be inconvenient and ineffective the user forgets to put it on.
+We also strive to make the system non-invasive, as this will increase the convenience for the user, in that the \gls{mecs} will not require any interaction from the user to function. Taking the user out of the operational loop has many other advantages as well. For example, a monitoring system in the form of a smartwatch, will be inconvenient and ineffective the user forgets to put it on.
 
-It is hypothesized that the information gathered by the \gls{mecs} can help doctors or physical therapists to prescribe or recommend health promoting measures/activities for the user. This could help prevent accidents or lifestyle diseases -- which again will help lessen the pressure on the communal healthcare services.
+Further, it is hypothesized that the information gathered by the \gls{mecs} can help doctors or physical therapists prescribe or recommend health-promoting activities for the user. This could help prevent accidents or lifestyle diseases -- which again will help relieve pressure on the communal healthcare services.
 
-The \gls{mecs} is envisioned as a small mobile unit as this can be introduced to any home without extensive alterations to the environment, thus lowering the cost of the system and reusability of the units. We propose a master/slave configuration between a stationary and a mobile unit, which should communicate through a secure wireless connection, for example a WLAN. We let the stationary unit take care of the power consuming processing, extending the operational time for the mobile unit between battery charges. The stationary unit could also act as a charging station. Therefore, we will assume the system has access to high-end GPU/processing facilities, that would be too cumbersome for a mobile unit, when we evaluate the preformance of this work.
+\subsection{Hardware}
+The \gls{mecs} is envisioned to be a small, mobile unit as this can be introduced to any home without extensive alterations to the environment, thus lowering the cost of the system and reusability of the units. As the \gls{mecs} would need a charging station anyway, we propose a master/slave configuration between a stationary and a mobile unit, which should communicate through a secure wireless connection, for example a WLAN. We let the stationary unit take care of the power consuming complex processing, extending the operational time for the mobile unit between battery charges. We will therefore assume the system has access to mid- to high-end personal GPU/processing hardware, when we evaluate the real world practicality/runtime of the algorithm.
 
 To provide as good a service for the user as possible, we believe that gathering many channels of information will be helpful. We wish to learn the users daily activity patterns or vital signs so when unhealthy or risk-filled patterns emerge, preventative actions can be implemented. \gls{har}, gate/mood recognition, or detection of vital signs all require us to know where the user is in the scene.
 
 This also places some requirements on our system. If the system solely relies on this work to find humans in the scene, we set our lower framerate limit to 8 fps to be able to preform human heart rate aquisition~\cite{Wu12Eulerian}\footnote{If the maximum human heart rate is 220 bpm, and we want to measure it accuratley using video sequences produced by the \gls{mecs}, our sampling frequency needs to be higher than $7.\overline{3}$ Hz in order to satisfy the Nyquist rate.}. Further, the \gls{mecs} needs to be able to recognize humans in unstructured environments, in a variety of poses and to diffrentiate between multiple people.
 
-In order to log the users activity patterns, and detect anomalies or deviations in this, we envision the \gls{mecs} doing \gls{har}. 
+In order to log the users activity patterns, and detect anomalies or deviations in this, we envision the \gls{mecs} doing \gls{har}.
+
+\subsection{Privacy}
+%% TODO: first draft -- rewrite!!!
+The information gathered by this system should only be available to the users designated doctors/physisians and to the user themselves, and should be treated at the same classification level as any persons medical journal. This means that the dataprocessing from the \gls{mecs} must happen on-site, or that any cloud processing happens under a user agreement that protects this data from those owning the servers. The same agreement should count for anyone making the hardware/software that is used in the \gls{mecs}.
+
+The \gls{mecs} is also capable of gathering additional data that is not relevant for the healthcare personell. For example, by using depth sensors we are able to create 3d maps of the users home or environment. this is helpful for the \gls{mecs}, however it is not relevant for the healthcare personel. (with the exception of first responders, which could get the information either through a descriptive message -- ``the patient is in the bathroom on the second floor, no elevator, steep stairs'' or via the actual internal map the \gls{mecs} has created for its own internal navigation.)
+
+
 
 \section{Human Pose Estimation}
 For The \gls{mecs} to function as intended, it is imperative that it can detect humans reliably. And for \gls{har} we need accurate pose estimation. 

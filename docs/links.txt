@@ -1,0 +1,2 @@
+Panoptic Studio: A Massively Multiview System for Social Interaction Capture -- https://arxiv.org/pdf/1612.03153.pdf
+
