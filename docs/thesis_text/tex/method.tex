@@ -4,6 +4,9 @@
 We implemented an algorithm for extraction of human pose in 3D.
 Applying methods used on 3-channel (RGB) images to depth images, we show that the same methods can be used to extract objects in 2d images, can be used to extract objects in depth images as well, when it comes to human pose.
 
+As in \cite{cao2017realtime} we will use two networks to create the \gls{paf}s and the confidence maps for the joints. However, instead of training on 3-channel RGB images, we will use a single channel depth image to discover the body landmarks/joints.
+However, since depth images are single channel, and thus have less information than the RGB images, we propose using a shallower network. This also means we have to do the first step of feature extraction which was already done in a
+However since the depth images are less detailed than normal RGB images some landmarks might be harder to detect, such as eyes or nose or placing the joint on outstreched limbs.
 
 
 \section{Training data preparation}
