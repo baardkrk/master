@@ -6,26 +6,25 @@
 
 \section{Pose Estimation}
 In this work we are heavily inspired by \cite{cao2017realtime} that uses two convolutional neural networks to find human pose. One of the networks finds the probability for the 2D location of a set of joints, we get $N$ confidence maps for the locations of each $N$ number of joints. The other creates $M$ \gls{paf} the probability maps for $M$ number of limbs\footnote{In this work we'll stick to the convention of using the term limb to describe any connection between any pair of body landmarks, which we call joints.}. We then use the results from this \gls{paf} to find out which joints from the first result should be connected.
-\begin{figure}[t!]
+\begin{figure}[h]
   \begin{subfigure}[t]{0.24\textwidth}
     \includegraphics[width=1\linewidth]{img/openpose_pipeline_a}
     \label{fig:oppA}
     \caption{Input Image}
   \end{subfigure}%
   ~
-  \begin{subfigure}[t]{0.24\textwidth}
-    \centering
-    \begin{subfigure}[b]{1\textwidth}
+  \begin{subfigure}[b]{0.24\textwidth}
+    \begin{subfigure}{1\textwidth}
       \includegraphics[width=1\linewidth]{img/openpose_pipeline_b}
       \label{fig:oppB}
       \caption{Part Confidence Maps}
     \end{subfigure}
-    \vspace{-.9em}
-    \begin{subfigure}[b]{1\textwidth}
+    
+    \begin{subfigure}{1\textwidth}
       \includegraphics[width=1\linewidth]{img/openpose_pipeline_c}
       \label{fig:oppC}
       \caption{Part Affinity Fields}
-    \end{subfigure}    
+    \end{subfigure}
   \end{subfigure}%
   ~
   \begin{subfigure}[t]{0.24\textwidth}
