@@ -38,7 +38,12 @@ In this work we are heavily inspired by \cite{cao2017realtime} that uses two con
     \label{fig:oppE}
     \caption{Parsing Results}
   \end{subfigure}
-  \caption{The pipeline described in \cite{cao2017realtime}. The input image \ref{fig:oppA} is fed into the two networks which produce joint detections in confidence maps \ref{fig:oppB} and \gls{paf}s \ref{fig:oppC}. They then preform bipartite matching in \ref{fig:oppD} to determine which detected joints should be connected by a limb. \ref{fig:oppE} shows the finished results.}
+  \caption{The pipeline described in \cite{cao2017realtime}. The input image
+    \ref{fig:oppA} is fed into the two networks which produce joint detections in
+    confidence maps \ref{fig:oppB} and \gls{paf}s \ref{fig:oppC}. They then preform
+    bipartite matching in \ref{fig:oppD} to determine which detected joints should be
+    connected by a limb. \ref{fig:oppE} shows the finished results.}
+  \label{fig:openpose_pipeline}
 \end{figure}
 
 Using the method described in \cite{cao2017realtime} we however don't get any information if some pairs of joints are missing, for example due to occlusion or failure to detect the body landmark, leading to an incomplete skeleton.
