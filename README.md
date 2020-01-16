@@ -9,7 +9,7 @@ Fremdriftsplan 2020
 -------------------
 
 **Delmål:**
- - [x] Laste ned datasett *(1 uke)*
+ - [ ] Laste ned datasett *(1 uke)*
  - [ ] Oversette datasett til trenbart format *(2 uker)*
    - Pare opp ground-truth landemerker med dybdebilder
    - Flytte origo av hvert koordinatsystem til kameraets senter
@@ -34,4 +34,10 @@ Fremdriftsplan 2020
  - [ ] Skrive algoritme for aktivitetsgjennkjenning av noen utvalgte aktiviteter
  - [ ] Teste på portabel HW
 
-*Totalt allokert tid: 16 uker*
+*Totalt allokert tid: 16.5 uker*
+
+### Frister:
+Første resultater estimeres til mars/april
+Bakgrunnskapittel til neste gang, sendes innen 15. februar
+Møte 18. februar, kl. 14:00 Agenda: Bakgrunn, trening av modell
+
