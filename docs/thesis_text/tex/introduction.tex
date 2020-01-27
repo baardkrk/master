@@ -1,5 +1,21 @@
 \chapter{Introduction}
 
+%% Why collecting human pose
+%% General introduction to this project
+%% Three indentation layers is unneccessary
+Finding human pose can have many applications inside the field of \gls{hri}, to understand the intent of a person, if they are aware of the robot, their position in relation to the robot, help understand their reaction to an interaction via body-language, or the action the person is doing at any one time.
+
+Human pose can also help professionals understand a patient better. If tracked over time, we can see changes in the persons gait, their posture or track their daily activities. All this can be used to asess if treatments are working or come up with changes in a persons activity schedule.
+
+
+What we \textit{say} can say a lot. However, some may argue that our body language, says even \textit{more}. Our pose is a. It can say something about our emotional state, physical state, or it could say something about our intention or activity in a moment in time. Sequences of poses can give us an even better idea about actions and activities. A still pose can have us guessing at what a person is doing, however if we have a sequence of poses, we can know for \textit{sure}. Given a sequence of poses, we can distinguish between a person just slav-squatting, or if they are putting some real effort into a frog-jump. We can also probably recognize if a person is going to fall over, or if they're just walking normally.
+
+
+
+
+\section{Human Pose Estimation}
+For The \gls{mecs} to function as intended, it is imperative that it can detect humans reliably. And for \gls{har} we need accurate pose estimation.
+
 \section{Multimodal Elderly Care System}
 \subsection{Motivation}
 As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to \cite{oslohelsa}, it is projected that mainly the elderly population in Oslo will increase in the coming years, and that this will lead to increased pressure on the healthcare services.
@@ -25,7 +41,3 @@ The information gathered by this system should only be available to the users de
 
 The \gls{mecs} is also capable of gathering additional data that is not relevant for the healthcare personell. For example, by using depth sensors we are able to create 3d maps of the users home or environment. this is helpful for the \gls{mecs}, however it is not relevant for the healthcare personel. (with the exception of first responders, which could get the information either through a descriptive message -- ``the patient is in the bathroom on the second floor, no elevator, steep stairs'' or via the actual internal map the \gls{mecs} has created for its own internal navigation.)
 
-
-
-\section{Human Pose Estimation}
-For The \gls{mecs} to function as intended, it is imperative that it can detect humans reliably. And for \gls{har} we need accurate pose estimation. 
