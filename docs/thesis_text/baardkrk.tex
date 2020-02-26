@@ -10,7 +10,7 @@
 
 \usepackage{subcaption}
 \captionsetup{font=small}
-\captionsetup[sub]{font=scriptsize,belowskip=-1pt,aboveskip=-8pt}
+\captionsetup[sub]{font=scriptsize,belowskip=2pt,aboveskip=3pt}
 
 \usepackage{mathtools}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
@@ -68,11 +68,6 @@
 \listoffigures{}
 \listoftables{}
 
-\printglossary[type=\acronymtype,title=Abbreviations]
-\printglossary[type=symbol,title=Symbols]
-
-
-
 %% \input{tex/decl_acronyms}
 %% \printacronyms[include-classes=abbrev, name=Abbreviations]{}
 %% \printacronyms[include-classes=nomencl, name=Nomenclature]{}
@@ -109,6 +104,8 @@
 \backmatter
 \include{tex/appendices}
 \printglossary[type=definition,title=Glossary]
+\printglossary[type=\acronymtype,title=Abbreviations]
+\printglossary[type=symbol,title=Symbols]
 \addcontentsline{toc}{chapter}{Glossary}   %% or use toc option for package. (but all glossaries will apperar)
 \printbibliography[heading=bibintoc]
 
