@@ -36,6 +36,8 @@ In this part of the network we borrow some of the architecture described in \cit
 \subsection{Articulation network}\label{subsec:articulation}
 Here, we get some coordinates for different joints, along with the confidences for those coordinates. The network will try to find out what it thinks the joints with low confidences, or no detections, should be. It is hypotesized that this network will learn things like symmetry (left and right limbs should have the same length), proportionality (limbs should be proportional to each other), possible articulations and natural poses.
 
+For joints which we haven't detected or have very low confidence for, the network will input some standard coordinates for that joint, scaled by the limbs we already have the strongest confidences for. The standard scaling/coordinates is hard-coded, based on the human anatomy surveys in \cite{bodySegmentParams}. The exception is eyes and ears, which is set to a best guess. In addition, the depth coordinate for each joint is set to 0. Numbering and a visualization of the skeleton can be seen in Figure \ref{fig:skeleton_markers}.
+
 The architecture is visualized as a simple fully connected neural network. Though, it might be enough to connect the neurons responsible for connected limbs. A neuron in the second layer connected to the foot, knee and one of the hip-joints does not need to be connected to the inputs from a hand or shoulder. Subsequent hidden layers can however be fully connected.
 
 If we had some input describing the direction of the camera, and the \gls{visual_hull} containing the undetected points, this network may preform better. However, that would require a fundamental change to the network, which is not done in this work.
@@ -46,7 +48,8 @@ This network will also be trained separatley, as all it needs is poses and rando
 \section{Training data preparation}
 
 Skeleton models
-\begin{figure}
+\begin{figure}[h]
+
   \begin{floatrow}
     \ffigbox{
       \begin{tikzpicture}[
@@ -54,7 +57,7 @@ Skeleton models
         ]
         \tiny
         %% \draw[help lines, step=5mm, gray!20] (-4,-4) grid (3,4);
-        
+        %% Standard coordinates => (orig.coords) - (0, .2)
         \node[label={[label distance=-.2mm]200:{3}}] (nose) at (0,3.25) {};
         \node[label={[label distance=-.2mm]140:{2}}] (neck) at (0,2.54) {};
         \node[label={[label distance=-.2mm]0:{1}}] (back) at (0,1.42) {};
@@ -104,43 +107,43 @@ Skeleton models
       \end{tikzpicture}
     }
     {
-      \caption[Numbering for keypoint markers]{Numbering for keypoint markers.}
+      \caption[Numbering for keypoint markers]{Numbering for detected landmarks/keypoint markers.}
       \label{fig:skeleton_markers}
     }
     %% \end{figure}
     %% \begin{table}
     \capbtabbox{
       \footnotesize
-      \begin{tabular}[H]{|r l|}
+      \begin{tabular}[H]{|r l r|}
         \hline
-        ID & Name \\ \hline
-        0  & Middle hip \\
-        1  & Middle back \\
-        2  & Neck \\
-        3  & Nose \\
-        4  & Right shoulder \\
-        5  & Right elbow \\
-        6  & Right wrist \\
-        7  & Left shoulder\\
-        8  & Left elbow \\
-        9  & Left wrist \\
-        10 & Right hip \\
-        11 & Right knee \\
-        12 & Right ankle \\
-        13 & Left hip \\
-        14 & Left knee \\
-        15 & Left ankle \\
-        16 & Right eye\\
-        17 & Right ear\\
-        18 & Left eye \\
-        19 & Left ear \\
+        ID & Description & Std.Coord. \\ \hline
+        0  & Middle hip & (0.00, 0.00) \\
+        1  & Middle back & (0.00, 1.22) \\
+        2  & Neck & (0.00, 2.34) \\
+        3  & Nose & (0.00, 3.05) \\
+        4  & Right shoulder & (-1.05, 2.34) \\
+        5  & Right elbow & (-1.36, 0.86) \\
+        6  & Right wrist & (-1.36, -0.32) \\
+        7  & Left shoulder & (1.05, 2.34) \\
+        8  & Left elbow & (1.36, 0.86) \\
+        9  & Left wrist & (1.36, -0.32) \\
+        10 & Right hip & (-0.78, 0.00) \\
+        11 & Right knee & (-1.02, -1.98) \\
+        12 & Right ankle & (-1.02, -3.98) \\
+        13 & Left hip & (0.78, 0.00) \\
+        14 & Left knee & (1.02, -1.98) \\
+        15 & Left ankle & (1.02, -3.98) \\
+        16 & Right eye & (-0.30, 3.30) \\
+        17 & Right ear & (-0.50, 3.15) \\
+        18 & Left eye & (0.30, 3.30) \\
+        19 & Left ear & (0.50, 3.15) \\
         \hline
       \end{tabular}
     }{
-      \caption[IDs for OpenPose keypoint markers]{IDs for keypoint markers.}
+      \caption[Names/coordinates for detected landmarks]{Numberings, names/descriptions and standard coordinates for recognized landmarks}
       \label{tab:openpose_body_ids}
     }
-  \end{floatrow}
+  \end{floatrow}          
 \end{figure}
 
 %% \section{2D detection transfer}

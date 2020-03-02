@@ -23,32 +23,24 @@
 
 
 
-Finding human pose can have many applications inside the field of \gls{hri}, to understand the intent of a person, if they are aware of the robot, their position in relation to the robot, help understand their reaction to an interaction via body-language, or the action the person is doing at any one time.
+Finding human pose can have many applications inside the field of \gls{hri}, to understand the intent of a person, if they are aware of the robot, their position in relation to the robot, help understand their reaction to an interaction via body-language, or the action the person is doing at any one time. Finding human pose can also be used to create cheap motion capture technology for the ever popular \gls{vr} applications, which ranges from games to viritual training or simulations.
 
-Human pose can also help professionals understand a patient better. If tracked over time, we can see changes in the persons gait, their posture or track their daily activities. All this can be used to asess if treatments are working or come up with changes in a persons activity schedule.
+Human pose can also help professionals understand a patient better. If tracked over time, one can observe changes in the persons gait, their posture, or track their daily activities. All this can be used to asess if treatments or perscriptions are working, or if a persons activity schedule needs to be adjusted.
 
+The method described in this work seeks to solve the human pose estimation problem for the \gls{mecs} project. This means finding accurate human pose in 3D, based only on a single depth image from \emph{one} viewpoint as input.
 
-What we \textit{say} can say a lot. However, some may argue that our body language, says even \textit{more}. Our pose is a. It can say something about our emotional state, physical state, or it could say something about our intention or activity in a moment in time. Sequences of poses can give us an even better idea about actions and activities. A still pose can have us guessing at what a person is doing, however if we have a sequence of poses, we can know for \textit{sure}. Given a sequence of poses, we can distinguish between a person just slav-squatting, or if they are putting some real effort into a frog-jump. We can also probably recognize if a person is going to fall over, or if they're just walking normally.
-
-
-
-
-\section{Human Pose Estimation}
-For The \gls{mecs} to function as intended, it is imperative that it can detect humans reliably. And for \gls{har} we need accurate pose estimation.
-
+An algorithm using sequential refinement-steps with a combination of bottom-up evidence gathering, and a top-down neural network for articulation estimation is explored. The work also explores how shallow the network can be, as well as other optimization techniques for running on mid- to low-end hardware.
+ 
 \section{Multimodal Elderly Care System}
-\subsection{Motivation}
 As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to \cite{oslohelsa}, it is projected that especially the elderly population in Oslo will increase in the coming years, and that this will lead to increased pressure on the healthcare services. This means that it will be even more important to encourage health-promoting, and take preventative measures.
 
-Which steps or actions to take, can be very individual. We therefore need feedback 
+As part of the effort to let people live independently at home for as long as possible, the \gls{mecs} was proposed. One of the goals for the \gls{mecs} is to function as an autonomous safety alarm, a device that lets elderly living at home call the emergency services at the click of a button. However, if the emergency is an accident which renders the user incapacitated, or otherwise unconscious, an alarm that requires interaction will not be of much help. In contrast, the \gls{mecs} can monitor a user, and warn healthcare personnel in case of an occuring, or predicted, emergency. The \gls{mecs} will even be able to send contextual information to first-responders, which lets them better prepare for the situation.
 
-As part of the effort to let people live independently at home for as long as possible, we propose a \gls{mecs}. One of the goals for the \gls{mecs} is to function as an autonomous safety alarm, a device that lets elderly living at home call the emergency services at the click of a button. However, if the emergency is an accident which renders the user incapacitated, or otherwise unconscious, an alarm that requires interaction will not be of much help. In contrast, the \gls{mecs} can monitor a user, and warn healthcare personnel in case of an occuring, or predicted, emergency. The \gls{mecs} will even be able to send contextual information to first-responders, which lets them better prepare for the situation.
-
-We also strive to make the system non-invasive, as this will increase the convenience for the user, in that the \gls{mecs} will not require any interaction from the user to function. Taking the user out of the operational loop has many other advantages as well. For example, a monitoring system in the form of a smartwatch, will be inconvenient and ineffective the user forgets to put it on.
+The system is specified to be non-invasive, as this will increase the convenience for the user, in that the \gls{mecs} will not require any interaction from the user to function. Taking the user out of the operational loop has other advantages as well. For example, a monitoring system in the form of a smartwatch, will be inconvenient and ineffective the user forgets to put it on, whereas a passive system will not need the user to preform any action to be effective.
 
 Further, it is hypothesized that the information gathered by the \gls{mecs} can help doctors or physical therapists prescribe or recommend health-promoting activities for the user. This could help prevent accidents or lifestyle diseases -- which again will help relieve pressure on the communal healthcare services.
 
-\subsection{Hardware}
+\section{Hardware}
 The \gls{mecs} is envisioned to be a small, mobile unit as this can be introduced to any home without extensive alterations to the environment, thus lowering the cost of the system and reusability of the units. As the \gls{mecs} would need a charging station anyway, we propose a master/slave configuration between a stationary and a mobile unit, which should communicate through a secure wireless connection, for example a WLAN. We let the stationary unit take care of the power consuming complex processing, extending the operational time for the mobile unit between battery charges. We will therefore assume the system has access to mid- to high-end personal GPU/processing hardware, when we evaluate the real world practicality/runtime of the algorithm.
 
 To provide as good a service for the user as possible, we believe that gathering many channels of information will be helpful. We wish to learn the users daily activity patterns or vital signs so when unhealthy or risk-filled patterns emerge, preventative actions can be implemented. \gls{har}, gate/mood recognition, or detection of vital signs all require us to know where the user is in the scene.
@@ -57,7 +49,7 @@ This also places some requirements on our system. If the system solely relies on
 
 In order to log the users activity patterns, and detect anomalies or deviations in this, we envision the \gls{mecs} doing \gls{har}.
 
-\subsection{Privacy}
+\section{Privacy}
 %% TODO: first draft -- rewrite!!!
 The information gathered by this system should only be available to the users designated doctors/physisians and to the user themselves, and should be treated at the same classification level as any persons medical journal. This means that the dataprocessing from the \gls{mecs} must happen on-site, or that any cloud processing happens under a user agreement that protects this data from those owning the servers. The same agreement should count for anyone making the hardware/software that is used in the \gls{mecs}.
 
