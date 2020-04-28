@@ -33,7 +33,7 @@
 \usepackage{lipsum}
 
 \title{Estimating Human pose from depth images using Convolutional Neural Networks}        %% ... or whatever
-\subtitle{When all you got is a powerful GPU, everything looks like a CNN problem}         %% ... if any
+\subtitle{Both Eyes Open}         %% ... if any
 \author{Bård-Kristian Krohg}                      %% ... or whoever 
 
 \addbibresource{bib/sources.bib}                  %% ... or whatever
@@ -54,8 +54,8 @@
 \duoforside[dept={Institute for informatics},
   program={Informatics: Robotics and Intelligent Systems},
   long,
-  printer={X-press printing house}
-  %% image={img/vitruvian.png}
+  printer={X-press printing house},
+  image={img/daruma.png}
 ]{}
 %% 悟 - enlightenment, percieve
 %% 徴 - indication, sign, symptom
@@ -103,6 +103,7 @@
 %% \include{tex/preliminary_notes_and_papers}
 
 \backmatter
+\renewcommand{\thesection}{\Alph{section}}
 \include{tex/appendices}
 \printglossary[type=definition,title=Glossary]
 \printglossary[type=\acronymtype,title=Abbreviations]
