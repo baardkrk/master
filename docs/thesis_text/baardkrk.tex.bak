@@ -1,0 +1,118 @@
+\documentclass[twoside,a4paper,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
+
+\usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
+\usepackage[T1]{fontenc,url}
+\urlstyle{sf}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,hyperref,xcolor,longtable}
+\usepackage[backend=biber,style=numeric-comp]{biblatex}
+\usepackage[toc,page,title]{appendix}
+\usepackage[nonumberlist,acronym,nomain]{glossaries}
+%\usepackage{tabularx}
+
+\usepackage{subcaption}
+\captionsetup{font=small}
+\captionsetup[sub]{font=scriptsize,belowskip=2pt,aboveskip=3pt}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+\usepackage{tikz, floatrow, pgfplots, enumitem, mathtools, amsmath, bm}
+\usetikzlibrary{positioning, shapes}
+
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
+
+\hypersetup{
+  colorlinks,
+  linkcolor={red!50!black},
+  citecolor={blue!50!black},
+  urlcolor={blue!80!black}
+}
+
+\usepackage[inner=3.5cm, outer=2.5cm, a4paper]{geometry} %% if not enough materials, change outer to 4.5
+%\usepackage{showframe}
+\usepackage{lipsum}
+
+\title{Estimating Human pose from depth images using Convolutional Neural Networks}        %% ... or whatever
+\subtitle{Both Eyes Open}         %% ... if any
+\author{Bård-Kristian Krohg}                      %% ... or whoever 
+
+\addbibresource{bib/sources.bib}                  %% ... or whatever
+%% \addbibresource{bib/datasets.bib}
+%% \addbibresource{bib/articles.bib}
+%% \addbibresource{bib/papers.bib}
+%% \addbibresource{bib/software.bib}
+%%\addbibresource{sources.bib}
+%%\bibstyle{plain}
+
+\input{style_command_conf}  % special command definitions
+
+\input{tex/glossaries}
+\glsdisablehyper       % disable hyperlinks to glossaries
+\makeglossaries
+
+\begin{document}
+\duoforside[dept={Institute for informatics},
+  program={Informatics: Robotics and Intelligent Systems},
+  long,
+  printer={X-press printing house},
+  image={img/daruma.png}
+]{}
+%% 悟 - enlightenment, percieve
+%% 徴 - indication, sign, symptom
+\frontmatter
+\maketitle{}
+
+\input{tex/abstract}                  %% ... or Sammendrag or Samandrag
+\input{tex/preface}                   %% ... or Forord
+
+\tableofcontents{}
+\listoffigures{}
+\listoftables{}
+
+%% \input{tex/decl_acronyms}
+%% \printacronyms[include-classes=abbrev, name=Abbreviations]{}
+%% \printacronyms[include-classes=nomencl, name=Nomenclature]{}
+
+
+\mainmatter
+
+%%\part{Introduction}                   %% ... or Innledning or Innleiing
+\include{tex/introduction}
+\include{tex/background}
+
+%% {\color{red}\textbf{TODO REMOVE:\newline Just some stuff with \gls{sigma} and \gls{Mw}. and \gls{rgb} and \gls{rgbd} jsut to test and also Thomas Simon~et~al.~\cite{simon2017hand} showed that we won't actually ues this reference.}}
+
+%% \chapter{Earlier work}
+%% \lipsum
+
+%% \chapter{Planning the project}        %% ... or ??
+\include{tex/method}
+%%\part{Implementation}
+%% \include{tex/Project}
+%% \include{tex/Experiments}
+
+\include{tex/experiments}
+
+%%\part{Conclusion}
+%% \include{tex/Results}
+%% \include{tex/Discussion}
+%% \include{tex/Conclusion}
+\include{tex/future_work}
+
+\include{tex/conclusions}
+%% \include{tex/preliminary_notes_and_papers}
+
+\backmatter
+\renewcommand{\thesection}{\Alph{section}}
+\include{tex/appendices}
+\printglossary[type=definition,title=Glossary]
+\printglossary[type=\acronymtype,title=Abbreviations]
+\printglossary[type=symbol,title=Symbols]
+\addcontentsline{toc}{chapter}{Glossary}   %% or use toc option for package. (but all glossaries will apperar)
+\printbibliography[heading=bibintoc]
+
+\clearpage
+\newpage
+%% \chapter*{Notes}
+
+\end{document}

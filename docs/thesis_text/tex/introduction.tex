@@ -20,10 +20,11 @@
 
 %% Most important contributions of the work:
 
-Accurate motion tracking is expensive. The industry standard is to use an elaborate motion-caputring studio. Here, multiple expensive cameras capture reflective markers on the objects to be observed. The bigger the area in which the actors can freely move, the more cameras is needed. In addition, unique patterns needs to be created for each object being tracked.
+Motion capture is expensive. However, being able to estimate human pose could have many application areas: analyzing movements, activity recognition, importing natural motions to \gls{vr}, and improving \gls{hri}. The industry standard is to use an elaborate motion-capturing studio that requires multiple expensive cameras, a large area, and specialized software. Therefore the application areas for motion capture are currently mostly limited to staged research, movie-, and video game-making. 
 
-Any mammal that needs to be acutley aware of a target has two eyes directed forward. This lets the animal percieve the world in 3D, and pinpoints its own location in relation to the targets. We call this type of vision \emph{stereo vision}.
+The Motion capture problem sets out to find a representation of an actor, that can be used in animation. This representation is often a \emph{rigged} skeleton with bones that define the movement of the animated character \cite{skeletonAnimation}.
 
+This work explores both human pose detection in the depth domain, making the methods used here applicable to a wide range of sensors, and it explores a novel articulation network that refines the detection of the human pose.
 
 %% Finding human pose can have many applications inside the field of \gls{hri}, to understand the intent of a person, if they are aware of the robot, their position in relation to the robot, help understand their reaction to an interaction via body-language, or the action the person is doing at any one time. Finding human pose can also be used to create cheap motion capture technology for the ever popular \gls{vr} applications, which ranges from games to viritual training or simulations.
 

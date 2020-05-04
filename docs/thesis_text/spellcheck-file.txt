@@ -1,0 +1,675 @@
+     
+
+         
+
+sf
+
+
+
+
+
+
+
+font=small
+[sub]font=scriptsize,belowskip=2pt,aboveskip=3pt
+
+
+
+
+
+positioning, shapes
+
+capbtabboxtable[][]
+
+
+  colorlinks,
+  linkcolor=red!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!80!black
+
+
+ 
+
+
+
+Estimating Human pose from depth images using Convolutional Neural Networks        
+Both Eyes Open         
+Bård-Kristian Krohg                      
+
+bib/sources.bib                  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+hriHRIHuman Robot Interaction
+mecsMECSMultimodal Elderly Care System
+tofToFTime-of-Flight
+harHARHuman Activity Recognition
+hpeHPEHuman Pose Estimation
+rosROSRobotic Operating System
+pafPAFPart Affinity Field
+roiRoIRegion of Interest
+vrVRViritual Reality
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+definitiondefdfnGlossaries
+
+rgb
+        type = definition,
+        name = RGB,
+        description = Three channel image containing red, green and blue color information.,
+        first = RGB
+
+
+rgbd
+        type = definition,
+        name = RGB-D,
+        description = Composite of a three channel RGB image, and an additional depth-channel containing the depth information in each pixel. Often, the depth channel is captured with a separate camera, and needs an additional calibration matrix to map the (u,v) pixel positions between the RGB channels and the depth channel.,
+        first = RGB-D
+
+
+cnn
+        type = definition,
+        name = CNN,
+        description = A type of neural network that uses convolved filters to create spacial recognition more robust,
+        first = CNN
+
+
+visual_hull
+        type = definition,
+        name = visual hull,
+        description = The 3D geometric volume occluded by a foreground object. The visual hull of an object is the 3D geometric volume produced behind the object when 
+
+
+
+
+symbolsymsblList of Symbols
+
+
+
+
+
+
+
+
+sol
+        type = symbol,
+        name = ,
+        sort = c,
+        description = Speed of Light
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[dept=Institute for informatics,
+  program=Informatics: Robotics and Intelligent Systems,
+  long,
+  printer=X-press printing house,
+  image=img/daruma.png
+]
+
+
+
+
+
+*Abstract
+
+
+This work is part of a larger project where we explore bringing robotics into geriatric
+care. The goal of this project is to create a robotic system that can assist in optimizing
+the use of physical personell, so they are used where they are needed.
+
+This work will focus on capturing information about the user, anonymization of the data,
+what data is neccessary or ethical to capture, limitations for on-location data processing
+and what data can be sent for further processing in the cloud, or for human analysis.
+
+We will also implement an ethical data-collection suite for the open-source Robotic
+Operating System, which can be implemented on a wide variety of robots.
+
+Convolutional Neural Networks has been used for solving object recognition in 2D images
+with great success. This work aims to use the same techniques to extract 3D human pose
+from depth images in real time. We will use two multi-staged CNNs, one to encode the
+location of each joint, and another to encode the association between the joints to do this.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  
+*Preface
+First, I would like to thank my supervisors Jim Tørresen and Ryo Kurazume for their support, guidance and patience during the development of this project. Second, my HR manager Marit Flendstad Kruse, for her support in letting me combine work with the writing of this thesis. Further I would like to thank everyone at the Kurazume-lab for their welcome and help during my stay at Kyushu University, and my friends and family for proofreading and encouragement.
+
+
+                   
+
+
+
+
+
+
+
+
+
+
+
+
+
+Introduction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Accurate motion tracking is expensive. The industry standard is to use an elaborate motion-caputring studio. Here, multiple expensive cameras capture reflective markers on the objects to be observed. The bigger the area in which the actors can freely move, the more cameras is needed. In addition, unique patterns needs to be created for each object being tracked.
+
+Any mammal that needs to be acutley aware of a target has two eyes directed forward. This lets the animal percieve the world in 3D, and pinpoints its own location in relation to the targets. We call this type of vision stereo vision.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Background
+
+Convolutional Neural Networks
+
+cnns are widely used in image classification tasks, because they look at a collection of spacially connected pixels, and is therefore robust to objects being framed differently. 
+
+Pose Estimation
+In this work we are heavily inspired by  that uses two convolutional neural networks to find human pose. One of the networks finds the probability for the 2D location of a set of joints, we get  confidence maps for the locations of each  number of joints. The other creates  paf the probability maps for  number of limbs . We then use the results from this paf to find out which joints from the first result should be connected.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Using the method described in  we however don't get any information if some pairs of joints are missing, for example due to occlusion or failure to detect the body landmark, leading to an incomplete skeleton.
+
+
+A lot of research  has been going into extracting human pose either from RGB images, or using depth images. Although many methods exists such as Histogram of Gradients (HoG) classifiers,
+
+A lot of research has been done in estimating human pose in two dimensions, as this is where we have quite large datasets, such as the MPII, or the Human 3.6M datasets .
+
+
+
+
+
+
+
+
+
+
+Human 3D pose from depth images
+
+
+
+To train any network using supervised learning, we need large amounts of training data. One of the goals for the MECS project is to do Human Activity Recognition (HAR), so one can track the user from day to day and look for patterns that could lead to worsening living conditions. We also want to be able to recognize the activity from any viewpoint, and this is where a 2D approach will lack robustness. This is because any HAR model trained solely on 2D data, will only be able to recognize the activity from the views it has seen the activity being preformed. A 3D approach will provide us with robustness in respect to view-independentness.
+
+We implemented an algorithm for extraction of human pose in 3D.
+Applying methods used on 3-channel (RGB) images to depth images, we show that the same methods can be used to extract objects in 2d images, can be used to extract objects in depth images as well, when it comes to human pose.
+
+As in  we will use two networks to create the pafs and the confidence maps for the joints. However, instead of training on 3-channel RGB images, we will use a single channel depth image to discover the body landmarks/joints.
+However, since depth images are single channel, and thus have less information than the RGB images, we propose using a shallower network. This also means we have to do the first step of feature extraction which was already done in a
+However since the depth images are less detailed than normal RGB images some landmarks might be harder to detect, such as eyes or nose or placing the joint on outstreched limbs.
+
+
+This was considered when preparing the training data.
+
+Architecture
+
+When we are creating a neural network, it is often helpful to have in mind what we want to detect in each layer. It is therefore segregated into a couple of different steps to make it easier to follow along.
+
+The architecture of this project is recurrent in that it repeats itself for a number of iterations. As with the  architecture, we have to have a first step which produces the first ouptuts we can use in later steps. However, this step is not illustrated in Fig., since the first step will be identical to the next steps except it won't have the additional inputs produced by the outputs of the previous step.
+
+
+
+
+
+
+
+
+Depth feature extraction
+For each pixel in the current layer of the , we collect information from a filter-sized portion of the previous layer. This means that deeper layers look at a larger and larger portion of the input layer. This is useful for detecting connections between large-scale structures. This also means that after a certain depth, there may not be any more useful information.
+
+In our experiments we'll try different depths for feature extraction.
+
+Some of these features might be desirable as inputs for later layers in object classification.
+
+This network is built from the ground up. Therefore we want some layers to for example detect edges, and one for detecting slanting gradients, or connected surfaces. For limbs, we might want to find surfaces that are shaped like tubes or oblong spheroids.
+
+3D object detection
+In this part of the network we borrow some of the architecture described in . The purpose is to find joints and limbs and put them into pafs or joint confidence maps. 
+
+Articulation network
+Input: Coordinates and confidences for each joint (if not detected, confidence is 0) and the mean paf vector for each limb.
+Here, we get some coordinates for different joints, along with the confidences for those coordinates. The network will try to find out what it thinks the joints with low confidences, or no detections, should be. It is hypotesized that this network will learn things like symmetry (left and right limbs should have the same length), proportionality (limbs should be proportional to each other), possible articulations and natural poses.
+
+For joints which we haven't detected or have very low confidence for, the network will input some standard coordinates for that joint, scaled by the limbs we already have the strongest confidences for. The standard scaling/coordinates is hard-coded, based on the human anatomy surveys in . The exception is eyes and ears, which is set to a best guess. In addition, the depth coordinate for each joint is set to 0. Numbering and a visualization of the skeleton can be seen in Figure .
+
+The architecture is visualized as a simple fully connected neural network. Though, it might be enough to connect the neurons responsible for connected limbs. A neuron in the second layer connected to the foot, knee and one of the hip-joints does not need to be connected to the inputs from a hand or shoulder. Subsequent hidden layers can however be fully connected.
+
+If we had some input describing the direction of the camera, and the visual_hull containing the undetected points, this network may preform better. However, that would require a fundamental change to the network, which is not done in this work.
+
+This network will also be trained separatley, as all it needs is poses and random confidences as inputs.
+
+
+Training data preparation
+
+Skeleton models
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+      
+      [H]r l r
+        
+        ID & Description & Std.Coord. 
+ 
+        0  & Middle hip & (0.00, 0.00) 
+
+        1  & Middle back & (0.00, 1.22) 
+
+        2  & Neck & (0.00, 2.34) 
+
+        3  & Nose & (0.00, 3.05) 
+
+        4  & Right shoulder & (-1.05, 2.34) 
+
+        5  & Right elbow & (-1.36, 0.86) 
+
+        6  & Right wrist & (-1.36, -0.32) 
+
+        7  & Left shoulder & (1.05, 2.34) 
+
+        8  & Left elbow & (1.36, 0.86) 
+
+        9  & Left wrist & (1.36, -0.32) 
+
+        10 & Right hip & (-0.78, 0.00) 
+
+        11 & Right knee & (-1.02, -1.98) 
+
+        12 & Right ankle & (-1.02, -3.98) 
+
+        13 & Left hip & (0.78, 0.00) 
+
+        14 & Left knee & (1.02, -1.98) 
+
+        15 & Left ankle & (1.02, -3.98) 
+
+        16 & Right eye & (-0.30, 3.30) 
+
+        17 & Right ear & (-0.50, 3.15) 
+
+        18 & Left eye & (0.30, 3.30) 
+
+        19 & Left ear & (0.50, 3.15) 
+
+        
+      
+    
+      [Names/coordinates for detected landmarks]Numberings, names/descriptions and standard coordinates for recognized landmarks
+      
+    
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Experiments
+
+
+
+
+
+
+Future Work
+
+Finding more accurate pose from a temporal algorithm which takes input from a series of depth images, from a single viewpoint.
+
+Finding more accurate pose from multiple viewpoints.
+
+Heart/respiration rate monitoring using frequency search in changing rgb and depth-pixel values for automatically selected RoIs.
+
+Mood detection on facial expressions.
+
+Human activity recognition using 3D pose provided by the method proposed in this paper.
+
+Train the network over a larger dataset in unstructured environments and with multiple people present.
+
+Train an accompanying network that takes a sequence of estimated limb positions and their probability as input, and trying to refine the estimation based on earlier detection. This could also be done through a Kalman filter.
+
+This should all accumulate in an LSTM network for predicting diseases. -- requires dataset aquired over possibly years, dispersed over many users, and their daily activities, as possible. Other factors that should be taken into consideration is environmental factors such as humidity, temprature and weather. (As they may be risk factors for certain conditions such as heatstroke or depression.) With such a diverse dataset we could possibly do PCA to determine certain risk factors for different diseases.
+
+Train and test network on the Human 3.6M dataset using TOF data
+
+
+Conclusions
+
+
+
+
+
+
+
+  
+Depth sensors
+
+Since depth sensors are widely used in different robotics applications for tasks such as SLAM, odometry and object detection, we selected this as our main source of information for monitoring the user. There are mainly three different technologies to choose from: Structured light, tof and Stereo vision. 
+
+Stereo vision uses two cameras that are observing parts of the same scene. In commercial packages the cameras are usually calibrated, so we have measurements to put into the camera matrix as well as the rotation and translation between the two camera matrices.
+
+However, to get a 3D structure, we need to find common feature points between the two cameras. To do this, we can use various feature descriptors such as ORB, SWIFT and SURF. When good matches has been found between the images, we measure the disparity between the points, and triangulate the distance. The depth measurements for the rest of the image are then calculated by matching pixels close to the found featurepoints.
+
+Since this is an optically based technology, it will work well in well-lit scenes that contain many unique featurepoints. If we operate in an homogenous environment with few, or similar textures it will be difficult to find featurepoints to map the environment. An example of this could be on the seabed or inside buildings with limited light conditions, for example during a blackout.
+
+Structured light uses a projected pattern of light points onto the scene which is registered by a calibrated camera. Usually, the projected light pattern and camera operate in the infrared part of the electromagnetic spectrum . This means that in locations where one can expect a lot of IR radiation, this technology will not work very well. Since the IR radiation from the sun usually is much stronger than the one emitted from the projector on the sensor, this technology will not work well outside in well-lit conditions. It will however work inside and in conditions where no external light source are provided.
+
+In addition, since the light is structured and the sensor is calibrated, we can skip the step where we find common featurepoints to triangulate the distance which we have to do in the stereo vision case.
+
+tof cameras uses the known constant of sol to calculate distances in the image, by measuring the time a light-pulse emitted from the camera uses to be reflected onto the camera sensor. For example, Microsofts Kinect v2 uses a specialized tof-pixel array in conjunction with a timing generator and modulated laser diodes to obtain per-pixel depth images .
+
+As with structured light sensors, this is susceptible to interferrence from external light sources, or specular surfaces, and has limited range because of light fall-off. However, since the distance calculations are timing based, we can obtain framerates up to 30 fps in the Kinect v2 sensor .
+
+
+
+Robotic Operating System
+
+In order to make the system easier to use and available to as many platforms as possible, it was decided to create it for the Robotic Operating System (ROS). ROS is a collection of libraries and a runtime environment making communication with different modules and programs on the robot possible. 
+
+Classifiers
+
+write a bit about what classifiers are, and how we use them to find the different keypoints in the image.
+
+
+
+[type=definition,title=Glossary]
+[type=,title=Abbreviations]
+[type=symbol,title=Symbols]
+tocchapterGlossary   
+[heading=bibintoc]
+
+
+
+
+
+
