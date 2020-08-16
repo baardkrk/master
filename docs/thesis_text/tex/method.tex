@@ -150,6 +150,10 @@ Skeleton models
   \end{floatrow}          
 \end{figure}
 
+\section{3D encoding}
+A 2D depth map is used as an encoding for the 3D scene behind it. This is nice, because there is no need for a bounding box that creates constraints on how far away any detections can happen. However, because of the 2D space, occurences of distance information is limited to 1 per pixel in the 2D space. So, if two objects we want to represent are in line with each other (one occludes the other), there is no way to retain information about/distances to the two objects in the 2D space.
+This leads to the question of how two inline (along the z-axis) joints can be represented for a 3D part affinity field. Even though for this use case, the only scenario is that two of the same limb is co-linear (i.e. two persons are standing right behind each  other). This means that when parts are connected into skeletons, there should be a chance for a limb to be reused between two persons...
+
 %% \section{2D detection transfer}
 
 %% (First ideas.)

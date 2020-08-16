@@ -21,3 +21,15 @@
 *.glg
 *.sym
 
+## Master files
+papers/
+EVM_Matlab/
+Baard-master-project.pdf
+XeThru/
+essay.tex
+essay2.tex
+focus
+installation_log
+short_introduction/
+short_presentation/
+training-sequences.txt

@@ -1,0 +1,135 @@
+\documentclass[12pt, a4paper, english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{babel, graphicx, textcomp, varioref, hyperref}
+\usepackage{geometry, marginnote, listings, courier}
+\usepackage[dvipsnames]{xcolor}
+
+\definecolor{light-gray}{gray}{0.95}
+
+\lstset{ %
+  backgroundcolor=\color{light-gray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{LimeGreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=none,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=c++,                 % the language of the code
+  morekeywords={*,...},           % if you want to add more keywords to the set
+  %numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  %numbersep=5pt,                   % how far the line-numbers are from the code
+  %numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  %stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{BrickRed},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\hypersetup {
+  colorlinks = true,
+  linkcolor = blue,
+}
+
+\title{Notes on ROS}
+\author{Bård-Kristian Krohg \\ Universitetet i Oslo \\
+\texttt{baardkrk@ifi.uio.no}}%\and My Collaborator}
+
+\pagestyle{headings}
+
+\begin{document}
+
+\maketitle{}
+
+%\begin{lstlisting}
+%  #include <stdio.h>
+%
+%  int
+%  main(int argc, char *argv)
+%  {
+%    // This is just a small test..
+%    /* Are this comment style also recognized? */
+%    std::cout << "Hello World!";
+%  }
+%\end{lstlisting}
+
+\section{Introduction}
+In this document I intend to keep some preliminary notes on using ROS.
+
+\section{Cheat sheet}
+
+\subsection{General}
+\texttt{rospack} - get information about packages. Use for example \\
+\texttt{rospack find [package\_name]} \\
+\texttt{roscd} - change directory to package or other things \\
+\texttt{roscd [location[/subdir]]} \\
+\texttt{rosls} - works just as \texttt{ls}. \\
+\texttt{rosnode} - can be used with for example \texttt{list} or \texttt{info}. \\
+\texttt{rosrun} - Use as \texttt{rosrun [package\_name] [node\_name]} \\
+\texttt{rostopic} - Overwiew of ros topics, we can again use \texttt{list} and so on. We can also publish information to topics by using
+\begin{lstlisting}
+rostopic pub [topic] [msg_type] [args]
+\end{lstlisting}
+We can also publish a set number of times using the option \texttt{-\$NUMBER} \\
+\texttt{rqt} - nice package to see information about the system. plot, graph and so on.
+\subsection{Creating packages}
+Remember to source your setup file, \texttt{\$ source \textasciitilde/catkin\_ws/devel/setup.bash}
+To create a package, use the script (while in your catkin workspace)
+\begin{lstlisting}
+  catkin_create_pakage [pakage_name] [depend1] [depend2] [depend3]
+\end{lstlisting}
+Go to \texttt{catkin\_ws} and do \texttt{catkin\_make}. Then, edit the \texttt{package.xml} file.
+\subsubsection{Configure CMakeLists.txt}
+You \emph{MUST} follow the format below, and the order in the configuration counts:
+\begin{enumerate}
+  \item Required CMake Version \\
+  \texttt{cmake\_minimum\_required(VERSION 2.8.3)}\\
+  All packages require a minimum version of 2.8.3 or higher.
+  \item Package Name \\
+  \texttt{project(name)} \\
+  You can reference this name anywhere later in the CMake script by using the variable \texttt{\$\{PROJECT\_NAME\}}
+  \item Find other CMake/Catkin packages needed for build \\
+  \texttt{find\_package(catkin REQUIRED COMPONENTS [package1] [package2])}\\
+  Using the \texttt{COMPNENTS} option in \texttt{find\_package} appends include paths, libraries, etc. that is needed for the packages, to the \texttt{catkin\_varables}.
+  \item Enable Python module support \\
+  \texttt{catkin\_python\_setup()} \\
+  Call this if your project uses python modules.
+  \item Message/Service/Action Generators \\
+  \texttt{add\_message\_files(), add\_service\_files(), add\_action\_files()}
+  \item Invoke message/service/action generation \\
+  \texttt{generate\_messages()}
+  \item Specify package build info export \\
+  \texttt{catkin\_package()}\\
+  Has 5 optional arguments
+  \begin{itemize}
+    \item \texttt{INCLUDE\_DIRS} - the exported include paths (i.e. cflags) for the package.
+    \item \texttt{LIBRARIES} - The exported libraries from the project.
+    \item \texttt{CATKIN\_DEPENDS} - Other catkin projects that this project depends on.
+    \item \texttt{DEPENDS} - \emph{Non}-catkin CMake projects that this project depends on.
+    \item \texttt{CFG\_EXTRAS} - Additional configuration options
+  \end{itemize}
+  \item Libraries/Executables to build \\
+  \texttt{add\_library() / add\_executable() / target\_link\_libraries()}
+  \item Tests to build \\
+  \texttt{catkin\_add\_gtest()}
+  \item Install rules \\
+  \texttt{install()}
+\end{enumerate}
+
+\subsection{Services and Parameters}
+\subsubsection{\texttt{rosservice}}
+Services are another way (apart form topics) that ros nodes can communicate with each other. Services allow nodes to send a \textbf{request} and receive a \textbf{response}.
+Can use services with \texttt{rosservice call}.
+\subsubsection{\texttt{rosparam}}
+Manipulating data on the ROS Parameter Server. The data is stored using YAML, where 1 is integer, 1.0 is float and so on.
+
+\end{document}
