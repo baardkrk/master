@@ -33,3 +33,6 @@ installation_log
 short_introduction/
 short_presentation/
 training-sequences.txt
+
+## Training data
+project/data_loader/data
