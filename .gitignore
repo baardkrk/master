@@ -36,3 +36,4 @@ training-sequences.txt
 
 ## Training data
 project/data_loader/data
+**/__pycache__/
