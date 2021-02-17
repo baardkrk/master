@@ -9,3 +9,34 @@ If the networks are trained in tandem, This dataloader becomes simpler, as it on
 
 ## File formats
 The program takes a base 
+
+
+### Classes
+
+#### DataLoader
+The data 
+
+
+
+# File formats
+ksynctables:
+kinect
+  color
+    kinectnode0
+	  index []
+	  univ_time []
+
+  depth
+    kinectnode0
+	  index []
+	  univ_time []
+	  
+synctables:
+vga
+  index [] # 11999
+  univ_time []
+
+hd
+  index [] # 14591
+  univ_time []
+		  
