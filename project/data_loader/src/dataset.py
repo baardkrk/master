@@ -1,4 +1,4 @@
-class DataLoader:
+class Dataset:
     """
     The data loader class provides functionality for finding and loading the data
     from the test and validation sets.

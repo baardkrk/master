@@ -1,6 +1,6 @@
 import numpy as np
 import json
-from skeleton import Skeleton
+from skeleton import SkeletonIdxs, SkeletonLimbs
 
 
 class DataLoader:
@@ -65,7 +65,13 @@ class DataLoader:
         closest = min(range(len(timestamps)), key=lambda i: abs(timestamps[i] - univ_time))
         return closest
 
+    def get_depth_image(self, idx, kinect_n):
+        body_3d_scene_file = "body3DScene_" + f'{idx:08}' + ".json"
+        print(body_3d_scene_file)
+
 
 if __name__ == '__main__':
     loader = DataLoader('../data', '160226_haggling1')
     print(loader.nearest_depth_idx(429928.912, 'KINECTNODE6'))
+    print(SkeletonLimbs.L_CLAVICLE.value[0].value)
+    print(SkeletonIdxs.L_EAR.value)
