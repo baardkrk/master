@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-
+from data_loader import FilePaths
 
 def load_depth_frame(fpath, idx):
     """
@@ -27,22 +27,8 @@ def show_depth_frame(fpath, idx):
     plt.imshow(array, interpolation='nearest')
     plt.show()
 
-"""
-Matlab code:
-function [im] = readDepthIndex_1basedIdx(fname, idx)
-    % Read depth frame at file index (1-based) idx
-    % Each frame is 512x424 16-bit uint.
-    fid = fopen(fname, 'rb');
-    fseek(fid, 2*512*424*(idx-1), 'bof');
-    data1 = fread(fid, 512*424, 'uint16=>uint16');
-    fclose(fid);
-    % Data is stored in row-major.
-    im = double(reshape(data1, 512, 424))';
-    im = im(:,end:-1:1,:); % Flip left-right
-end  
-"""
-
-
 
 if __name__ == '__main__':
-    show_depth_frame("../data/160226_haggling1/kinect_shared_depth/KINECTNODE6/depthdata.dat", 4592)
+    file_paths = FilePaths('../data', '160226_haggling1')
+    show_depth_frame(file_paths.depth_file('KINECTNODE6'), 4592)
+    # show_depth_frame("../data/160226_haggling1/kinect_shared_depth/KINECTNODE6/depthdata.dat", 4592)

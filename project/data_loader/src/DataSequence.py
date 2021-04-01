@@ -1,5 +1,6 @@
 import json
-from FilePaths import FilePaths
+from data_loader import FilePaths
+
 
 class DataSequence:
     def __init__(self, root_path, sequence):

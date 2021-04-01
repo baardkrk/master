@@ -1,5 +1,9 @@
+## Text Editors
 *~
 *#
+*.idea
+
+## LaTeX
 *.log
 *.bcn
 *.aux
@@ -37,3 +41,4 @@ training-sequences.txt
 ## Training data
 project/data_loader/data
 **/__pycache__/
+

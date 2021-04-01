@@ -1,0 +1,16 @@
+{
+  "kinect": {
+    "color": {
+      "KINECTNODE1..10": {
+	"index": [0..N],
+	"univ_time": [ts0..tsN]
+      }
+    },
+    "depth": {
+      "KINECTNODE1..10": {
+	"index": [0..N],
+	"univ_time": [ts0..tsN]
+      }
+    }
+  }
+}
