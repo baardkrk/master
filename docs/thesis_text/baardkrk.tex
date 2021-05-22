@@ -1,17 +1,18 @@
-\documentclass[twoside,a4paper,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
+\documentclass[twoside,a4paper,openright,UKenglish,12pt]{report}     %% ... or USenglish or norsk or nynorsk
 
 \usepackage[utf8]{inputenc}         %% ... or utf8 or applemac
 \usepackage[T1]{fontenc,url}
 \urlstyle{sf}
-\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,hyperref,xcolor,longtable}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx,multirow,hyperref,xcolor,longtable}
 \usepackage[backend=biber,style=numeric-comp]{biblatex}
 \usepackage[toc,page,title]{appendix}
 \usepackage[nonumberlist,acronym,nomain]{glossaries}
 %\usepackage{tabularx}
+\usepackage[indent=2em]{parskip}
 
 \usepackage{subcaption}
 \captionsetup{font=small}
-\captionsetup[sub]{font=scriptsize,belowskip=2pt,aboveskip=3pt}
+\captionsetup[sub]{font=small,belowskip=2pt,aboveskip=3pt}
 
 \usepackage{mathtools}
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
@@ -27,8 +28,11 @@
   citecolor={blue!50!black},
   urlcolor={blue!80!black}
 }
+\pretolerance=10000
+\tolerance=2000
+\emergencystretch=10pt
 
-\usepackage[inner=3.5cm, outer=2.5cm, a4paper]{geometry} %% if not enough materials, change outer to 4.5
+\usepackage[inner=4cm, outer=3.7cm, a4paper]{geometry} %% if not enough materials, change outer to 4.5
 %\usepackage{showframe}
 \usepackage{lipsum}
 
@@ -84,7 +88,7 @@
 
 %% \chapter{Earlier work}
 %% \lipsum
-
+\include{tex/datasets}
 %% \chapter{Planning the project}        %% ... or ??
 \include{tex/method}
 %%\part{Implementation}
@@ -97,10 +101,9 @@
 %% \include{tex/Results}
 %% \include{tex/Discussion}
 %% \include{tex/Conclusion}
-\include{tex/future_work}
-
 \include{tex/conclusions}
 %% \include{tex/preliminary_notes_and_papers}
+\include{tex/future_work}
 
 \backmatter
 \renewcommand{\thesection}{\Alph{section}}

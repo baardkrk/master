@@ -2,26 +2,30 @@
 
 The classical approach to extract useful information from an image has been to find mathematical definitions for features that describe the information. The features could, for example, be lines, circles, or edges. 
 Circles can be used to find coins, where the diameter denotes the value. Lines can be used to find how many fenceposts are in a fence. Traditional mathematical models include the Hough Transform~\cite{houghTransform} for detecting lines or circles, the Sobel operator to detect gradients, and in return, edges, or the Gray Level Co-occurrence Matrix for detecting texture features. 
-In common for all these methods is that they are well defined, and find precisely \emph{one} type of feature that was previously specified. 
+In common for all these methods is that they are well defined and find precisely \emph{one} type of feature that was previously specified. 
 At a higher level, hand-crafted feature descriptors have been made. They look for a specific set of features in an image to identify unique locations. Some well-known examples are the SIFT~\cite{sift1999Lowe}, SURF~\cite{surf2006Bay} and ORB~\cite{orb2011Rublee} feature descriptors. They have been used successfully in applications such as combining images into panoramas or combining different views to a 3D model, also known as Structure from motion~\cite{sfm1979ullman}.
 
-Hand-crafted features have also been used in machine learning scenarios. As an example, Haar-like features were demonstrated to efficiently find faces in \cite{haarcascade}. Here, the machine learning model decided which of a given set of features to use to classify whether the frame contained a face or not. In using both the Sobel operator and using Haar-like features, a filter is passed over the image. In the case of the Sobel operator, this is an actual convolution of the image with the filter. This is the intuition that is used in Convolutional Neural Networks, discussed next.
+Hand-crafted features have also been used in machine learning scenarios. As an example, Haar-like features were demonstrated to efficiently find faces in \cite{haarcascade}. Here, the machine learning model decided which of a given set of features to use to classify whether the frame contained a face or not. In using both the Sobel operator and using Haar-like features, a filter is passed over the image. In the case of the Sobel operator, this is an actual convolution of the image with the filter, whereas Haar-features are extracted using a sliding window. This is the intuition that is used in Convolutional Neural Networks, discussed next.
 
 \section{Convolutional Neural Networks}
-Instead of using hand-crafted features, \gls{cnn}s \emph{define} the features they use \emph{when they are trained}. 
+Instead of using hand-crafted features, \gls{cnn}s define the features they use, when they are trained. This is one of the reasons why \gls{cnn}s needs fairly large training sets, as well as taking a long time to train. Therefore, a popular approach is to reuse the first few primitive layers (the first layers encountered in a forward-pass) from other models. This is done by first training a neural network for a specific task, for example recognizing a handful of different types of objects in an image. Then, the primitive layers with their parameters are ``chopped off'' the network. Since these layers only have learned primitive features, these learned features can be input to specialize a different network, which in turn needs less training time, since it has already learned the simple features.
 
-\gls{cnn}s are widely used in image classification tasks because they look at a collection of spatially connected pixels. This means \gls{cnn}s are robust to the placement of the object in the frame, and even partial occlusions.
+\gls{cnn}s are widely used in image classification tasks because they look at a collection of spatially connected pixels. This means \gls{cnn}s are robust to the placement of the object in the frame, and even partial occlusions. The deeper the network is, the more complex features emerge. In addition, the \emph{receptive field}, the patch of the original image that affects the feature, becomes larger. For convolutional layers that is, not pooling layers.
+
+When designing a \gls{cnn}, it is often helpful to have in mind exactly what one can imagine should be detected in each layer. In 2D images, the first few layers of a deep \gls{cnn} have been shown to often mimic behavior of the simple handmade feature-extractors such as the ones discussed above. However, such features can be quite different in 3D. Instead of edge-detectors, one can imagine plane-detectors, or other detectors unique to 3D objects. Additionaly, 3D depth images only have a single channel, where as most 2D \gls{cnn}s have been trained on 3-channel RGB images. \cite{song2018depth} argues that it is therefore better to train such networks from scratch.
+
 
 \section{Pose Estimation}
-Much research has been done in estimating human pose in two dimensions, as quite large datasets have been made, such as the MPII, or the Human 3.6M datasets \cite{andriluka14cvpr,h36m_pami}.
+Much research has been done in estimating human pose in two dimensions, as quite large datasets have been made such as the MPII, or the Human 3.6M datasets \cite{andriluka14cvpr,h36m_pami}.
 
-There have been two ways of finding human pose in an image. One is a top-down approach, where a number of persons first are found in the image, and advanced algorithms have refined their pose after finding key features.
-The other is to find the key features for the whole image, then build up the instances of people.
+There have mainly been two ways of finding human pose in an image. One is a top-down approach. Here a number of people are first found in the image, based on some different criteria. For example, the algorithm could first look for faces or silhouettes that resemble humans. Then, the human pose is iteratively expanded in the area using different algorithms.
 
-In \cite{cao2017realtime}, two \emph{cnn}s are used to estimate human pose. One of the networks produces a \emph{confidence map} for each joint. Each pixel in the confidence map contains the probability, or confidence, that the pixel is part of a person's joint. The other creates \gls{paf}s, which is a map of vectors pointing in the direction of one of \emph{M} limbs. \footnote{This work will stick to the convention of using the term \emph{limb} to describe any \emph{connection between any pair of body landmarks}. The body landmarks will be termed \emph{joints}.} These maps are assembled by bipartite matching to create the 2D skeletons observed in the scene.
+The other approach is to use object recognition to find key features for the whole image. Then the recognized landbarks are combined to build up the people instances.
 
+In \cite{cao2017realtime}, the second approach is used. Two \gls{cnn}s, one for landmark localization, and the other for recombination, are trained to estimate human pose. One of the networks produces a \emph{confidence map} for each joint. Each pixel in the confidence map contains the probability, or confidence, that the pixel is part of a person's joint. The other creates \gls{paf}s, which is a map of vectors pointing in the direction of one of \emph{M} limbs. \footnote{This work will stick to the convention of using the term \emph{limb} to describe any \emph{connection between any pair of body landmarks}. The body landmarks will be termed \emph{joints}.} These maps are assembled by bipartite matching to create the 2D skeletons observed in the scene.
 
 \begin{figure}[h]
+  \captionsetup[sub]{font=scriptsize,belowskip=2pt,aboveskip=3pt}
   \begin{subfigure}[t]{0.24\textwidth}
     \includegraphics[width=1\linewidth]{img/openpose_pipeline_a}
     \caption{Input Image}
@@ -58,4 +62,15 @@ In \cite{cao2017realtime}, two \emph{cnn}s are used to estimate human pose. One 
 \end{figure}
 
 Using the method described in \cite{cao2017realtime}, no information is given for joints that are not accurately detected. If, for example, an extremity is occluded together with half of the connecting limb, the extremity will not be part of the output skeleton, even if the joint could be extrapolated from the parts of the limb that is visible.
-This is also true for undetected joints in the middle of a joint-chain. The joint could be extrapolated using the surrounding joints. The problem with joint-extrapolation happens because of the bipartite matching, which does not work if any joint is missing.
+This is also true for undetected joints in the middle of a joint chain. The joint could be extrapolated using the surrounding joints. The problem with joint-extrapolation happens because of the bipartite matching, which does not work if any joint is missing.
+
+TODO> Microsoft pose estimation for kinect using tree-models
+
+
+\section{Depth Images}
+In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through the pixel.
+
+TODO> about loss of accuracy at distance
+TODO> about reprojection from world to image-coordinates
+TODO> about occlusion and visual hull still being a thing
+

@@ -19,18 +19,46 @@
 % Real time
 
 %% Most important contributions of the work:
+As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to a communal health sruvey \cite{oslohelsa}, it is projected that the increasing senior population in Oslo will lead to increased pressure on the healthcare services. To mitigate the need for help at home, it is important to encourage health-promoting activities, and uncover what and where preventative measures is needed. The \gls{mecs} is proposed as a solution where data gathered in users homes, guide where and what help is needed from healthcare personel -- be it preventative or acute.
 
-Motion capture is expensive. However, being able to estimate human pose could have many application areas: analyzing movements, activity recognition, importing natural motions to \gls{vr}, and improving \gls{hri}. The industry standard is to use an elaborate motion-capturing studio that requires multiple expensive cameras, a large area, and specialized software. Therefore the application areas for motion capture are currently mostly limited to staged research, movie-, and video game-making. 
+The \gls{mecs} is envisioned as a small, mobile unit which can be introduced to any home. This eliminates the user from the operational loop of the unit, making the data gathering process robust to forgetfulness or physical ability of the user. One of the key information points gathered by the \gls{mecs} will be the users physical pose. The users physical pose informs the system of the folowing:\\
+\textbf{Body language}, enabling the possibility of smooth \gls{hri} when moving around, or determining the intent of the user.\\
+\textbf{Physical state}, informing the \gls{mecs} wether the user is in need of acute help.\\
+\textbf{History of natural posture}, which could be invaluable information for a physical therapist or doctor to develop personalized training programs preventing muscle degradation.\\
+\textbf{Activity recognition}, helping the \gls{mecs} decide on what actions to execute. For example, reminding the user to take their prescribed medication if they forget.
 
-The Motion capture problem sets out to find a representation of an actor, that can be used in animation. This representation is often a \emph{rigged} skeleton with bones that define the movement of the animated character \cite{skeletonAnimation}.
+All these key points could be captured by a 2D system, however a 2D representation of a pose would not be robust to different viewing angles. A 3D representation could define the origin of two poses' coordinate system to the same landmark in each pose, making it is easy to compare the two poses by for example the euclidian distance between the poses' corresponding landmarks.
 
-This work explores both human pose detection in the depth domain, making the methods used here applicable to a wide range of sensors, and it explores a novel articulation network that refines the detection of the human pose.
+Estimating human pose in 3D, or \gls{mocap} is a well known area of research. However, \gls{mocap} is expensive, and requires a large amount of physical hardware. The industry standard is to use an elaborate \gls{mocap} studio that requires multiple expensive cameras, a large area, and specialized software. Therefore the application areas for motion capture are currently mostly limited to research, movie-, and videogame-making. The \gls{mocap} problem deals with finding a representation of an actor, creature, or object that can be used in animation. This representation is often a \emph{rigged} skeleton with bones that define the movement of the animated character \cite{skeletonAnimation}. The movements of the computerized rig is mapped to the movements of an observed actor in the real world and recorded.
 
-%% Finding human pose can have many applications inside the field of \gls{hri}, to understand the intent of a person, if they are aware of the robot, their position in relation to the robot, help understand their reaction to an interaction via body-language, or the action the person is doing at any one time. Finding human pose can also be used to create cheap motion capture technology for the ever popular \gls{vr} applications, which ranges from games to viritual training or simulations.
+%% However, the problem \gls{mocap} technology solves, estimating human pose, have many application areas: analyzing movements, activity recognition, importing natural motions to \gls{vr}, and improving \gls{hri}. 
 
-%% Human pose can also help professionals understand a patient better. If tracked over time, one can observe changes in the persons gait, their posture, or track their daily activities. All this can be used to asess if treatments or perscriptions are working, or if a persons activity schedule needs to be adjusted.
+%% A low-cost alternative to an expensive \gls{mocap} rig could be a single depth camera. With such a low-cost entry point, human pose estimation could be used for remote, or automatic, feedback for \emph{how} a motion should be executed. This could be useful for physical therapists or other instructors doing remote work. In addition, traditional dances or ceremonies could be digitized in a way that preserves precise movement patterns and coordination between multiple persons.
 
-%% The method described in this work seeks to solve the human pose estimation problem for the \gls{mecs} project. This means finding accurate human pose in 3D, based only on a single depth image from \emph{one} viewpoint as input.
+%% In a setup where multiple depth cameras are synchronized, the observed area could also be much larger than would be possible in a traditional \gls{mocap} studio.
+
+\section{Research Goals}
+
+This work explores the possibility of using a single depth camera to solve the \gls{mocap} problem of estimating human pose in 3D. To be viable in a mobile unit with limited processing capability, the resulting method needs to be lightweight and fast enough to process human motions. The resulting method must also be accurate enough for healthcare personel or the \gls{mecs} itself to extract reliable and useful information about the pose.
+
+The method presented in this thesis will therefore be evaluated using the following goals:
+
+%% The detected human pose is represented as a rig as seen in figure \ref{fig:skeleton_markers}. 
+%% A convolutional neural network with a stacked, novel articulation network is introduced as a way to find the poses in the depth images.
+
+%% Extra emphasis has been placed on keeping the networks as small as possible to keep computation cost down on low-spec hardware while making sure the pose estimation can still run in real-time.
+
+\begin{enumerate}
+\item Propose a lightweight system for recognizing human pose in 3D based on depth images. 
+\item Design and develop an architecture which could be deployed to systems with limited hardware, and provide useful information.
+\item Evaluate the preformance of the system and find room for improvements for it.
+\end{enumerate}
+
+\section{Contributions}
+
+The main contribution of this work is the proposal of using a shallow \gls{cnn} trained on depth images, in combination with a novel articulation network to define human pose in 3D. The \gls{cnn}s main task is to propose a set of poses present in the depth image. These poses are refined in the articulation network, which allows for a shallower \gls{cnn} architecture. This leads then to fewer parameters in the system, which leads to a more lightweight method that should preform faster on limited hardware.
+
+\section{Thesis Structure}
 
 %% An algorithm using sequential refinement-steps with a combination of bottom-up evidence gathering, and a top-down neural network for articulation estimation is explored. The work also explores how shallow the network can be, as well as other optimization techniques for running on mid- to low-end hardware.
 
@@ -49,11 +77,6 @@ This work explores both human pose detection in the depth domain, making the met
 
 %% Publicly available ROS package
 
-%% TILBAKEMELDING
-% Definere ``Finding human pose'' . hva betyr det egentlig, hva kan det brukes til?
-% Hva slags anvendelser kan det ha, på et høyt nivå?
-% Ikke anta at alle er superinteressert i problemstillingen
-% 
  
 %% \section{Multimodal Elderly Care System}
 %% As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to \cite{oslohelsa}, it is projected that especially the elderly population in Oslo will increase in the coming years, and that this will lead to increased pressure on the healthcare services. This means that it will be even more important to encourage health-promoting, and take preventative measures.
