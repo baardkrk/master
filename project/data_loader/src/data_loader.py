@@ -1,6 +1,31 @@
 import numpy as np
 import json
-from skeleton import SkeletonIdxs, SkeletonLimbs
+import re
+
+
+def projectPoints(X, K, R, t, Kd):
+    """ Projects points X (3xN) using camera intrinsics K (3x3),
+    extrinsics (R,t) and distortion parameters Kd=[k1,k2,p1,p2,k3].
+
+    Roughly, x = K*(R*X + t) + distortion
+
+    See http://docs.opencv.org/2.4/doc/tutorials/calib3d/camera_calibration/camera_calibration.html
+    or cv2.projectPoints
+    """
+
+    x = np.asarray(R*X + t)
+
+    x[0:2,:] = x[0:2,:]/x[2,:]
+
+    r = x[0,:]*x[0,:] + x[1,:]*x[1,:]
+
+    x[0,:] = x[0,:]*(1 + Kd[0]*r + Kd[1]*r*r + Kd[4]*r*r*r) + 2*Kd[2]*x[0,:]*x[1,:] + Kd[3]*(r + 2*x[0,:]*x[0,:])
+    x[1,:] = x[1,:]*(1 + Kd[0]*r + Kd[1]*r*r + Kd[4]*r*r*r) + 2*Kd[3]*x[0,:]*x[1,:] + Kd[2]*(r + 2*x[1,:]*x[1,:])
+
+    x[0,:] = K[0,0]*x[0,:] + K[0,1]*x[1,:] + K[0,2]
+    x[1,:] = K[1,0]*x[0,:] + K[1,1]*x[1,:] + K[1,2]
+
+    return x
 
 
 class DataLoader:
@@ -12,12 +37,19 @@ class DataLoader:
     :param sequence: points to the sequence we want.
     """
     def __init__(self, root_path, sequence):
-        self.depth_dir = "{0}/{1}/kinect_shared_depth".format(root_path, sequence)
-        self.kinect_calib = "{0}/{1}/kcalibration_{1}.json".format(root_path, sequence, sequence)
-        self.kinect_sync_table = "{0}/{1}/ksynctables_{1}.json".format(root_path, sequence)
-        self.panoptic_calib = "{0}/{1}/calibration_{1}.json".format(root_path, sequence)
-        self.panoptic_sync_table = "{0}/{1}/synctables_{1}.json".format(root_path, sequence)
-        self.body_3d_scene_dir = "{0}/{1}/hdPose3d_stage1_coco19".format(root_path, sequence)
+        self.depth_dir = f'{root_path}/{sequence}/kinect_shared_depth'
+        self.kinect_calib = f'{root_path}/{sequence}/kcalibration_{sequence}.json'
+        self.kinect_sync_table = f'{root_path}/{sequence}/ksynctables_{sequence}.json'
+        self.panoptic_calib = f'{root_path}/{sequence}/calibration_{sequence}.json'
+        self.panoptic_sync_table = f'{root_path}/{sequence}/synctables_{sequence}.json'
+        self.body_3d_scene_dir = f'{root_path}/{sequence}/hdPose3d_stage1_coco19'
+        self.sensors = None
+        with open(self.kinect_calib, 'r') as calib_file:
+            calib = json.load(calib_file)
+            self.sensors = calib['sensors']
+        # The kinect nubmer mapping tells us which index in the self.sensors array
+        # the corresponding kinectnode is.
+        self.kinect_number_mapping = [5, 8, 7, 9, 6, 1, 2, 10, 3, 4]
 
     def load_depth_frame(self, kinect_node: str, idx: int):
         """
@@ -30,7 +62,7 @@ class DataLoader:
         im_rows = 424
         f_size = im_cols * im_rows
 
-        fpath = self.depth_dir + '/' + kinect_node + '/depthdata.dat'
+        fpath = f'{self.depth_dir}/{kinect_node}/depthdata.dat'
         im = None
         with open(fpath, 'rb') as s_file:
             # offset is multiplied by 2 because uint16 takes to bytes per number
@@ -39,9 +71,23 @@ class DataLoader:
             im = np.fliplr(a)
         return im
 
-    def load_ground_truth_map(self, kinect_node: str, scene_idx: int, limb: int):
+    def load_body_file(self, idx: int):
         """
-        Load the GT map for the specified limb(s) at index scene_idx from the specified KinectNode.
+        Load the body3DScene file at the specified index
+        :param idx: Index of the body3DScene file
+        :return:    an array of bodies, and the univ_time for this file
+        """
+        fpath = self.body_3d_scene_dir + f'/body3DScene_{idx:08}.json'
+        with open(fpath, 'r') as scene_file:
+            metafile = json.load(scene_file)
+        univ_time = metafile['univTime']
+        bodies = [joint_array['joints19'] for joint_array in metafile['bodies']]
+        return np.array(bodies, dtype=float), univ_time
+        
+    def calculate_ground_truth_map(self, kinect_node: str, scene_idx: int, limb: int):
+        """
+        Load the GT map for the specified limb(s) at index scene_idx from the specified 
+        KinectNode.
         :param kinect_node:  Name of the kinect node, KINECTNODE[1-10]
         :param scene_idx:    Index of the 3d scene
         :param limb:         Index of limb from the skeleton
@@ -59,19 +105,56 @@ class DataLoader:
         :param kinect_node: The kinect node
         :return:            Index of the closest depth frame
         """
-        with open(self.kinect_sync_table, "r") as sync_table_file:
+        with open(self.kinect_sync_table, 'r') as sync_table_file:
             sync_table = json.load(sync_table_file)
         timestamps = sync_table['kinect']['depth'][kinect_node]['univ_time']
         closest = min(range(len(timestamps)), key=lambda i: abs(timestamps[i] - univ_time))
         return closest
 
-    def get_depth_image(self, idx, kinect_n):
-        body_3d_scene_file = "body3DScene_" + f'{idx:08}' + ".json"
-        print(body_3d_scene_file)
+    def project_points(self, kinect_n: str, depth_frame):
+        kinect_number = int(re.search(r'\d+', kinect_n).group())
+        sensor = self.sensors[self.kinect_number_mapping.index(kinect_number)]
+        k_depth = np.array(sensor['K_depth'])
+        c_xd = k_depth[0, 2]
+        c_yd = k_depth[1, 2]
+        f_xd = k_depth[0, 0]
+        f_yd = k_depth[1, 1]
 
+        points = np.array([self.project_point(c_xd, c_yd, f_xd, f_yd, ix, iy, depth_frame) for ix, iy in np.ndindex(depth_frame.shape)])
+        return points
 
-if __name__ == '__main__':
-    loader = DataLoader('../data', '160226_haggling1')
-    print(loader.nearest_depth_idx(429928.912, 'KINECTNODE6'))
-    print(SkeletonLimbs.L_CLAVICLE.value[0].value)
-    print(SkeletonIdxs.L_EAR.value)
+    def project_point(self, cx, cy, fx, fy, iy, ix, img):
+        # x = col, y = row
+        x = (ix - cx) * img[iy, ix] / fx
+        y = (iy - cy) * img[iy, ix] / fy
+        z = img[iy, ix]
+        return x, y, z
+
+    def reproject_point(self, kinect_n: str, coord):
+        """
+        Find the row, column position of the given 3d point in the kinect
+        :param kinect_n: kinect node ("KINECTNODE[1-10])")
+        :param coord:    world coordinates in a 3x1 vector (3 rows, 1 column)
+        :return:         row, column in the given kinect depth image
+        """
+        kinect_number = int(re.search(r'\d+', kinect_n).group())
+        sensor = self.sensors[self.kinect_number_mapping.index(kinect_number)]
+        m_world = np.array(sensor['M_world2sensor'], dtype=float)
+        m_depth = np.array(sensor['M_depth'], dtype=float)
+        k_depth = np.array(sensor['K_depth'])
+        distort_d = np.array(sensor['distCoeffs_depth'])
+
+        _m = np.matmul(m_depth, m_world)
+        # _r = np.matrix(_m[:3, :3])
+        # _t = np.array(_m[:3, -1]).reshape((3, 1))
+
+        _extrinsic = np.matmul(_m, np.append(coord, 1).transpose())
+        _extrinsic = np.matmul(np.eye(3, 4), _extrinsic.transpose())
+        _intrinsic = np.matmul(k_depth, _extrinsic.transpose())
+        row, column = _intrinsic[0]/_intrinsic[2], _intrinsic[1]/_intrinsic[2]
+
+        # Apply distortion
+        # x = projectPoints(coord, k_depth, _r, _t, distort_d)
+        # return x
+        return int(row), int(column)
+

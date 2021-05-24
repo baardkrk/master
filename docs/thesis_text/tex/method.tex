@@ -14,18 +14,20 @@ This was considered when preparing the training data.
 
 TODO> about not needing a full 3D body mesh, and privacy concerns
 
+
+
 \section{Architecture}
 
 TODO> about shallowness of network
 
 The architecture of this project is \emph{recurrent} in that it repeats itself for a number of iterations. As with the architecture in \cite{cao2017realtime}, we have to have a first step which produces the first outputs we can use in later steps. However, this step is not illustrated in Fig.\ref{fig:arch_main}, since the first step will be identical to the next steps, except it will not have the additional inputs produced by the outputs of the previous step.
 
-%% \begin{figure}[h]
-%%   \centering
-%%   \includegraphics[width=\textwidth]{img/architecture_main}
-%%   \caption[Main architecture]{Main architecture. \gls{cnn}s are illustrated as hourglass networks, but this is not necessarily representative of the final architecture. A depth image is fed to a depth-feature extraction network (\ref{subsec:depth_feature}), which in consecutive steps are combined with output \gls{paf}s and joint confidence maps before this is fed to the 3D object detection networks (\ref{subsec:obj_detect}). These are run for a small number of iterations to get some estimate for the PAFs and confidence maps, before we move on to the assembly step. For each of the skeletons detected (with a ceiling for maximum detected skeletons) the skeletons with the strongest evidence are assembled. In the case that a body landmark is not found, we use preconceived coordinates from a standard defined skeleton. The coordinate frame of the skeleton in the articulation step till be the root joint (middle hip) with the z-axis pointing up, and the y-axis orthogonal to the line through the two side hip joints. The articulation network (\ref{subsec:articulation}) tries to scale and articulate the skeleton based on detected evidence. In the disassembly step, we place all the skeletons back into the camera coordinate frames, and update the \gls{paf}s and confidence maps with confidences and placements from the articulation network, and use them in the following steps. This is repeated a small number of times (3-4).}
-%%   \label{fig:arch_main}
-%% \end{figure}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{img/architecture_main}
+  \caption[Main architecture]{Main architecture, as in \cite{cao2017realtime} two recurrent stages, $\phi^{t}$ and $\rho^{t}$ are used to iteratively refine the limb and joint locations.}
+  \label{fig:arch_main}
+\end{figure}
 
 \subsection{Depth feature extraction}\label{subsec:depth_feature}
 For each pixel in the current layer of the \gls{cnn}, we collect information from a filter-sized portion of the previous layer. This means that deeper layers look at a larger and larger portion of the input layer. This is useful for detecting connections between large-scale structures. This also means that after a certain depth, there may not be any more useful information.

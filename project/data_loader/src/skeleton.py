@@ -1,10 +1,11 @@
 """
-Module containing skeleton constants
+Module for skeleton related code
 """
+import numpy as np
 from enum import Enum
 
 
-class SkeletonIdxs(Enum):
+class SkeletonJoint(Enum):
     NECK = 0
     NOSE = 1
     BODY_CENTER = 2  # Center of hips
@@ -27,21 +28,54 @@ class SkeletonIdxs(Enum):
 
 
 class SkeletonLimbs(Enum):
-    NECK = (SkeletonIdxs.NECK, SkeletonIdxs.NOSE)
-    SPINE = (SkeletonIdxs.NECK, SkeletonIdxs.BODY_CENTER)
-    L_CHEEK = (SkeletonIdxs.NOSE, SkeletonIdxs.L_EYE)
-    L_HEAD = (SkeletonIdxs.L_EYE, SkeletonIdxs.L_EAR)
-    L_CLAVICLE = (SkeletonIdxs.NECK, SkeletonIdxs.L_SHOULDER)
-    L_OVERARM = (SkeletonIdxs.L_SHOULDER, SkeletonIdxs.L_ELBOW)
-    L_UNDERARM = (SkeletonIdxs.L_ELBOW, SkeletonIdxs.L_WRIST)
-    L_HIP = (SkeletonIdxs.BODY_CENTER, SkeletonIdxs.L_HIP)
-    L_THIGH = (SkeletonIdxs.L_HIP, SkeletonIdxs.L_KNEE)
-    L_SHIN = (SkeletonIdxs.L_KNEE, SkeletonIdxs.L_ANKLE)
-    R_CHEEK = (SkeletonIdxs.NOSE, SkeletonIdxs.R_EYE)
-    R_HEAD = (SkeletonIdxs.R_EYE, SkeletonIdxs.R_EAR)
-    R_CLAVICLE = (SkeletonIdxs.NECK, SkeletonIdxs.R_SHOULDER)
-    R_OVERARM = (SkeletonIdxs.R_SHOULDER, SkeletonIdxs.R_ELBOW)
-    R_UNDERARM = (SkeletonIdxs.R_ELBOW, SkeletonIdxs.R_WRIST)
-    R_HIP = (SkeletonIdxs.BODY_CENTER, SkeletonIdxs.R_HIP)
-    R_THIGH = (SkeletonIdxs.R_HIP, SkeletonIdxs.R_KNEE)
-    R_SHIN = (SkeletonIdxs.R_KNEE, SkeletonIdxs.R_ANKLE)
+    NECK = (SkeletonJoint.NECK, SkeletonJoint.NOSE)
+    SPINE = (SkeletonJoint.NECK, SkeletonJoint.BODY_CENTER)
+    L_CHEEK = (SkeletonJoint.NOSE, SkeletonJoint.L_EYE)
+    L_HEAD = (SkeletonJoint.L_EYE, SkeletonJoint.L_EAR)
+    L_CLAVICLE = (SkeletonJoint.NECK, SkeletonJoint.L_SHOULDER)
+    L_OVERARM = (SkeletonJoint.L_SHOULDER, SkeletonJoint.L_ELBOW)
+    L_UNDERARM = (SkeletonJoint.L_ELBOW, SkeletonJoint.L_WRIST)
+    L_HIP = (SkeletonJoint.BODY_CENTER, SkeletonJoint.L_HIP)
+    L_THIGH = (SkeletonJoint.L_HIP, SkeletonJoint.L_KNEE)
+    L_SHIN = (SkeletonJoint.L_KNEE, SkeletonJoint.L_ANKLE)
+    R_CHEEK = (SkeletonJoint.NOSE, SkeletonJoint.R_EYE)
+    R_HEAD = (SkeletonJoint.R_EYE, SkeletonJoint.R_EAR)
+    R_CLAVICLE = (SkeletonJoint.NECK, SkeletonJoint.R_SHOULDER)
+    R_OVERARM = (SkeletonJoint.R_SHOULDER, SkeletonJoint.R_ELBOW)
+    R_UNDERARM = (SkeletonJoint.R_ELBOW, SkeletonJoint.R_WRIST)
+    R_HIP = (SkeletonJoint.BODY_CENTER, SkeletonJoint.R_HIP)
+    R_THIGH = (SkeletonJoint.R_HIP, SkeletonJoint.R_KNEE)
+    R_SHIN = (SkeletonJoint.R_KNEE, SkeletonJoint.R_ANKLE)
+
+
+class Skeleton:
+    def __init__(self, coordinates):
+        input_coord = coordinates.reshape(19, 4)
+        # self.coordinates = np.array([[0.00, 2.34, 0.00, 0.00],
+        #                              [0.00, 3.05, 0.00, 0.00],
+        #                              [0.00, 0.00, 0.00, 0.00],
+        #                              [1.05, 2.34, 0.00, 0.00],
+        #                              [1.36, 0.86, 0.00, 0.00],
+        #                              [1.36, -0.32, 0.00, 0.00],
+        #                              [0.78, 0.00, 0.00, 0.00],
+        #                              [1.02, -1.98, 0.00, 0.00],
+        #                              [1.02, -3.98, 0.00, 0.00],
+        #                              [-1.05, 2.34, 0.00, 0.00],
+        #                              [-1.36, 0.86, 0.00, 0.00],
+        #                              [-1.36, -0.32, 0.00, 0.00],
+        #                              [-0.78, 0.00, 0.00, 0.00],
+        #                              [-1.02, -1.98, 0.00, 0.00],
+        #                              [-1.02, -3.98, 0.00, 0.00],
+        #                              [0.30, 3.30, 0.00, 0.00],
+        #                              [0.50, 3.15, 0.00, 0.00],
+        #                              [-0.30, 3.30, 0.00, 0.00],
+        #                              [-0.50, 3.15, 0.00, 0.00]], dtype=float)
+        # Replacing body coordinates where confidence > 0
+        # self.coordinates = np.where(np.array([input_coord[:, -1] > self.coordinates[:, -1], ]*4).transpose(),
+        #                             input_coord, self.coordinates)
+        self.coordinates = coordinates.reshape((-1, 4)).transpose()
+        self.edges = []
+
+    def joint_coordinates(self, joint: SkeletonJoint):
+        """Returns a column-vector on the format [[x],[y],[z]]"""
+        return self.coordinates[:3, joint.value].transpose()

@@ -15,6 +15,14 @@ Instead of using hand-crafted features, \gls{cnn}s define the features they use,
 When designing a \gls{cnn}, it is often helpful to have in mind exactly what one can imagine should be detected in each layer. In 2D images, the first few layers of a deep \gls{cnn} have been shown to often mimic behavior of the simple handmade feature-extractors such as the ones discussed above. However, such features can be quite different in 3D. Instead of edge-detectors, one can imagine plane-detectors, or other detectors unique to 3D objects. Additionaly, 3D depth images only have a single channel, where as most 2D \gls{cnn}s have been trained on 3-channel RGB images. \cite{song2018depth} argues that it is therefore better to train such networks from scratch.
 
 
+\section{Depth Images}
+In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through the pixel.
+
+TODO> about loss of accuracy at distance
+TODO> about reprojection from world to image-coordinates
+TODO> about occlusion and visual hull still being a thing
+
+
 \section{Pose Estimation}
 Much research has been done in estimating human pose in two dimensions, as quite large datasets have been made such as the MPII, or the Human 3.6M datasets \cite{andriluka14cvpr,h36m_pami}.
 
@@ -66,11 +74,5 @@ This is also true for undetected joints in the middle of a joint chain. The join
 
 TODO> Microsoft pose estimation for kinect using tree-models
 
-
-\section{Depth Images}
-In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through the pixel.
-
-TODO> about loss of accuracy at distance
-TODO> about reprojection from world to image-coordinates
-TODO> about occlusion and visual hull still being a thing
+\section{Bipartite Matching}
 

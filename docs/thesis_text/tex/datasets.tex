@@ -13,15 +13,22 @@ The sequences in the dataset were recorded at approximatley 30 fps. All frames a
   \begin{subfigure}{.6\textwidth}
     \centering
     \includegraphics[width=\linewidth]{img/depth_image}
-    \caption{Depth image from \texttt{KINECTNODE6}}
+    \caption{Depth image from \texttt{KINECTNODE6}.}
     \label{fig:depth_image}
   \end{subfigure}% 
   \begin{subfigure}{.4\textwidth}
     \centering
     \includegraphics[width=\linewidth]{img/dataset_skeletons}
-    \caption{Skeletons defined in the world coordinate system}
+    \caption{Skeletons defined in the world coordinate system.}
     \label{fig:dataset_skeletons}
   \end{subfigure}%
+  \newline
+  \begin{subfigure}{.7\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/pointcloud}
+    \caption{The depth image projected to a point cloud.}
+    \label{fig:dataset_skeletons}
+  \end{subfigure}%  
   \caption{Combination of datapoints for frame 144 in \cite{Joo_2015_ICCV}}
   \label{fig:skeleton_depth_duo}
 \end{figure}
@@ -32,35 +39,38 @@ A set of five complete sequences were set aside as the test set to ensure that t
 
 \begin{table}
   \centering
-  \begin{tabular}[h]{|c|l|c|c|}
+  \begin{tabular}[h]{|c|l l c|}
     \hline
-    & \textbf{Sequence name} & \textbf{Duration} & \textbf{Samples} \\ \hline
-    \multirow{15}{*}{\rotatebox[origin=c]{90}{Training / Validation}}
-    & 171026\_cello2     &  5:00  & 20  \\
-    & 161029\_flute1     &  10:00 & 40  \\
-    & 161029\_piano3     &  2:30  & 10  \\
-    & 160906\_band2      &  5:00  & 20  \\
-    & 160226\_mafia1     &  10:00 & 20  \\
-    & 160422\_haggling1  &  8:00  & 16  \\
-    & 170307\_dance1     &  1:10  & 14  \\
-    & 170307\_dance2     &  9:00  & 108 \\
-    & 170307\_dance4     &  4:50  & 58  \\
-    & 160317\_moonbaby1  &  3:20  & 40  \\
-    & 160906\_ian1       &  2:00  & 24  \\
-    & 170915\_office1    &  3:00  & 12  \\
-    & 160906\_pizza1     &  5:00  & 60  \\
-    & 171204\_pose2      &  22:30 & 270 \\
-    & 171204\_pose4      &  17:30 & 210 \\ \hline
+    & Category & Sequence Name & Duration (MM:SS) \\ \hline
+    \multirow{17}{*}{\rotatebox[origin=c]{90}{Training / Validation}}
+    & Range of Motion & 171204\_pose1 & 17:30 \\
+    & Range of Motion & 171204\_pose2 & 22:30 \\
+    & Range of Motion & 171204\_pose3 & 5:00 \\
+    & Range of Motion & 171204\_pose5 & 15:00 \\ 
+    & Range of Motion & 171204\_pose6 & 12:50 \\
+    & Range of Motion & 171026\_pose1 & 13:20 \\
+    & Range of Motion & 171026\_pose3 & 4:20 \\
+    & Social Games & 160226\_haggling1 & 8:00 \\
+    & Social Games & 160422\_haggling1 & 8:00 \\
+    & Social Games & 160422\_ultimatum1 & 15:00 \\ 
+    & Musical Instruments & 160906\_band1 & 1:00 \\ 
+    & Musical Instruments & 160906\_band2 & 5:00 \\ 
+    & Musical Instruments & 160906\_band3 & 5:00 \\ 
+    & Toddler & 160906\_ian2 & 5:00 \\ 
+    & Others & 170915\_office1 & 3:00 \\ 
+    & Others & 160906\_pizza1 & 5:00 \\ 
+    & Dance & 170307\_dance5 & 6:40 \\ \hline
     \multirow{5}{*}{\rotatebox[origin=c]{90}{Test}}
-    & 160906\_band3      &  5:00  & 20  \\
-    & 160224\_ultimatum1 &  9:00  & 36  \\
-    & 170307\_dance6     &  3:15  & 39  \\
-    & 170407\_office2    &  3:00  & 12  \\
-    & 171204\_pose6      &  12:50 & 154 \\ \hline
+    & Range of Motion & 171204\_pose4 & 17:30 \\ 
+    & Range of Motion & 171026\_pose2 & 9:00 \\ 
+    & Social Games & 160224\_haggling1 & 5:00 \\ 
+    & Toddler & 160906\_ian1 & 2:00 \\ 
+    & Others & 170407\_office2 & 3:00 \\ \hline
   \end{tabular}
   \caption{Sequences used for training, validation and testing}
   \label{tab:sequences}
 \end{table}
+
 
 \section{Dataset Augmentations}
 
@@ -80,4 +90,15 @@ A set of five complete sequences were set aside as the test set to ensure that t
     \end{cases}
 \end{equation}
 
-Target limb-maps for each frame was created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. A 2D Epanechnikov Kernel with variable $\sigma$ were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The limbs furthest away were calculated first, so the vectors from these would be overwritten by subsequent limbs in case they were behind each other. The $\sigma$ of the Epanechnikov Kernel was determined by the average depth of a $3 \times 3$ kernel around the point. The reason for varying the $\sigma$ was to simulate that the shell around the limb would appear smaller at a greater distance. The matrix was then thresholded by the magnitude of each vector to generate a cleaner output. 
+\begin{figure}
+  \centering
+  \includegraphics[width=.4\textwidth]{img/epanechnikov_2d}
+  \caption{A 2D Epanechnikov \cite{epanechnikov_1969} kernel}
+  \label{fig:epanechnikov}
+\end{figure}
+
+Target limb-maps for each frame was created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. A 2D Epanechnikov Kernel with variable $\sigma$ were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The limbs furthest away were calculated first, so the vectors from these would be overwritten by subsequent limbs in case they were behind each other. The $\sigma$ of the Epanechnikov Kernel was determined by the average depth of a $3 \times 3$ kernel around the point. The reason for varying the $\sigma$ was to simulate that the shell around the limb would appear smaller at a greater distance. The matrix was then thresholded by the magnitude of each vector to generate a cleaner output.
+
+\section{Batch Loading}
+
+The data were loaded in batches...
