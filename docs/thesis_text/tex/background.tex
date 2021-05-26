@@ -7,13 +7,19 @@ At a higher level, hand-crafted feature descriptors have been made. They look fo
 
 Hand-crafted features have also been used in machine learning scenarios. As an example, Haar-like features were demonstrated to efficiently find faces in \cite{haarcascade}. Here, the machine learning model decided which of a given set of features to use to classify whether the frame contained a face or not. In using both the Sobel operator and using Haar-like features, a filter is passed over the image. In the case of the Sobel operator, this is an actual convolution of the image with the filter, whereas Haar-features are extracted using a sliding window. This is the intuition that is used in Convolutional Neural Networks, discussed next.
 
-\section{Convolutional Neural Networks}
-Instead of using hand-crafted features, \gls{cnn}s define the features they use, when they are trained. This is one of the reasons why \gls{cnn}s needs fairly large training sets, as well as taking a long time to train. Therefore, a popular approach is to reuse the first few primitive layers (the first layers encountered in a forward-pass) from other models. This is done by first training a neural network for a specific task, for example recognizing a handful of different types of objects in an image. Then, the primitive layers with their parameters are ``chopped off'' the network. Since these layers only have learned primitive features, these learned features can be input to specialize a different network, which in turn needs less training time, since it has already learned the simple features.
+\section{Convolutional Neural Networks}\label{sec:background_cnn}
+Instead of using hand-crafted features, \gls{cnn}s define the features they use, when they are trained. This is one of the reasons why \gls{cnn}s needs fairly large training sets, as well as taking a long time to train. Therefore, a popular approach is to reuse the first few primitive layers (the first layers encountered in a forward-pass) from other models. This is known as \emph{Transfer Learning}. It can be accomplished by first training a neural network for a specific task, for example recognizing a handful of different types of objects in an image. Then, the primitive layers with their parameters are ``chopped off'' the network. Since these layers only have learned primitive features, these learned features can be input and fine-tuned to specialize a different network, which in turn needs less training time, since it has already learned the simple features. Another advantage of this is that the two networks can be trained on vastly different datasets. If one application area has an abundance of training data, the first network could be trained on this. As long as the general input is the same, namely the number of channels and the values presented, the first few layers can be easily fine-tuned to a new application area.
 
 \gls{cnn}s are widely used in image classification tasks because they look at a collection of spatially connected pixels. This means \gls{cnn}s are robust to the placement of the object in the frame, and even partial occlusions. The deeper the network is, the more complex features emerge. In addition, the \emph{receptive field}, the patch of the original image that affects the feature, becomes larger. For convolutional layers that is, not pooling layers.
 
 When designing a \gls{cnn}, it is often helpful to have in mind exactly what one can imagine should be detected in each layer. In 2D images, the first few layers of a deep \gls{cnn} have been shown to often mimic behavior of the simple handmade feature-extractors such as the ones discussed above. However, such features can be quite different in 3D. Instead of edge-detectors, one can imagine plane-detectors, or other detectors unique to 3D objects. Additionaly, 3D depth images only have a single channel, where as most 2D \gls{cnn}s have been trained on 3-channel RGB images. \cite{song2018depth} argues that it is therefore better to train such networks from scratch.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{img/alexnet}
+  \caption[AlexNet]{Illustration of a Convolutional Neural Network. The figure is borrowed from AlexNet~\cite{alexnet2012}}
+  \label{fig:alexnet}
+\end{figure}
 
 \section{Depth Images}
 In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through the pixel.
@@ -24,9 +30,12 @@ TODO> about occlusion and visual hull still being a thing
 
 
 \section{Pose Estimation}
+Human Pose Estimation is an area well-researched area, because of its many application areas. Much of the research focuses on finding pose in RGB images, where hand-crafted features such as parallell edges \cite{ramanan2003,mori2002}, silhouette features \cite{grauman2003}, or pictoral structures \cite{fischler1973,felzenszwalb2005}, have been used to suggest candidates for limbs, joints and so on. From such evidences, constrained kinematic models, tree graphs, or decision trees \cite{shotton2013}, are used to construct the poses with varying degrees of success. With such top-down approahces, will the runtime of the algorithm increase when multiple people are present in the image.
+
+With the increasing popularity of \gls{cnn}s in recent years, many techniques utilizing them have also been developed for human pose estimation \cite{tompson2014joint}. A particurlarly popular approach is to use a deep \gls{cnn} to produce heat-maps that suggest candidate locations for various body parts \cite{wei2016cpm,wang2016}.
+
 Much research has been done in estimating human pose in two dimensions, as quite large datasets have been made such as the MPII, or the Human 3.6M datasets \cite{andriluka14cvpr,h36m_pami}.
 
-There have mainly been two ways of finding human pose in an image. One is a top-down approach. Here a number of people are first found in the image, based on some different criteria. For example, the algorithm could first look for faces or silhouettes that resemble humans. Then, the human pose is iteratively expanded in the area using different algorithms.
 
 The other approach is to use object recognition to find key features for the whole image. Then the recognized landbarks are combined to build up the people instances.
 
@@ -65,7 +74,7 @@ In \cite{cao2017realtime}, the second approach is used. Two \gls{cnn}s, one for 
     \caption{Parsing Results}
     \label{fig:oppE}
   \end{subfigure}
-  \caption[OpenPose pipeline]{The pipeline described in \cite{cao2017realtime}. The input image \ref{fig:oppA} is fed into the two networks, which produce joint detections in confidence maps \ref{fig:oppB} and PAFs  \ref{fig:oppC}. Bipartite matching is performed in \ref{fig:oppD}, to determine which detected joints should be connected by a limb. \ref{fig:oppE} shows the finished results.}
+  \caption[OpenPose pipeline]{The pipeline used in OpenPose~\cite{cao2017realtime, cao2019openpose}. The input image \ref{fig:oppA} is fed into the two networks, which produce joint detections in confidence maps \ref{fig:oppB} and PAFs  \ref{fig:oppC}. Bipartite matching is performed in \ref{fig:oppD}, to determine which detected joints should be connected by a limb. \ref{fig:oppE} shows the finished results.}
   \label{fig:openpose_pipeline}
 \end{figure}
 
