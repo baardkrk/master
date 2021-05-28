@@ -3,21 +3,21 @@
 %% WHY DOES IT REPRESENT A PROGRESS IN RESEARCH
 
 %% Objective of the system
-DepthPose is a complete system for extracting human 3D poses from a single depth image in real-time\footnote{Real-time is defined as being capable of processing at least 30 depth frames per second on the specified minimum hardware-requirements.}. It is specifically tailored for use in robotic applications where computational resources are limited. Because the \gls{mecs} is envisioned to be a mobile unit, DepthPose has to be robust to seeing the person from different viewing angles, and to occlusions between the person and the depth-sensor. The architecture is inspired by, and builds off of the architecture in OpenPose~\cite{cao2019openpose}. The general pipeline of DepthPose follows the OpenPose pipeline in figure~\ref{fig:openpose_pipeline} closely, with the addition of a novel Articulation Network that refines the poses after the bipartite matching.
+DepthPose is a complete system for extracting human 3D poses from a single depth image in real-time\footnote{Real-time is defined as being capable of processing at least 30 depth frames per second on the specified minimum hardware requirements.}. It is specifically tailored for use in robotic applications where computational resources are limited. Because the \gls{mecs} is envisioned to be a mobile unit, DepthPose has to be robust to seeing the person from different viewing angles and to occlusions between the person and the depth-sensor. The architecture is inspired by and builds off of the architecture in OpenPose~\cite{cao2019openpose}. The general pipeline of DepthPose follows the OpenPose pipeline in figure~\ref{fig:openpose_pipeline} closely, with the addition of a novel Articulation Network that refines the poses after the bipartite matching.
 
 %% Why 3D?
-One of the goals for the \gls{mecs} project is to do \gls{har}, with the purpose of tracking a user from day to day, and look for patterns that could lead to worsening or more dangerous living conditions. Representing the pose in 3D will simplify application areas such as \gls{har}, because a 3D representation of a skeleton can be defined by a coordinate system constrained to any two connected limbs from the observed skeletons. This means that two different skeleton observations can be represented by a common reference point. Had the skeletons been represented in 2D, the same skeleton seen from two different angles could look vastly different, even if referenced from the same limb. Comparing the two 2D poses will therefore be a more difficult problem than comparing the same poses referenced from a common 3D coordinate system.
+One of the goals for the \gls{mecs} project is to look for patterns that could lead to worsening or more dangerous living conditions. To that end, \gls{har} is implemented with the purpose of tracking a user from day to day. Representing the pose in 3D will simplify application areas such as \gls{har}, because a 3D representation of a skeleton can be defined by a coordinate system constrained to any two connected limbs from the observed skeletons. This means that two different skeleton observations can be represented by a common reference point. Had the skeletons been represented in 2D, the same skeleton seen from two different angles could look vastly different, even if referenced from the same limb. Comparing the two 2D poses will therefore be a more difficult problem than comparing the same poses referenced from a common 3D coordinate system.
 
 %% TODO> about not needing a full 3D body mesh, and privacy concerns
 
 
 \section{Architecture}
 
-The system pipeline is outlined in figure~\ref{fig:arch_main}. As in \cite{cao2019openpose}, two stages are used to extract the pose from an image. In each stage a \gls{rnn} architecture iteratively refines the output from the network at that stage. This iterative architecture were inspired by Convolutional Pose Machines~\cite{wei2016cpm}.
+The system pipeline is outlined in figure~\ref{fig:arch_main}. As in \cite{cao2019openpose}, two stages are used to extract the pose from an image. In each stage, a \gls{rnn} architecture iteratively refines the output from the network at that stage. This iterative architecture was inspired by Convolutional Pose Machines~\cite{wei2016cpm}.
 
 At timestep $t = 0$ in the first stage, a set of depth features are created by the first \gls{cnn}, $df$. These are stacked with the \emph{limb-maps} produced by the next \gls{cnn}, $lp$. At $t = 0$ these limb-maps will be initialized to a known value, \textbf{0}, so only the learned bias weights influence $lp$ at this timestep. $lp$ will then refine these limb-maps at subsequent timesteps $0 < t \leq T_{P}$.
 
-At timestep $t = T_{P} + 1$ the refined ``first guess'' limb-maps from $lp$ are again stacked with the depth features from $df$, and used as inputs to $jp$ which produces a set of likely \emph{joint-maps}. These joint-maps are then passed to the Assembly function, which preforms the bipartite matching algorithm and constructs a set of skeletons. An instance of the Articulation Network is created for each of the detected skeletons. The Articulation Networks refine the poses for each of the detected skeletons. The refined skeleton poses are then projected onto a set of limb-maps whcih is used instead of the ``first guess'' limb-maps from $lp$, in successive timesteps $T_{P} + 1 < t \leq T_{P} + T_{C}$.
+At timestep $t = T_{P} + 1$ the refined ``first guess'' limb-maps from $lp$ are again stacked with the depth features from $df$, and used as inputs to $jp$ which produces a set of likely \emph{joint-maps}. These joint-maps are then passed to the Assembly function, which performs the bipartite matching algorithm and constructs a set of skeletons. An instance of the Articulation Network is created for each of the detected skeletons. The Articulation Networks refine the poses for each of the detected skeletons. The refined skeleton poses are then projected onto a set of limb-maps which is used instead of the ``first guess'' limb-maps from $lp$, in successive timesteps $T_{P} + 1 < t \leq T_{P} + T_{C}$.
 
 %% As in \cite{cao209openpose}, two networks are used to create the \gls{paf}s and the confidence maps for the joints. However, instead of training on 3-channel RGB images, we will use a single channel depth image to discover the body landmarks/joints.
 %% However, since depth images are single channel, and thus have less information than the RGB images, we propose using a shallower network. This also means we have to do the first step of feature extraction which was already done in a
@@ -36,77 +36,98 @@ At timestep $t = T_{P} + 1$ the refined ``first guess'' limb-maps from $lp$ are 
 
 \subsection{Depth feature extraction}\label{subsec:depth_feature}
 
-The main task for the \gls{cnn} $df$ is to find useful depth features for the subsequent networks. In the case of depth images, it is hypothesized that this could be planes, cylinders, or other 2D features such as edges, corners. As discussed in Section~\ref{sec:background_cnn}, the feature extraction parts of a network can be trained on large, unrelated datasets. However, no models that were pre-trained on depth images were found, so applying transfer learning for this part of the network was not an option. This part of the model is therefore not neccessarily optimal, and having only seen the inside of a dome, it might not have found features that would preform better in a real world environment.
-
-As the OpenPose architecture reuses the first 10 layers of VGG-19 (E configuration)~\cite{simonyan2015deep},  this part of the network takes inspiration from it as well. VGG-19 is constructed using several $3 \times 3$ convolutional layers with \gls{relu}~\cite{nairHintonRelu} activations, and maxpool operations at certain depths. By only using enough $3 \times 3$ convolutional layers, the number of learnable parameters are kept down, while preserving the receptive field of a larger kernel (not stacked)\footnote{For an input and output consisting of two channels the learnable parameters can calculated: One $7 \times 7$ kernel $\rightarrow 7^{2}C^{2} = 49C^{2}$ parameters. Three stacked $3 \times 3$ kernels $\rightarrow 3(3^{2}C^{2}) = 27C^{2}$ parameters.}. This is ideal for keeping the network as small, and thus as fast as possible. %% After the last layer in this network, the emissions are upsampled back to the spacial dimensions $w \times h$. This is done by multiplying the emissions with a weight matrix $W_{s}$, so the limb- and joint-maps can be added later. The further details of the architecture is described in Table~\ref{tab:cnns}. 
-
-\begin{table}
+\begin{figure}[h]
   \centering
-  \begin{tabular}[h]{|c|c|}
-    \hline
-    Depth Features $df$ & Limb/Joint Maps $lp$/$jp$ \\
-    \hline
-    \hline
-    Depth image & Features+$lm$ \\ \hline
-    conv3-64 & conv3 \\ \hline
-    maxpool & conv3 \\ \hline
-    conv3-128 & conv3 \\ \hline
-    maxpool & conv3 \\ \hline
-    conv3-256 & conv3 \\ \hline
-    conv3-256 & conv3 \\ \hline
-    maxpool & conv3 \\ \hline
-    conv3-256 & conv3 \\ \hline
-    conv3-256 & conv3 \\ \hline
-    maxpool & conv3 \\ \hline
-    conv3-512 & conv3 \\ \hline
-    conv3-512 & conv3 \\ \hline
-    conv1-128 & conv3 \\ \hline
-  \end{tabular}
-  \caption{\gls{cnn}s presented in this work. \gls{relu}s are omitted for brevity.}
-  \label{tab:cnns}
-\end{table}
-%% \begin{figure}[h]
+  \includegraphics[width=.9\textwidth]{img/rgbd_example}
+  \caption[RGB-D Example]{Example of an RGB image on the left vs. a comparative depth image of the same scene on the right. Excerpt sourced from \cite{phdthesisMaxime}.}
+  \label{fig:rgbdex}
+\end{figure}
+
+The main task for the \gls{cnn} $df$ is to find useful depth features for the subsequent networks. As illustrated in Figure~\ref{fig:rgbdex}, the information in depth images is not as dense as in RGB images. With the goal of object recognition, networks that are trained on RGB images could rely on features such as colors and textures. For example, the blue shirt vs. the khaki pants or the checkerboard pattern of the floor. However, none of those features are present in the depth image. In both images, edges could be extracted to indicate the outline of objects. Indeed, the edges detected in the depth image could be more useful for this purpose than in the RGB image because they would represent the actual 3D boundary between two objects. A quick example could be two boxes of the same color placed partly behind each other. In an RGB image, they could appear to be part of the same object, whereas a sharp edge would separate them in a depth image. Still, much of the information in depth images have to rely on gradients and other features at a larger scale. It can be speculated that representations for planes geometric or organic shapes will be learned.
+
+Figure~\ref{fig:point_cloud} shows that depth images can also be represented as points in a volume. However, to use such a representation of the data as input to a 3D \gls{cnn}, a limit would have to be placed on the observed depth to define a fixed input size. This would lead to a sparse representation of the data, where many convolutions would contain empty space. Since no information can be gathered in the occluded parts of the scene anyway, a single channel depth image is a more succinct representation of the input.
+
+As discussed in Section~\ref{sec:background_cnn}, the feature extraction parts of a network can be trained on large, unrelated datasets. However, no models that were pre-trained on depth images were found, so applying transfer learning for this part of the network was not an option. This part of the model is therefore not necessarily optimal, and having only seen the inside of a dome, it might not have found features that would perform better in a real-world environment.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{img/convvgg}
+  \caption[Depth Feature Extraction]{Depth feature extractor network. The maxpool layers has size $2 \times 2$ and stride 2. Each convolutional layer uses the \gls{relu} activation function.}
+  \label{fig:depth_feature_network}
+\end{figure}
+
+The OpenPose architecture reuses the first 10 layers of VGG-19 (E configuration)~\cite{simonyan2015deep}. Therefore, this part of the network takes inspiration from it as well. VGG-19 is constructed using several $3 \times 3$ convolutional layers with \gls{relu}~\cite{nairHintonRelu} activations, and maxpool operations at certain depths. By only using enough $3 \times 3$ convolutional layers, the number of learnable parameters are kept down, while preserving the receptive field of a larger kernel (not stacked)\footnote{For an input and output consisting of two channels the learnable parameters can calculated: One $7 \times 7$ kernel $\rightarrow 7^{2}C^{2} = 49C^{2}$ parameters. Three stacked $3 \times 3$ kernels $\rightarrow 3(3^{2}C^{2}) = 27C^{2}$ parameters.}. This is ideal for keeping the network as small, and thus as fast as possible. However, since the information at a small scale can be sparse in depth images, dilation is used to obtain a larger receptive field for each convolutional layer. This is different from pooling layers, because they emit which \emph{feature} in a certain layer has the strongest, weakest or calculate what the average response to the input was. On the other hand, a dilated convolutional layer \emph{creates} features for a larger receptive field, and does not downscale the spacial dimensions of the feature tensor, if same-padding is utilized. The first convolutional layer in Figure~\ref{fig:depth_feature_network} uses dilation of 4 to compensate for the lack of small-scale features in the depth image.
+
+%% \begin{table}
 %%   \centering
-%%   \includegraphics[width=\textwidth]{img/depth_feature_network}
-%%   \caption{}
-%%   \label{fig:depth_feature_network}
-%% \end{figure}
+%%   \begin{tabular}[h]{|c|c|}
+%%     \hline
+%%     Depth Features $df$ & Limb/Joint Maps $lp$/$jp$ \\
+%%     \hline
+%%     \hline
+%%     Depth image & Features+$lm$ \\ \hline
+%%     conv3-64 & conv3 \\ \hline
+%%     maxpool & conv3 \\ \hline
+%%     conv3-128 & conv3 \\ \hline
+%%     maxpool & conv3 \\ \hline
+%%     conv3-256 & conv3 \\ \hline
+%%     conv3-256 & conv3 \\ \hline
+%%     maxpool & conv3 \\ \hline
+%%     conv3-256 & conv3 \\ \hline
+%%     conv3-256 & conv3 \\ \hline
+%%     maxpool & conv3 \\ \hline
+%%     conv3-512 & conv3 \\ \hline
+%%     conv3-512 & conv3 \\ \hline
+%%     conv1-128 & conv3 \\ \hline
+%%   \end{tabular}
+%%   \caption{\gls{cnn}s presented in this work. \gls{relu}s are omitted for brevity.}
+%%   \label{tab:cnns}
+%% \end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{img/depth_image_receptive_fields}
+  \caption[Receptive fields in depth images]{Relevant receptive fields in a depth image. Fields are shown as green boxes, with sizes placed near the edge.}
+  \label{fig:depth_fields}
+\end{figure}
 
 \subsection{Limb- and Joint-Maps}
 
 In \cite{cao2019openpose,wei2016cpm} it is observed that the receptive field of the convolutions are important to establish long-range inferences about body landmarks. This might be because the network learns about the natural symmetries in the human body, and can therefore more easily predict the relationship between different body parts.
 
-In the revisited version of OpenPose, the $7 \times 7$ convolution blocks in the pipeline are replaced by convolution blocks of three $3 \times 3$ filters, where the emissions from each filter is concatenated at the end of the block. This preserves the receptive field of the convolution block, while reducing the number of learnable parameters, as noted in \cite{simonyan2015deep}.
+In the revisited version of OpenPose, the $7 \times 7$ convolution blocks in the pipeline are replaced by convolution blocks of three $3 \times 3$ filters, where the emissions from each filter is concatenated at the end of the block. This preserves the receptive field of the convolution block, while reducing the number of learnable parameters, as noted in \cite{simonyan2015deep}. In addition, by concatenating the result from each layer at the end of the block, a type of residual network~\cite{he2015deep} is created, mitigating the vanishing gradient problem.
 
-For each pixel in the current layer of the \gls{cnn}, we collect information from a filter-sized portion of the previous layer. This means that deeper layers look at a larger and larger portion of the input layer. This is useful for detecting connections between large-scale structures. This also means that after a certain depth, there may not be any more useful information.
+DepthPose uses three such convolution blocks, with a two final $1 \times 1$ convolution layers with dropout between them. This final feature vector is then upsampled through a transposed convolution layer. The output of this is a tensor of $w \times h \times N$ where $N$ is the number of feature maps needed for the network. Since the limb and joint maps look for the same kind of long-reaching features, the architecture is similar.
 
-In our experiments, we will try different depths for feature extraction.
+The limb-map network produce tensors $3M \times w \times h$ where $M$ is the number of limbs in a skeleton. Each limb has 3 components, as they encode the vector pointing in the direction of the limb at that coordinate.
 
-Some of these features might be desirable as inputs for later layers in object classification.
+The joint-maps are tensors $2N \times w \times h$ where $N$ is the number of joints in a skeleton. The tensors encode the depth of the limb at that location, as well as the confidence.
 
-This network is built from the ground up. Therefore we want some layers to, for example, detect edges and one for detecting slanting gradients or connected surfaces. For limbs, we might want to find surfaces that are shaped like tubes or oblong spheroids.
+%% For each pixel in the current layer of the \gls{cnn}, we collect information from a filter-sized portion of the previous layer. This means that deeper layers look at a larger and larger portion of the input layer. This is useful for detecting connections between large-scale structures. This also means that after a certain depth, there may not be any more useful information.
 
-\subsection{3D object detection}\label{subsec:obj_detect}
-In this part of the network, we borrow some of the architecture described in \cite{cao2017realtime}. The purpose is to find joints and limbs and put them into \gls{paf}s or joint confidence maps. 
+%% In our experiments, we will try different depths for feature extraction.
+
+%% Some of these features might be desirable as inputs for later layers in object classification.
+
+%% This network is built from the ground up. Therefore we want some layers to, for example, detect edges and one for detecting slanting gradients or connected surfaces. For limbs, we might want to find surfaces that are shaped like tubes or oblong spheroids.
 
 \subsection{Articulation network}\label{subsec:articulation}
+The articulation network solves the problem where two people occludes the other. If a joint of the same body part for two people is co-linear to the camera, this joint can not be represented in the joint-map for the occluded person.
+
 The articulation network is stacked on top of the part-detection network and its main role is to refine the limb lengths and angles between each joint. Each of the detected persons are passed through the articulation network, which leads to a bit more complexity and runtime for the network based on the number of people. However, since the network has so comparatively few inputs, and is quite shallow, preformance is not expected to suffer notably.
 
-The coordinates and confidences for each joint (if not detected, confidence is 0) and the mean PAF vector for each limb is the input to the network.
+The coordinates and confidences for each joint (if not detected, confidence is 0) is the input to the network. The network will try to find out what the positions of joints with low confidences, or no detections, should be. It is hypothesized that this network will learn things like symmetry (left and right limbs should have the same length), proportionality (limbs should be proportional to each other), possible articulations, and natural poses.
 
-The network will try to find out what the positions of joints with low confidences, or no detections, should be. It is hypothesized that this network will learn things like symmetry (left and right limbs should have the same length), proportionality (limbs should be proportional to each other), possible articulations, and natural poses.
+The architecture is visualized as a simple, almost fully connected neural network. Since each joint has four properties, (x, y, z, c), these are input to a single neuron in the network. The layers after this is however fully connected.
 
-For joints that isn't detected or where the confidence is very low, the network will input some standard coordinates for that joint, scaled by the limbs we already have the strongest confidences for. The standard scaling/coordinates are hard-coded, based on the human anatomy surveys in \cite{bodySegmentParams}. The exception is eyes and ears, which is set to the best guess. In addition, the depth coordinate for each joint is set to 0. Numbering and a visualization of the skeleton can be seen in Figure \ref{fig:skeleton_markers}.
+\section{Assembly}
 
-The architecture is visualized as a simple, fully connected neural network. Though, it might be enough to connect the neurons responsible for connected limbs. A neuron in the second layer connected to the foot, knee and one of the hip-joints does not need to be connected to the inputs from a hand or shoulder. Subsequent hidden layers can however, be fully connected.
+Done in the same way as \cite{cao2019openpose}, however the score-equation for the line integral is
+\begin{equation}
+  S = \sum_{i=0}^{K}\cos(\theta)
+\end{equation}
+$\theta$ is the angle between the the vector defined by the candidate points and the angle of the vector at the points of the limb-maps along the line $i, K$
 
-If we had some input describing the direction of the camera, and the \gls{visual_hull} containing the undetected points, this network may perform better, because the position of the limb would be constrained to the \gls{visual_hull}. However, that would require a fundamental change to the network, which is not done in this work.
-
-This network will also be trained separately, as all it needs is poses and random confidences as inputs.
-
-\section{Training data preparation}
-
-Skeleton models
 \begin{figure}[h]
 
   \begin{floatrow}
@@ -200,15 +221,6 @@ Skeleton models
   \end{floatrow}          
 \end{figure}
 
-
-\section{3D encoding}
-The 3D scene is stored in a 2D depth map. That means that there is no need for a bounding box that creates constraints on how far away any detections can happen. The drawback being that any objects placed behind each other in the scene will suffer from being occluded.
-
-Because of the 2D space, occurrences of distance information is limited to 1 per pixel in the 2D space. So, if two objects we want to represent are in line with each other (one occludes the other), there is no way to retain information about/distances to the two objects in the 2D space.
-This leads to the question of how two inline (along the z-axis) joints can be represented for a 3D part affinity field. Even though for this use case, the only scenario is that two of the same limb is co-linear (i.e., two persons are standing right behind each other). This means that when parts are connected into skeletons, there will be a chance for a limb to be reused between two people.
-
-
-TODO> explain targets for the CNN (limb- and joint-maps)
 %% \section{2D detection transfer}
 
 %% (First ideas.)

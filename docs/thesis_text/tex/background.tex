@@ -8,9 +8,9 @@ At a higher level, hand-crafted feature descriptors have been made. They look fo
 Hand-crafted features have also been used in machine learning scenarios. As an example, Haar-like features were demonstrated to efficiently find faces in \cite{haarcascade}. Here, the machine learning model decided which of a given set of features to use to classify whether the frame contained a face or not. In using both the Sobel operator and using Haar-like features, a filter is passed over the image. In the case of the Sobel operator, this is an actual convolution of the image with the filter, whereas Haar-features are extracted using a sliding window. This is the intuition that is used in Convolutional Neural Networks, discussed next.
 
 \section{Convolutional Neural Networks}\label{sec:background_cnn}
-Instead of using hand-crafted features, \gls{cnn}s define the features they use, when they are trained. This is one of the reasons why \gls{cnn}s needs fairly large training sets, as well as taking a long time to train. Therefore, a popular approach is to reuse the first few primitive layers (the first layers encountered in a forward-pass) from other models. This is known as \emph{Transfer Learning}. It can be accomplished by first training a neural network for a specific task, for example recognizing a handful of different types of objects in an image. Then, the primitive layers with their parameters are ``chopped off'' the network. Since these layers only have learned primitive features, these learned features can be input and fine-tuned to specialize a different network, which in turn needs less training time, since it has already learned the simple features. Another advantage of this is that the two networks can be trained on vastly different datasets. If one application area has an abundance of training data, the first network could be trained on this. As long as the general input is the same, namely the number of channels and the values presented, the first few layers can be easily fine-tuned to a new application area.
+First introduced by Fukushima~\cite{Fukushima1980} \gls{cnn}s encode spacial information without being affected by shifts in position of that information. In other words, they look at collections of \emph{spacially connected pixels}. \gls{cnn}s use filters, or kernels, to extract features which helps them to ``understand'' an image. The deeper the network is, the more complex features emerge. In addition, the \emph{receptive field}, the patch of the original image that affects the feature, becomes larger. 
 
-\gls{cnn}s are widely used in image classification tasks because they look at a collection of spatially connected pixels. This means \gls{cnn}s are robust to the placement of the object in the frame, and even partial occlusions. The deeper the network is, the more complex features emerge. In addition, the \emph{receptive field}, the patch of the original image that affects the feature, becomes larger. For convolutional layers that is, not pooling layers.
+Instead of using hand-crafted features, deep \gls{cnn}s define the features they use, when they are trained. This is one of the reasons why \gls{cnn}s needs fairly large training sets, as well as taking a long time to train. Therefore, a popular approach is to reuse the first few primitive layers (the first layers encountered in a forward-pass) from other models. This is known as \emph{Transfer Learning}. It can be accomplished by first training a neural network for a specific task, for example recognizing a handful of different types of objects in an image. Then, the primitive layers with their parameters are ``chopped off'' the network. Since these layers only have learned primitive features, these learned features can be input and fine-tuned to specialize a different network, which in turn needs less training time, since it has already learned the simple features. Another advantage of this is that the two networks can be trained on vastly different datasets. If one application area has an abundance of training data, the first network could be trained on this. As long as the general input is the same, namely the number of channels and the values presented, the first few layers can be easily fine-tuned to a new application area.
 
 When designing a \gls{cnn}, it is often helpful to have in mind exactly what one can imagine should be detected in each layer. In 2D images, the first few layers of a deep \gls{cnn} have been shown to often mimic behavior of the simple handmade feature-extractors such as the ones discussed above. However, such features can be quite different in 3D. Instead of edge-detectors, one can imagine plane-detectors, or other detectors unique to 3D objects. Additionaly, 3D depth images only have a single channel, where as most 2D \gls{cnn}s have been trained on 3-channel RGB images. \cite{song2018depth} argues that it is therefore better to train such networks from scratch.
 
@@ -22,11 +22,12 @@ When designing a \gls{cnn}, it is often helpful to have in mind exactly what one
 \end{figure}
 
 \section{Depth Images}
-In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through the pixel.
+In contrast to color, or RGB images, depth images contain information about the distances. Each pixel contains a measure of the distance from the camera x,y plane to the real world point projected through that pixel. 
 
-TODO> about loss of accuracy at distance
-TODO> about reprojection from world to image-coordinates
-TODO> about occlusion and visual hull still being a thing
+%% TODO> about loss of accuracy at distance
+
+%% TODO> about reprojection from world to image-coordinates
+
 
 
 \section{Pose Estimation}
@@ -81,7 +82,5 @@ In \cite{cao2017realtime}, the second approach is used. Two \gls{cnn}s, one for 
 Using the method described in \cite{cao2017realtime}, no information is given for joints that are not accurately detected. If, for example, an extremity is occluded together with half of the connecting limb, the extremity will not be part of the output skeleton, even if the joint could be extrapolated from the parts of the limb that is visible.
 This is also true for undetected joints in the middle of a joint chain. The joint could be extrapolated using the surrounding joints. The problem with joint-extrapolation happens because of the bipartite matching, which does not work if any joint is missing.
 
-TODO> Microsoft pose estimation for kinect using tree-models
 
-\section{Bipartite Matching}
 

@@ -1,12 +1,17 @@
 \chapter{Datasets}
 
-This chapter presents an overview of available datasets suitable for human pose estimation in depth images. The datasets are evaluated according to closeness to real-world conditions, the amount of data and the accuracy of the recorded poses.
+This chapter presents an overview of the datasets suitable for human pose estimation in depth images. The datasets are evaluated according to closeness to real-world conditions, the amount of data and the accuracy of the recorded poses.
 
-\section{Requirements/Considerations}
 
-\section{Existing Datasets}
+\section{The Panoptic Studio Dataset}
 
-The sequences in the dataset were recorded at approximatley 30 fps. All frames and world coordinate positions at an approximate single timestep is hereby referred to as a \emph{frame}. To create samples, frames from the sequences were extracted at a set of different rates according to the amount of movement in the sequence. For sequences with a lot of movement the rate was set to every 5 seconds, moderate movement every 15 seconds, and for sequences where the subjects stood largely still, samples were extracted every 30 seconds. Each sequence is recorded by 10 different kinects from a height of 1 and 2 meters above ground. This results in a total number of 10x the amount of samples listed in Table~\ref{tab:sequences}.
+The dataset used in this work was created from source material provided by the Panoptic Studio \cite{Joo_2015_ICCV, Joo_2017_TPAMI}. Calibration files, predicted ground-truth skeletons and depth images were downloaded using the GNU parallel program~\cite{Tange2011a}. Some problems were experienced, as the Panoptic Studio server was quite unreliable, which resulted in significant delays, as well as corrupted files and in return a smaller dataset than desired.
+
+A set of five complete sequences were set aside as the test set to ensure that the network wouldn't recognize any similar frames or body positions from previous sets.
+
+The dataset contains samples from a wide variety of activities, view-angles, number of people in the scene, and body compositions.
+
+The sequences in the dataset were recorded at approximatley 30 fps. All frames and world coordinate positions at an approximate single timestep is hereby referred to as a \emph{frame}. To allow for poses to change, two samples were extracted per second. Each sequence was recorded by 10 different kinects from a height of 1 and 2 meters above ground. This results in a total number of 10x the amount of samples listed in Table~\ref{tab:sequences}.
 
 \begin{figure}
   \centering
@@ -27,15 +32,11 @@ The sequences in the dataset were recorded at approximatley 30 fps. All frames a
     \centering
     \includegraphics[width=\linewidth]{img/pointcloud}
     \caption{The depth image projected to a point cloud.}
-    \label{fig:dataset_skeletons}
+    \label{fig:point_cloud}
   \end{subfigure}%  
-  \caption{Combination of datapoints for frame 144 in \cite{Joo_2015_ICCV}}
+  \caption{Combination of datapoints for sequence 160226\_haggling1, frame 144 in the Panoptic Studio Dataset~\cite{Joo_2015_ICCV}.}
   \label{fig:skeleton_depth_duo}
 \end{figure}
-
-The dataset used in this work was created from source material provided by the Panoptic Studio \cite{Joo_2015_ICCV, Joo_2017_TPAMI}. Calibration files, predicted ground-truth skeletons and depth images were downloaded using the GNU parallel program~\cite{Tange2011a}. Some problems were experienced, as the Panoptic Studio server was quite unreliable, which resulted in significant delays, as well as corrupted files and in return a smaller dataset than desired.
-
-A set of five complete sequences were set aside as the test set to ensure that the network wouldn't recognize any similar frames or body positions from previous sets.
 
 \begin{table}
   \centering
@@ -85,9 +86,9 @@ A set of five complete sequences were set aside as the test set to ensure that t
   \label{eq:epanechnikov}
   K(x, y) =
   \begin{cases}
-    \frac{2}{\pi\sigma^{2}}(1 - ((\frac{x}{\sigma})^{2} + (\frac{y}{\sigma})^{2}) & \text{if } |(\frac{x}{\sigma})^{2} + (\frac{y}{\sigma})^{2}| \leq 1\\
+    \frac{2}{\pi\sigma^{2}}(1 - ((\frac{x}{\sigma})^{2} + (\frac{y}{\sigma})^{2})) & \text{if } |(\frac{x}{\sigma})^{2} + (\frac{y}{\sigma})^{2}| \leq 1\\
     0 & \text{otherwise}
-    \end{cases}
+  \end{cases}
 \end{equation}
 
 \begin{figure}
@@ -97,8 +98,22 @@ A set of five complete sequences were set aside as the test set to ensure that t
   \label{fig:epanechnikov}
 \end{figure}
 
-Target limb-maps for each frame was created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. A 2D Epanechnikov Kernel with variable $\sigma$ were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The limbs furthest away were calculated first, so the vectors from these would be overwritten by subsequent limbs in case they were behind each other. The $\sigma$ of the Epanechnikov Kernel was determined by the average depth of a $3 \times 3$ kernel around the point. The reason for varying the $\sigma$ was to simulate that the shell around the limb would appear smaller at a greater distance. The matrix was then thresholded by the magnitude of each vector to generate a cleaner output.
+Target limb-maps for each frame was created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. A 2D Epanechnikov Kernel with variable $\sigma$ were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The limbs furthest away were calculated first, so the vectors from these would be overwritten by subsequent limbs in case they were behind each other. The $\sigma(x, y)$ of the Epanechnikov Kernel was determined by the average depth of a $3 \times 3$ kernel around the point. The reason for varying the $\sigma$ was to simulate that the shell around the limb would appear smaller at a greater distance. The matrix was then thresholded by the magnitude of each vector to generate a cleaner output. However, because the normalization constant would change the magnitude of the vectors at the center according to the distance, the equation was simplified to a quadratic function \ref{eq:simplequad}.
 
-\section{Batch Loading}
+\begin{equation}
+  \label{eq:simplequad}
+  K(x, y) =
+  \begin{cases}
+    1 - ((\frac{x}{\sigma(x, y)})^{2} + (\frac{y}{\sigma(x, y)})^{2}) & \text{if } |(\frac{x}{\sigma(x, y)})^{2} + (\frac{y}{\sigma(x, y)})^{2}| \leq 1\\
+    0 & \text{otherwise}
+  \end{cases}
+\end{equation}
 
-The data were loaded in batches...
+\begin{equation}
+  \label{eq:depth}
+  \sigma(x, y) = \frac{c}{D(x, y)}
+\end{equation}
+
+Equation~\ref{eq:depth} describes how $\sigma$ changes by the value in the depth image $D$. The constant $c$ is chosen by the width of the limb in pixels at a certain distance.
+
+
