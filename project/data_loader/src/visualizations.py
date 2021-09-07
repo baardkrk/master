@@ -7,6 +7,13 @@ import math
 import open3d as o3d
 
 
+edges = [
+    (0, 1), (0, 2), (1, 15), (15, 16), (0, 3), (3, 4), (4, 5),
+    (2, 6), (6, 7), (7, 8), (1, 17), (17, 18), (0, 9), (9, 10),
+    (10, 11), (2, 12), (12, 13), (13, 14)
+]
+
+
 def show_depth_frame(kinect_node, idx, loader: DataLoader):
     bodies, univ_time = loader.load_body_file(idx)
     kinect_idx = loader.nearest_depth_idx(univ_time, kinect_node)
@@ -33,6 +40,9 @@ def display_skeleton(kinect_node, idx, loader):
     kinect_idx = loader.nearest_depth_idx(univ_time, kinect_node)
     img = loader.load_depth_frame(kinect_node, kinect_idx)
 
+    cmap = plt.get_cmap('jet')
+    rgba = cmap(img)
+    rgba[:, :, 0] *= 0
     for skeleton in skeleton_list:
         joints = skeleton_2d_points(skeleton, loader, kinect_node)
 
@@ -43,9 +53,31 @@ def display_skeleton(kinect_node, idx, loader):
             edges.append(((point_a[0], point_a[1]), (point_b[0], point_b[1])))
 
         mag_map = magnitude_map(img, edges)
-        img = np.multiply(img, mag_map)
+        rgba[:, :, 0] += mag_map
+        # img = np.multiply(img, mag_map)
 
-    plt.imshow(img, interpolation='nearest')
+    plt.imshow(img, interpolation='nearest', cmap='jet')
+    plt.imshow(rgba)
+    plt.show()
+
+
+def display_skeletons_batch(kinect_node, idx, loader):
+    bodies, univ_time = loader.load_body_file(idx)
+    kinect_idx = loader.nearest_depth_idx(univ_time, kinect_node)
+    img = loader.load_depth_frame(kinect_node, kinect_idx)
+    cmap = plt.get_cmap('jet')
+    rgba = cmap(img)
+    rgba[:, :, 0] *= 0
+
+    for body in bodies:
+        coords = body.reshape(-1, 4)[:, :3].T
+        rows, cols = loader.reproject_points(kinect_node, coords)
+        edge_coords = [((rows[e[0]], cols[e[0]]), (rows[e[1]], cols[e[1]])) for e in edges]
+        mag_map = magnitude_map(img, edge_coords)
+        rgba[:, :, 0] += mag_map
+
+    plt.imshow(img, interpolation='nearest', cmap='jet')
+    plt.imshow(rgba)
     plt.show()
 
 
@@ -112,12 +144,13 @@ def epanechnikov_2d(sigma, distance):
     ax = fig.add_subplot(111)
     ax.pcolor(_x, _y, z)
     plt.show()
-    pass
 
 
 if __name__ == '__main__':
     loader = DataLoader('../data', '160226_haggling1')
-    show_depth_frame_as_pointcloud('KINECTNODE6', 144, loader)
+
+    display_skeletons_batch('KINECTNODE6', 144, loader)
+    # show_depth_frame_as_pointcloud('KINECTNODE6', 144, loader)
     # epanechnikov_2d(5, 5)
     # skeleton_visualization_3d(loader, 144)
     # show_depth_frame('KINECTNODE6', 144, loader)

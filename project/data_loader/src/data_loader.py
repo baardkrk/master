@@ -44,12 +44,16 @@ class DataLoader:
         self.panoptic_sync_table = f'{root_path}/{sequence}/synctables_{sequence}.json'
         self.body_3d_scene_dir = f'{root_path}/{sequence}/hdPose3d_stage1_coco19'
         self.sensors = None
+        self.color_sensors = None
         with open(self.kinect_calib, 'r') as calib_file:
             calib = json.load(calib_file)
             self.sensors = calib['sensors']
+        with open(self.panoptic_calib, 'r') as calib_file:
+            calib = json.load(calib_file)
+            self.color_sensors = [c for c in calib['cameras'] if c['type'] == 'kinect-color']
         # The kinect nubmer mapping tells us which index in the self.sensors array
         # the corresponding kinectnode is.
-        self.kinect_number_mapping = [5, 8, 7, 9, 6, 1, 2, 10, 3, 4]
+        self.kinect_number_mapping = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     def load_depth_frame(self, kinect_node: str, idx: int):
         """
@@ -112,6 +116,7 @@ class DataLoader:
         return closest
 
     def project_points(self, kinect_n: str, depth_frame):
+        """Project points from a depth frame into 3D coordinates"""
         kinect_number = int(re.search(r'\d+', kinect_n).group())
         sensor = self.sensors[self.kinect_number_mapping.index(kinect_number)]
         k_depth = np.array(sensor['K_depth'])
@@ -124,6 +129,7 @@ class DataLoader:
         return points
 
     def project_point(self, cx, cy, fx, fy, iy, ix, img):
+        """Project a point into 3D coordinates"""
         # x = col, y = row
         x = (ix - cx) * img[iy, ix] / fx
         y = (iy - cy) * img[iy, ix] / fy
@@ -139,22 +145,48 @@ class DataLoader:
         """
         kinect_number = int(re.search(r'\d+', kinect_n).group())
         sensor = self.sensors[self.kinect_number_mapping.index(kinect_number)]
-        m_world = np.array(sensor['M_world2sensor'], dtype=float)
-        m_depth = np.array(sensor['M_depth'], dtype=float)
+        sensor_name = f'50_{kinect_number:02}'
+        color_sensor = next(s for s in self.color_sensors if s['name'] == sensor_name)
+
+        # m_world = np.array(sensor['M_world2sensor'], dtype=float)
+        # m_depth = np.array(sensor['M_depth'], dtype=float)
         k_depth = np.array(sensor['K_depth'])
         distort_d = np.array(sensor['distCoeffs_depth'])
 
-        _m = np.matmul(m_depth, m_world)
-        # _r = np.matrix(_m[:3, :3])
-        # _t = np.array(_m[:3, -1]).reshape((3, 1))
+        # _m = np.matmul(m_depth, m_world) * 10
+        _m = np.concatenate((np.array(color_sensor['R']), np.array(color_sensor['t'])), axis=1)
+        _m = np.concatenate((_m, np.array([[0, 0, 0, 1]])), axis=0)
 
         _extrinsic = np.matmul(_m, np.append(coord, 1).transpose())
         _extrinsic = np.matmul(np.eye(3, 4), _extrinsic.transpose())
+        _extrinsic = np.array([_extrinsic[0]/_extrinsic[2], _extrinsic[1]/_extrinsic[2], 1])
+        _extrinsic = np.add(_extrinsic, np.array([.02, 0, 0]))
         _intrinsic = np.matmul(k_depth, _extrinsic.transpose())
-        row, column = _intrinsic[0]/_intrinsic[2], _intrinsic[1]/_intrinsic[2]
 
+        column, row = _intrinsic[0], _intrinsic[1]
         # Apply distortion
         # x = projectPoints(coord, k_depth, _r, _t, distort_d)
         # return x
         return int(row), int(column)
 
+    def reproject_points(self, kinect_n, coord: np.ndarray):
+        kinect_number = int(re.search(r'\d+', kinect_n).group())
+        sensor_name = f'50_{kinect_number:02}'
+        sensor = self.sensors[self.kinect_number_mapping.index(kinect_number)]
+        color_sensor = next(s for s in self.color_sensors if s['name'] == sensor_name)
+
+        # camera intrinsics/extrinsics
+        k_depth = np.array(sensor['K_depth'])
+        _m = np.concatenate((np.array(color_sensor['R']), np.array(color_sensor['t'])), axis=1)
+        _m = np.concatenate((_m, np.array([[0, 0, 0, 1]])), axis=0)
+        coord = np.concatenate((coord, [np.ones(coord.shape[1])]), axis=0)
+
+        ex = np.matmul(_m, coord)
+        ex = np.matmul(np.eye(3, 4), ex)
+        ex = np.array([ex[0, :]/ex[2, :], ex[1, :]/ex[2, :], np.ones(ex.shape[1])])
+        ex = np.add(ex, np.array([[0.02, 0, 0]]).T)
+
+        intr = np.matmul(k_depth, ex)
+        columns, rows = intr[0, :]/intr[2, :], intr[1, :]/intr[2, :]
+
+        return rows.astype(int), columns.astype(int)

@@ -3,7 +3,7 @@
 %% WHY DOES IT REPRESENT A PROGRESS IN RESEARCH
 
 %% Objective of the system
-DepthPose is a complete system for extracting human 3D poses from a single depth image in real-time\footnote{Real-time is defined as being capable of processing at least 30 depth frames per second on the specified minimum hardware requirements.}. It is specifically tailored for use in robotic applications where computational resources are limited. Because the \gls{mecs} is envisioned to be a mobile unit, DepthPose has to be robust to seeing the person from different viewing angles and to occlusions between the person and the depth-sensor. The architecture is inspired by and builds off of the architecture in OpenPose~\cite{cao2019openpose}. The general pipeline of DepthPose follows the OpenPose pipeline in figure~\ref{fig:openpose_pipeline} closely, with the addition of a novel Articulation Network that refines the poses after the bipartite matching.
+The DepthPose here introduced is a complete system for extracting human 3D poses from a single depth image in real-time\footnote{Real-time is defined as being capable of processing at least 30 depth frames per second on the specified minimum hardware requirements.}. It is specifically tailored for use in robotic applications where computational resources are limited. Because the \gls{mecs} is envisioned to be a mobile unit, DepthPose has to be robust to be able to see the person from different viewing angles despite possible occlusions between the person and the depth-sensor. The architecture is inspired by and builds on the architecture in OpenPose~\cite{cao2019openpose}. The general pipeline of DepthPose follows the OpenPose pipeline in figure~\ref{fig:openpose_pipeline} closely, with the addition of a novel Articulation Network that refines the poses after the bipartite matching.
 
 %% Why 3D?
 One of the goals for the \gls{mecs} project is to look for patterns that could lead to worsening or more dangerous living conditions. To that end, \gls{har} is implemented with the purpose of tracking a user from day to day. Representing the pose in 3D will simplify application areas such as \gls{har}, because a 3D representation of a skeleton can be defined by a coordinate system constrained to any two connected limbs from the observed skeletons. This means that two different skeleton observations can be represented by a common reference point. Had the skeletons been represented in 2D, the same skeleton seen from two different angles could look vastly different, even if referenced from the same limb. Comparing the two 2D poses will therefore be a more difficult problem than comparing the same poses referenced from a common 3D coordinate system.
@@ -220,6 +220,14 @@ $\theta$ is the angle between the the vector defined by the candidate points and
     }
   \end{floatrow}          
 \end{figure}
+
+\section{Training}
+%% criterion, why was this chosen
+%% Learning rate
+%% optimizer
+
+
+
 
 %% \section{2D detection transfer}
 

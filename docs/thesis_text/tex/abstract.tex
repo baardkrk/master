@@ -1,13 +1,11 @@
 \chapter*{Abstract}
 
 
-This work is part of a larger project where we explore bringing robotics into geriatric care. The goal of this project is to create a robotic system that can assist in optimizing the use of caregivers, so they are used where they are needed.
+This work is part of a larger project that explores the possibility of bringing robotics into geriatric care. The goal of that project is to create a robotic system that can assist in optimizing the use of caregivers, so they are used where they are needed.
 
-This work will focus on capturing information about the user, anonymization of the data, what data is necessary or ethical to capture, limitations for on-location data processing and what data can be sent for further processing in the cloud, or human analysis.
+This work introduces \emph{DepthPose} -- a system that solves human pose estimation in 3D for full skeletons. The system is lightweight and can be deployed on mobile units.
 
-We will also implement an ethical data-collection suite for the open-source Robotic Operating System, which can be implemented on a wide variety of robots.
-
-Convolutional Neural Networks have been used for solving object recognition in 2D images with great success. This work aims to use the same techniques to extract 3D human pose from depth images in real-time. We will use two multi-staged CNNs, one to encode the location of each joint, and another to encode the association between the joints to do this.
+Convolutional Neural Networks have been used for solving object recognition in 2D images with great success. This work aims to use the same techniques to extract 3D human poses from depth images in real-time. Two multi-staged CNNs, one to encode the location of each joint and another to encode the association between the joints, provide initial poses and locations for perceived people. The locations are then refined using a novel articulation network.
 
 
 %% \begin{itemize}

@@ -1,19 +1,8 @@
 \chapter{Future Work}
 
-Finding more accurate pose from a temporal algorithm which takes input from a series of depth images, from a single viewpoint.
-
-Finding more accurate pose from multiple viewpoints.
-
-Heart/respiration rate monitoring using frequency search in changing rgb and depth-pixel values for automatically selected RoIs.
-
-Mood detection on facial expressions.
-
-Human activity recognition using 3D pose provided by the method proposed in this paper.
-
-Train the network over a larger dataset in unstructured environments and with multiple people present.
-
-Train an accompanying network that takes a sequence of estimated limb positions and their probability as input, and trying to refine the estimation based on earlier detection. This could also be done through a Kalman filter.
-
-This should all accumulate in an LSTM network for predicting diseases. -- requires dataset aquired over possibly years, dispersed over many users, and their daily activities, as possible. Other factors that should be taken into consideration is environmental factors such as humidity, temprature and weather. (As they may be risk factors for certain conditions such as heatstroke or depression.) With such a diverse dataset we could possibly do PCA to determine certain risk factors for different diseases.
-
-Train and test network on the Human 3.6M dataset using TOF data
+\begin{itemize}
+\item Find a more accurate pose from a temporal algorithm that takes input from a series of depth images from a single viewpoint.
+\item Combine multiple viewpoints for a more accurate pose.
+\item Human activity recognition using 3D pose provided by the method proposed in this paper.
+\item Train the network over a larger dataset in unstructured environments and with multiple people present.
+\end{itemize}

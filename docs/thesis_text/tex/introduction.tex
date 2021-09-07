@@ -19,17 +19,17 @@
 % Real time
 
 %% Most important contributions of the work:
-As life expectancy increases in Norway, so does the population who needs geriatric care either at home, or in a geriatric facility. Accodring to a communal health sruvey \cite{oslohelsa}, it is projected that the increasing senior population in Oslo will lead to increased pressure on the healthcare services. To mitigate the need for help at home, it is important to encourage health-promoting activities, and uncover what and where preventative measures is needed. The \gls{mecs} is proposed as a solution where data gathered in users homes, guide where and what help is needed from healthcare personel -- be it preventative or acute.
+As life expectancy increases in Norway, so does the population who needs geriatric care either at home or in a geriatric facility. According to a communal health survey \cite{oslohelsa}, it is projected that the increasing senior population in Oslo will lead to increased pressure on the healthcare services. To mitigate the need for help at home, it is important to encourage health-promoting activities and uncover what and where preventative measures are needed. The \gls{mecs} is proposed as a solution where data gathered in users' homes guide where and what help is needed from healthcare personnel -- be it preventative or acute.
 
-The \gls{mecs} is envisioned as a small, mobile unit which can be introduced to any home. This eliminates the user from the operational loop of the unit, making the data gathering process robust to forgetfulness or physical ability of the user. One of the key information points gathered by the \gls{mecs} will be the users physical pose. The users physical pose informs the system of the folowing:\\
-\textbf{Body language}, enabling the possibility of smooth \gls{hri} when moving around, or determining the intent of the user.\\
-\textbf{Physical state}, informing the \gls{mecs} wether the user is in need of acute help.\\
+The \gls{mecs} is envisioned as a small, mobile unit that can be introduced to any home. This eliminates the user from the operational loop of the unit, making the data gathering process robust to forgetfulness or physical ability of the user. One of the key information points gathered by the \gls{mecs} will be the users' physical pose, which informs the system of the following:\\
+\textbf{Body language}, enabling the possibility of smooth \gls{hri} when moving around or determining the intent of the user.\\
+\textbf{Physical state}, informing the \gls{mecs} whether the user is in need of acute help.\\
 \textbf{History of natural posture}, which could be invaluable information for a physical therapist or doctor to develop personalized training programs preventing muscle degradation.\\
 \textbf{Activity recognition}, helping the \gls{mecs} decide on what actions to execute. For example, reminding the user to take their prescribed medication if they forget.
 
-All these key points could be captured by a 2D system, however a 2D representation of a pose would not be robust to different viewing angles. A 3D representation could define the origin of two poses' coordinate system to the same landmark in each pose, making it is easy to compare the two poses by for example the euclidian distance between the poses' corresponding landmarks.
+A 2D system could capture all these key points; however, a 2D representation of a pose would not be robust to different viewing angles. A 3D representation could define the origin of two poses' coordinate system to the same landmark in each pose, making it is easy to compare the two poses by, for example, the euclidian distance between the poses' corresponding landmarks.
 
-Estimating human pose in 3D, or \gls{mocap} is a well known area of research. However, \gls{mocap} is expensive, and requires a large amount of physical hardware. The industry standard is to use an elaborate \gls{mocap} studio that requires multiple expensive cameras, a large area, and specialized software. Therefore the application areas for motion capture are currently mostly limited to research, movie-, and videogame-making. The \gls{mocap} problem deals with finding a representation of an actor, creature, or object that can be used in animation. This representation is often a \emph{rigged} skeleton with bones that define the movement of the animated character \cite{skeletonAnimation}. The movements of the computerized rig is mapped to the movements of an observed actor in the real world and recorded.
+Estimating human pose in 3D, or \gls{mocap} is a well-known area of research. However, \gls{mocap} is expensive and requires a large amount of physical hardware. The industry standard is to use an elaborate \gls{mocap} studio that requires multiple expensive cameras, a large area, and specialized software. Therefore the application areas for motion capture are currently mostly limited to research, movie-, and videogame-making. The \gls{mocap} problem deals with finding a representation of an actor, creature, or object that can be used in animation. This representation is often a \emph{rigged} skeleton with bones that define the movement of the animated character \cite{skeletonAnimation}. The movements of the computerized rig are mapped to the movements of an observed actor in the real world and recorded.
 
 %% However, the problem \gls{mocap} technology solves, estimating human pose, have many application areas: analyzing movements, activity recognition, importing natural motions to \gls{vr}, and improving \gls{hri}. 
 
@@ -39,7 +39,7 @@ Estimating human pose in 3D, or \gls{mocap} is a well known area of research. Ho
 
 \section{Research Goals}
 
-This work explores the possibility of using a single depth camera to solve the \gls{mocap} problem of estimating human pose in 3D. To be viable in a mobile unit with limited processing capability, the resulting method needs to be lightweight and fast enough to process human motions. The resulting method must also be accurate enough for healthcare personel or the \gls{mecs} itself to extract reliable and useful information about the pose.
+This work explores the possibility of using a single depth camera to solve the \gls{mocap} problem of estimating human pose in 3D. The resulting method needs to be lightweight and fast enough to be viable in a mobile unit with limited processing capability. The resulting method must also be accurate enough for healthcare personnel or the \gls{mecs} itself to extract reliable and useful information about the pose.
 
 The method presented in this thesis will therefore be evaluated using the following goals:
 
@@ -50,15 +50,15 @@ The method presented in this thesis will therefore be evaluated using the follow
 
 \begin{enumerate}
 \item Propose a lightweight system for recognizing human pose in 3D based on depth images. 
-\item Design and develop an architecture which could be deployed to systems with limited hardware, and provide useful information.
-\item Evaluate the preformance of the system and find room for improvements for it.
+\item Design and develop an architecture that can be deployed to systems with limited hardware, and provide useful information.
+\item Evaluate the performance of the system and find room for improvements for it.
 \end{enumerate}
 
 \section{Contributions}
 
-The main contribution of this work is the proposal of using a shallow \gls{cnn} trained on depth images, in combination with a novel articulation network to define human pose in 3D. The \gls{cnn}s main task is to propose a set of poses present in the depth image. These poses are refined in the articulation network, which allows for a shallower \gls{cnn} architecture. This leads then to fewer parameters in the system, which leads to a more lightweight method that should preform faster on limited hardware.
+The main contribution of this work, a system called \emph{DepthPose}, -- is the proposal of using a shallow \gls{cnn} trained on depth images, in combination with a novel articulation network to define human pose in 3D. The \gls{cnn}s main task is to propose a set of poses present in the depth image. These poses are refined in the articulation network, which allows for a shallower \gls{cnn} architecture. This leads then to fewer parameters in the system, which leads to a more lightweight method that should preform faster on limited hardware.
 
-\section{Thesis Structure}
+%% \section{Thesis Structure}
 
 %% An algorithm using sequential refinement-steps with a combination of bottom-up evidence gathering, and a top-down neural network for articulation estimation is explored. The work also explores how shallow the network can be, as well as other optimization techniques for running on mid- to low-end hardware.
 
