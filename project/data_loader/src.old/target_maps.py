@@ -55,6 +55,7 @@ def avg_depth(r, c, img, w=3):
     ce = min(c+w, img.shape[1])
     return np.average(img[rs:re, cs:ce])
 
+
 def depth_to_line():
     """calculates the xyz position of the voxel at the input point"""
 

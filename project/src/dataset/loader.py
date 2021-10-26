@@ -1,13 +1,14 @@
 import numpy as np
 import json
 import re
+from camera import Camera
 
 
 class DataLoader:
     """
     Object for loading data.
     Data is accessed through frame- and kinect-number.
-    One DataLoader object is needed per sequence. Use of this class would 
+    One DataLoader object is needed per sequence. Use of this class would
     therefore be:
     DataLoader sequence_name = DataLoader(data_path, sequence_name)
     depth_image, _ = sequence_name.frame(idx)
@@ -30,21 +31,30 @@ class DataLoader:
         # The kinect number mapping tells us which index in the self.sensors array
         # the corresponding kinect node is.
         self.kinect_number_mapping = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        self.kinect_nodes = ['KINECTNODE1', 'KINECTNODE2', 'KINECTNODE3', 'KINECTNODE4',
+                             'KINECTNODE5', 'KINECTNODE6', 'KINECTNODE7', 'KINECTNODE8',
+                             'KINECTNODE9', 'KINECTNODE10']
+        self.cameras = [Camera(*self._k_m_matrix(n)) for n in self.kinect_nodes]
 
     def frame(self, idx: int, kinect_node: str):
         """
-        Return ground_truth map, depth image, and bodies at idx for the 
-        specified node
+        Return depth image, and bodies and the camera at idx for the specified node.
+        Bodies are at format: [x0, y0, z0, score0, x1, y1, ...]
         """
         bodies, univ_time = self._bodies_univ_time(idx)
         depth_idx = self._nearest_depth(univ_time, kinect_node)
         depth_image = self._depth_image(depth_idx, kinect_node)
-        pass
+        camera = self._get_camera(kinect_node)
+
+        return depth_image, bodies, camera
+
+    def _get_camera(self, kinect_node: str):
+        return self.cameras[self.kinect_nodes.index(kinect_node)]
 
     def _bodies_univ_time(self, idx: int):
         """
         Load the body3DScene file at the specified index
-        returns both an array of skeletons and the univ_time 
+        returns both an array of skeletons and the univ_time
         for this idx
         """
         fpath = f'{self.body_3d_scene_dir}/body3DScene_{idx:08}.json'
@@ -88,33 +98,3 @@ class DataLoader:
         m_matrix = np.concatenate((np.array(color_sensor['R']), np.array(color_sensor['t'])), axis=1)
         m_matrix = np.concatenate((m_matrix, np.array([[0, 0, 0, 1]])), axis=0)
         return k_matrix, m_matrix
-
-
-def point2d_to_3d(cx, cy, fx, fy, iy, ix, img):
-    """
-    Project the point iy, ix into the normal image plane.
-    The returned z-value is the depth at that point
-    """
-    x = (ix - cx) * img[iy, ix] / fx
-    y = (iy - cy) * img[iy, ix] / fy
-    z = img[iy, ix]
-    return x, y, z
-
-
-def point3d_to_2d(coord, k_matrix, m_matrix):
-    extrinsic = np.matmul(m_matrix, np.append(coord, 1).transpose())
-    extrinsic = np.matmul(np.eye(3, 4), extrinsic.transpose())
-    extrinsic = np.array([extrinsic[0] / extrinsic[2], extrinsic[1] / extrinsic[2], 1])
-    extrinsic = np.add(extrinsic, np.array([.02, 0, 0]))  # adding translation, because color_sensor
-    intrinsic = np.matmul(k_matrix, extrinsic.transpose())
-    column, row = intrinsic[0], intrinsic[1]
-    return int(row), int(column)
-
-
-def dist_to_line(x, y, l):
-    """
-    Calculate the distance along the line through (x, y, 1) and origo to the closest point to
-    the line l
-    """
-
-    pass
