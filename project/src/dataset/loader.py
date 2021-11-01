@@ -2,6 +2,8 @@ import numpy as np
 import json
 import re
 from camera import Camera
+from os import listdir
+from os.path import isfile, join
 
 
 class DataLoader:
@@ -47,6 +49,11 @@ class DataLoader:
         camera = self._get_camera(kinect_node)
 
         return depth_image, bodies, camera
+
+    def min_max(self):
+        files = [int(re.findall(r'\d+', f)[1]) for f in listdir(self.body_3d_scene_dir)]
+        files.sort()
+        return files[0], files[-1]
 
     def _get_camera(self, kinect_node: str):
         return self.cameras[self.kinect_nodes.index(kinect_node)]

@@ -63,13 +63,26 @@ def constrain_interval(arr, max_val):
 
 
 def kernel(sigma):
-    _x = np.arange(-sigma, sigma + 1, 1)
-    _y = np.arange(-sigma, sigma + 1, 1)
+    _x = np.arange(-sigma, sigma+1, 1)
+    _y = np.arange(-sigma, sigma+1, 1)
 
     xx, yy = np.meshgrid(_x, _y)
     z = 1 - ((xx / sigma) ** 2 + (yy / sigma) ** 2)
     z = np.where(z > 0, z, 0)
-    return z
+    return _x, _y, z
+
+
+def epanechnikov_2d(sigma, distance):
+    _x = np.arange(-distance, distance + 2, 1)
+    _y = np.arange(-distance, distance + 2, 1)
+    xx, yy = np.meshgrid(_x, _y)
+    z = ((2/(math.pi * sigma ** 2)) * (1 - ((xx/sigma)**2 + (yy/sigma)**2)))
+    z = np.where(z > 0, z, 0)
+
+    fig = plt.figure(figsize=(4, 4))
+    ax = fig.add_subplot(111)
+    ax.pcolor(_x, _y, z)
+    plt.show()
 
 
 def add_max(org, kernels, centres):
@@ -93,5 +106,12 @@ def add_kernel(org: np.ndarray, kernel: np.ndarray, center):
 
 
 if __name__ == '__main__':
-    pass
+    from matplotlib import pyplot as plt
 
+    _x, _y, z = kernel(7)
+    print(z)
+    print(z.shape)
+    fig = plt.figure(figsize=(4, 4))
+    ax = fig.add_subplot(111)
+    ax.pcolor(_x, _y, z)
+    plt.show()

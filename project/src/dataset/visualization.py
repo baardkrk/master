@@ -65,28 +65,6 @@ def display_skeleton(kinect_node, idx, loader):
     plt.imshow(depth_image, interpolation='nearest', cmap='jet')
     plt.imshow(rgba)
     plt.show()
-    # for body in bodies:
-
-    #     for edge in edges:
-    #         point_a = camera.reproject_point()
-
-    # skeleton_list = [Skeleton(x) for x in bodies]
-
-    # kinect_idx = loader.nearest_depth_idx(univ_time, kinect_node)
-    # img = loader.load_depth_frame(kinect_node, kinect_idx)
-
-    # for skeleton in skeleton_list:
-    #     joints = skeleton_2d_points(skeleton, loader, kinect_node)
-
-    #     edges = []
-    #     for limb in SkeletonLimbs:
-    #         point_a = joints[limb.value[0].value]
-    #         point_b = joints[limb.value[1].value]
-    #         edges.append(((point_a[0], point_a[1]), (point_b[0], point_b[1])))
-
-    #     mag_map = magnitude_map(img, edges)
-    #     rgba[:, :, 0] += mag_map
-    #     # img = np.multiply(img, mag_map)
 
 
 def body_3d_coords(body_array):
@@ -111,13 +89,6 @@ def read_bodies(bodies):
         zs = np.concatenate([zs, skeleton[2, :]])
         skeletons.append(skeleton)
     return skeletons, zs, ys, zs
-
-# def skeleton_2d_points(skeleton: Skeleton, loader: DataLoader, kinect_node: str):
-#     joints = []
-#     for joint in SkeletonJoint:
-#         joints.append(loader.reproject_point(kinect_node, skeleton.joint_coordinates(joint)))
-#     # joints = loader.reproject_point(kinect_node, skeleton.coordinates[0:3, :])
-#     return joints
 
 
 def skeleton_visualization_3d(loader: DataLoader, idx: int):

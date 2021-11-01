@@ -57,6 +57,9 @@ class Line3D:
             self.pos = args[0]
             self.u = args[1]
 
+    def __str__(self):
+        return f'pos: {self.pos}, unit_vector: {self.u}'
+
 
 class Vec3D:
     def __init__(self, x, y, z, pos=Point3D(0, 0, 0)):
@@ -71,6 +74,9 @@ class Vec3D:
 
     def mag(self):
         return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+
+    def __str__(self):
+        return f'pos: {self.pos}, components: ({self.x}, {self.y}, {self.z})'
 
 
 def closest_points(line_a: Line3D, line_b: Line3D):
@@ -100,7 +106,7 @@ def closest_points(line_a: Line3D, line_b: Line3D):
 
 def distance_to_3d_line(point: Point3D, line: Line3D):
     vec = Vec3D(point.x, point.y, point.z, Point3D(0, 0, 0))
-    beam = Line3D(vec, vec.pos)
+    beam = Line3D(vec.pos, vec)
     closest, _ = closest_points(beam, line)
     return math.sqrt(closest.x**2 + closest.y**2 + closest.z**2)
 
