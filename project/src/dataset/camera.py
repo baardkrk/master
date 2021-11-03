@@ -44,3 +44,9 @@ class Camera:
         intrinsic = np.matmul(self.k, extrinsic.transpose())
         column, row = intrinsic[0], intrinsic[1]
         return Point2D(int(column), int(row))
+
+    def point_in_cam(self, point: Point3D) -> Point3D:
+        coord = np.array([[point.x], [point.y], [point.z]])
+        extrinsic = np.matmul(self.m, np.append(coord, 1).transpose())
+        extrinsic = np.matmul(np.eye(3, 4), extrinsic.transpose())
+        return Point3D(extrinsic[0], extrinsic[1], extrinsic[2])

@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from target_maps import magnitude_map
+from target_maps import target_map
 from loader import DataLoader
 from geometry import Point3D
 from util import line_a_b
@@ -42,25 +42,8 @@ def display_skeleton(kinect_node, idx, loader):
     cmap = plt.get_cmap('jet')
     rgba = cmap(depth_image)
 
-    bodies_p = []
-    for body in bodies:
-        bodies_p.append([camera.reproject_point(Point3D(i[0], i[1], i[2]))
-                         for i in body.reshape(-1, 4)])
-    edge_vectors = []
-    for edge in edges:
-        for body in bodies:
-            edge_vectors.append(body)
-        print(body)
-    edge_pixel_array = []
-    for edge in edges:
-        for body in bodies_p:
-            point_a = body[edge[0]]  # Point2D
-            point_b = body[edge[1]]
-            rows, cols = depth_image.shape
-            line_pixels = line_a_b(rows, cols, point_a, point_b)
-            edge_pixel_array.append(line_pixels)
-            # for pixel in line_pixels:
-            #     rgba[pixel.col, pixel.row] = 255
+    target = target_map(bodies, edges, camera, depth_image.shape)
+    rgba = target
 
     plt.imshow(depth_image, interpolation='nearest', cmap='jet')
     plt.imshow(rgba)
@@ -139,6 +122,6 @@ if __name__ == '__main__':
     # skeleton_visualization_3d(loader, 144)  # [x]
     # show_depth_frame('KINECTNODE6', 144, loader)  # [x]
     # show_depth_frame_as_pointcloud('KINECTNODE6', 144, loader)  # [x]
-    display_skeleton('KINECTNODE6', 144, loader)  # [ ]
+    display_skeleton('KINECTNODE6', 144, loader)  # [x]
     # skeleton = Skeleton(np.zeros(76))
     # print(skeleton.joint_coordinates(SkeletonJoint.L_ELBOW))

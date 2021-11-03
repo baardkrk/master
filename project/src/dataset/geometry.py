@@ -8,7 +8,7 @@ class Point2D:
         self.row, self.col = y, x
 
     def __str__(self):
-        return f'({self.x}, {self.y})'
+        return f'({self.x}, {self.y}), row: {self.row} col: {self.col}'
 
 
 class Point3D:
@@ -84,10 +84,12 @@ def closest_points(line_a: Line3D, line_b: Line3D):
     s_term_1 = -(line_a.u.x * line_b.u.x + line_a.u.y * line_b.u.y + line_a.u.z * line_b.u.z)
     t_term_2 = line_a.u.x * line_b.u.x + line_a.u.y * line_b.u.y + line_a.u.z * line_b.u.z
     s_term_2 = -(line_b.u.x ** 2 + line_b.u.y ** 2 + line_b.u.z ** 2)
-    q_term_1 = line_a.u.x * (line_b.pos.x - line_a.pos.x) + line_a.u.y * (line_b.pos.y - line_a.pos.y) + \
-               line_a.u.z * (line_b.pos.z - line_a.pos.z)
-    q_term_2 = line_b.u.x * (line_b.pos.x - line_a.pos.x) + line_b.u.y * (line_b.pos.y - line_a.pos.y) + \
-               line_b.u.z * (line_b.pos.z - line_a.pos.z)
+    q_term_1 = (line_a.u.x * (line_b.pos.x - line_a.pos.x) +
+                line_a.u.y * (line_b.pos.y - line_a.pos.y) +
+                line_a.u.z * (line_b.pos.z - line_a.pos.z))
+    q_term_2 = (line_b.u.x * (line_b.pos.x - line_a.pos.x) +
+                line_b.u.y * (line_b.pos.y - line_a.pos.y) +
+                line_b.u.z * (line_b.pos.z - line_a.pos.z))
     a = np.array([[t_term_1, s_term_1],
                   [t_term_2, s_term_2]])
     b = np.array([[q_term_1],
@@ -104,11 +106,22 @@ def closest_points(line_a: Line3D, line_b: Line3D):
     return point_a, point_b
 
 
-def distance_to_3d_line(point: Point3D, line: Line3D):
+def distance_to_3d_line(point: Point3D, line: Line3D, lim_points):
     vec = Vec3D(point.x, point.y, point.z, Point3D(0, 0, 0))
     beam = Line3D(vec.pos, vec)
     closest, _ = closest_points(beam, line)
-    return math.sqrt(closest.x**2 + closest.y**2 + closest.z**2)
+    dist = math.sqrt(closest.x**2 + closest.y**2 + closest.z**2)
+    d_a = math.sqrt(lim_points[0].x**2 +
+                    lim_points[0].y**2 +
+                    lim_points[0].z**2)
+    d_b = math.sqrt(lim_points[1].x**2 +
+                    lim_points[1].y**2 +
+                    lim_points[1].z**2)
+    if dist > d_a and dist > d_b:
+        return max(d_a, d_b)
+    if dist < d_a and dist < d_b:
+        return min(d_a, d_b)
+    return dist
 
 
 if __name__ == '__main__':
