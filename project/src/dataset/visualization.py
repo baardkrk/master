@@ -14,12 +14,6 @@ edges = [
 ]
 
 
-"""
-What would make the most sense is to draw all the edges of a specific type, all at once.
-
-"""
-
-
 def show_depth_frame(kinect_node, idx, loader: DataLoader):
     depth_frame, _, _ = loader.frame(idx, kinect_node)
     plt.imshow(depth_frame, cmap='magma', interpolation='nearest')
@@ -42,8 +36,8 @@ def display_skeleton(kinect_node, idx, loader):
     cmap = plt.get_cmap('jet')
     rgba = cmap(depth_image)
 
-    target = target_map(bodies, edges, camera, depth_image.shape)
-    rgba = target
+    target_edges, target_joints = target_map(bodies, edges, camera, depth_image.shape)
+    rgba = target_edges
 
     plt.imshow(depth_image, interpolation='nearest', cmap='jet')
     plt.imshow(rgba)
