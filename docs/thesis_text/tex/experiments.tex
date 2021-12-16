@@ -1,12 +1,16 @@
 \chapter{Experiments}
 
 
+A sample run of 20 frames (by 10 kinects) were created from the dataset. The total running time was 79 seconds where eight maps failed due to no skeletons being present in the frame. These samples would have been good to include in the dataset, as well as frames from outside the studio.
+Extrapolating from these numbers a sequence length of 11000 frames (or ~6 minutes at 30 fps), would take approximatley 366 hours to run. The data extraction method is in other words in need of a serious optimization.
+
+Had the dataset been finished, the experiments that should have been run on the architecture are the following:
 \begin{itemize}
-\item compare the learnable parameters between the openpose architecture and the depthpose architecture.
-\item calculate the euler distance between joint-locations output by the pipeline and the ground-truth locations (skeleton matching must be preformed, since it is not guaranteed that the IDs for the skeletons would match)
-\item compare accuracy and complexity with different values for $T_{P}$ and $T_{C}$
-\item assess the usefullness of the articulation network by comparing the joint locations after refinement with joint locations output at $t = T_{P} + 1$, where just limb-maps from the first stage are used in the prediction.
-\item could $T_{P}$ be reduced to achieve usefulness of the articulation network?
+\item Compare the learnable parameters between the openpose architecture and the depthpose architecture.
+\item Calculate the euler distance between joint-locations output by the pipeline and the ground-truth locations (skeleton matching must be preformed, since it is not guaranteed that the IDs for the skeletons would match)
+\item Compare accuracy and complexity with different values for $T_{P}$ and $T_{C}$
+\item Assess the usefullness of the articulation network by comparing the joint locations after refinement with joint locations output at $t = T_{P} + 1$, where just limb-maps from the first stage are used in the prediction.
+\item Could $T_{P}$ be reduced to achieve usefulness of the articulation network?
 \end{itemize}
 
 

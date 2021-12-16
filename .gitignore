@@ -38,7 +38,11 @@ short_introduction/
 short_presentation/
 training-sequences.txt
 
+## Gimp
+*.xcf
+
 ## Training data
+project/data
 project/data_loader/data
 **/__pycache__/
 

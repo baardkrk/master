@@ -20,7 +20,7 @@ def run(sequences, base_path):
     for sequence in sequences:
         loader = DataLoader(base_path, sequence)
         mi, ma = loader.min_max()
-        # ma = mi+25  # TODO : temporary
+        ma = mi+25  # TODO : temporary
         for idx in trange(mi, ma-len(kinect_nodes), len(kinect_nodes)):
 
             shuffle(kinect_nodes)  # TODO : turn back on

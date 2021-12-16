@@ -5,11 +5,11 @@ This chapter presents an overview of the datasets suitable for human pose estima
 
 \section{The Panoptic Studio Dataset}
 
-The dataset used in this work was created from source material provided by the Panoptic Studio \cite{Joo_2015_ICCV, Joo_2017_TPAMI}. Calibration files, predicted ground-truth skeletons, and depth images were downloaded using the GNU parallel program~\cite{Tange2011a}. Some problems were experienced, as the Panoptic Studio server was quite unreliable, which resulted in significant delays, as well as corrupted files and, in return, a smaller dataset than desired.
+The dataset used in this work was created from source material provided by the Panoptic Studio \cite{Joo_2015_ICCV, Joo_2017_TPAMI}. Calibration files, predicted ground-truth skeletons, and depth images were downloaded using a modified version of the download script provided by the dataset. The GNU parallel program~\cite{Tange2011a} was used to download it at a faster rate. Some problems were experienced, as the Panoptic Studio server was quite unreliable, which resulted in significant delays, as well as corrupted files and, in return, a smaller dataset than desired.
 
-A set of five complete sequences were set aside as the test set to ensure that the network would not recognize any similar frames or body positions from previous sets.
+The ground truth positions for the skeletons in the dataset were obtained using 2D human pose estimation on the HD, VGA, and Kinect cameras in the Panoptic Studio, and triangulating the matcing joints.
 
-The dataset contains samples from a wide variety of activities, view-angles, the number of people in the scene, and body compositions.
+A set of five complete sequences were set aside as the test set to ensure that the network would not recognize any similar frames or body positions from previous sets. The dataset contains samples from a wide variety of activities, view-angles, the number of people in the scene, and body compositions.
 
 The sequences in the dataset were recorded at approximately 30 fps. All frames and world coordinate positions at an approximate single timestep are hereby referred to as a \emph{frame}. To allow for poses to change, two samples were extracted per second. Each sequence was recorded by ten different Kinects from a height of 1 and 2 meters above the ground. This results in a total number of 10x the amount of samples listed in Table~\ref{tab:sequences}.
 
@@ -98,10 +98,20 @@ where $f_{u}, f_{v}$ is the focal lengths in column/row direction, \emph{s} is t
 In the dataset, each sequence provided a file containing the \emph{K} matrices for all the sensors in an unordered list. It was therefore assumed that the placement in the list corresponded to the number of the sensor. However, the extrinsic parts of these did not yield correct results. Another set of extrinsic rotation/translation matrices were provided in a different file where the sensor number \emph{was} identified. Still, these extrinsic parameters were calibrated for the color camera of each sensor. Since the depth camera and color camera of the Kinect are placed approximately 20cm from each other, a vector $\Bigl[\begin{smallmatrix}0.02\\0\\0\end{smallmatrix}\Bigr]$ was added after calculating the extrinsic part of the model to compensate. The resulting projections can be seen in figure~\ref{fig:reprojected_skeletons}. Still, the \emph{K} matrices had to be sourced from the unordered list and introduced uncertainty about whether the datasets will be accurate. Since the Kinect cameras are the same model, and after all very similar, this uncertainty were chosen to be ignored.
 
 \begin{figure}
-  \centering
-  \includegraphics[width=.6\textwidth]{img/projection}
-  \caption[Projection]{A limb is projected onto the image plane}
-  \label{fig:projection}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/projection}
+    \caption[Projection]{A limb is projected onto the image plane}
+    \label{fig:projection}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{img/closest_points}
+    \caption[Beam]{The beam cast through a pixel in the image plane}
+    \label{fig:projection}
+  \end{subfigure}
+  \caption{}
+  
 \end{figure}
 
 \begin{equation}
@@ -122,13 +132,17 @@ In the dataset, each sequence provided a file containing the \emph{K} matrices f
   \end{subfigure}%
   \begin{subfigure}{.6\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{img/magnitudes}
-    \caption{The magnitudes for the vectors along the limb.}
+    \includegraphics[width=\linewidth]{img/target_maps}
+    \caption{Variable kernel width}
     \label{fig:magnitude}
   \end{subfigure}
+  \caption{Kernel variation based on distance}
+  \label{fig:kernelvariation}
 \end{figure}
 
-Target limb-maps for each frame were created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. A 2D Epanechnikov Kernel with variable $\sigma$ were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The limbs furthest away were calculated first, so the vectors from these would be overwritten by subsequent limbs in case they were behind each other. The $\sigma(x, y)$ of the Epanechnikov Kernel was determined by the average depth of a $3 \times 3$ kernel around the point. The reason for varying the $\sigma$ was to simulate that the shell around the limb would appear smaller at a greater distance. The matrix was then thresholded by the magnitude of each vector to generate a cleaner output. However, because the normalization constant would change the magnitude of the vectors at the center according to the distance, the equation was simplified to a quadratic function \ref{eq:simplequad}.
+Target limb-maps for each frame were created by projecting all instances of a certain type of limb onto an empty matrix of the same dimensions as the depth frame, illustrated in Figure~\ref{fig:projection}. Because of the discrete nature of a depth image, projecting the 3D limb into the image will yield a set of pixels. For each pixel point along the line created by the projected limb, the depth was calculated by finding the closest points of the infinite 3D line created by the limb and the projected beam from the camera coordinate system through the 3D point formed by the pixel. The closest points of the resulting skewed 3D lines was calculated by solving the linear equation set~\ref{eq:closestpoints}, and plugging the results in to the corresponding line-equations.
+
+A 2D Epanechnikov Kernel with a $\sigma$ varying based on the distance were then used to calculate the magnitude for each of the 3D vectors pointing in the direction of the limb in question. The distance used to calculate the width of the kernel were stored for later comparison. Where limbs would occlude each other, the values for the pixel with the closest point were retained. The reason for varying the $\sigma$ was to simulate that the shell of points around a limb would appear smaller at a greater distance. Because a normal epanechnikov kernel would change the max value of the center of the line, the equation was simplified to a quadratic function~\ref{eq:simplequad}.
 
 \begin{equation}
   \label{eq:simplequad}
@@ -141,12 +155,34 @@ Target limb-maps for each frame were created by projecting all instances of a ce
 
 \begin{equation}
   \label{eq:depth}
-  \sigma(x, y) = \frac{c}{D(x, y)}
+  d =
+  \begin{cases}
+    \max(\|\mathbf{j_1}\|, \|\mathbf{j_2}\|) & \text{if} \|\mathbf{v}\| >  \max(\|\mathbf{j_1}\|, \|\mathbf{j_2}\|) \\
+    \min(\|\mathbf{j_1}\|, \|\mathbf{j_2}\|) & \text{if} \|\mathbf{v}\| <  \min(\|\mathbf{j_1}\|, \|\mathbf{j_2}\|) \\    
+    \|\mathbf{v}\| & \text{otherwise}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+  \label{eq:closestpoints}
+  \begin{split}
+  L_1 = (l_{1x}, l_{1y}, l_{1z}), \; u_1 = (u_{1x}, u_{1y}, u_{1z}) \\
+  L_2 = (l_{2x}, l_{2y}, l_{2z}), \; u_1 = (u_{2x}, u_{2y}, u_{2z}) \\[20pt]
+  \begin{bmatrix}
+    u_{1x}^{2} + u_{1y}^{2} + u_{1z}^{2} & -(u_{1x} * u_{2x} + u_{1y} * u_{2y} + u_{1z} * u_{2z}) \\
+    u_{1x} * u_{2x} + u_{1y} * u_{2y} + u_{1z} * u_{2z} & -(u_{2x}^{2} + u_{2y}^{2} + u_{2z}^{2})
+  \end{bmatrix} \\
+  = 
+  \begin{bmatrix}
+    u_{1x} (l_{2x} - l_{1x}) + u_{1y} (l_{2y} - l_{1y}) + u_{1z} (l_{2z} - l_{1z}) \\
+    u_{2x} (l_{2x} - l_{1x}) + u_{2y} (l_{2y} - l_{1y}) + u_{2z} (l_{2z} - l_{1z})
+  \end{bmatrix}
+  \end{split}
 \end{equation}
 
 Equation~\ref{eq:depth} describes how $\sigma$ changes by the value in the depth image $D$. The constant $c$ is chosen by the width of the limb in pixels at a certain distance.
 
-The resulting magnitudes for the limbs are illustrated by the declining intensity in figure~\ref{fig:magnitude}. The produced sample tensors are illustrated in figure~\ref{fig:targets}. For each sequence, a ``long'' tensor is made. The first slice of the tensor is the depth image, of size $1 \times w \times h$. Next, the limb maps are stored. They contain the decomposition of the vector, $x, y, z$ in each pixel. This part of the sample, therefore, has the size $3M \times w \times h$ for \emph{M} limbs. Last is the Joint Maps, which contain both the distance to the center of the joint and the confidence for each pixel. This results in the size $2N \times w \times h$ for \emph{N} joints.
+The resulting magnitudes for the limbs are illustrated by the declining intensity in figure~\ref{fig:magnitude}. The produced sample tensors are illustrated in figure~\ref{fig:targets}. For each sequence, a ``long'' tensor is made. The first slice of the tensor is the depth image, of size $1 \times w \times h$. Next, the limb maps are stored. They contain the decomposition of the vector, $x, y, z$ in each pixel. This part of the sample, therefore, has the size $3M \times w \times h$ for \emph{M} limbs. Last is the Joint Maps, which contain both the distance to the center of the joint and the confidence for each pixel. The confidences are also simulated by placing a kernel made by equation~\ref{eq:simplequad} at the projected location for the joint, with a $\sigma$ based on the distance from the camera to the joint. This results in the size $2N \times w \times h$ for \emph{N} joints. In addition to the target maps in figure~\ref{fig:targets}, the resulting dataset also contains a vector with the position of all joints in the image in the coordinate frame of the camera. This is to provide ground truth targets for the articulation network if the joint is occluded in the joint map.
 
 A single tensor of samples was created for each sequence. At training time, all sequences except the test sequences were combined to a single dataset which was shuffled.
 
@@ -157,3 +193,4 @@ A single tensor of samples was created for each sequence. At training time, all 
   \label{fig:targets}
 \end{figure}
 
+The raw dataset is captured at 30 fps for each of the ten kinects in the Panoptic Studio. To not capture similar poses in the dataset, three frames are sampled from each kinect per second. In addition, the order the kinects are sampled is shuffled after each sampling round.

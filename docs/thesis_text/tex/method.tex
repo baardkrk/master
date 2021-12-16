@@ -122,11 +122,12 @@ The architecture is visualized as a simple, almost fully connected neural networ
 
 \section{Assembly}
 
-Done in the same way as \cite{cao2019openpose}, however the score-equation for the line integral is
+To assemble the poses, candidate points for joints are found by dilating each joint map to find candidate opints. Each of the candidate points are matched up with the corresponding candidate joints following the limb graph. Then, the line integral~\ref{eq:lineint} (line sum, since the sampled pixels are discrete) is taken along the line between the candidate points, however the values for the integral is taken from the corresponding predicted limb map for the joints.
 \begin{equation}
+  \label{eq:lineint}
   S = \sum_{i=0}^{K}\cos(\theta)
 \end{equation}
-$\theta$ is the angle between the the vector defined by the candidate points and the angle of the vector at the points of the limb-maps along the line $i, K$
+$\theta$ is the angle between the the vector defined by the candidate points and the angle of the vector at the points of the limb-maps along the line $i, K$. The highest scoring integral is the one chosen as the 'correct' connection. After all the limbs have gotten candidate joints, the predicted skeletons are sent to the articulation network.
 
 \begin{figure}[h]
 
@@ -226,21 +227,3 @@ $\theta$ is the angle between the the vector defined by the candidate points and
 %% Learning rate
 %% optimizer
 
-
-
-
-%% \section{2D detection transfer}
-
-%% (First ideas.)
-
-%% Torso placement and tree structure for placing.
-
-%% Fit to human standard model (rules for symmetry and lengths)
-
-%% Occlusion problem, and interpolated points, visual hull constraints
-
-%% We train the network on both depth images and a kinematic model of each 3D ground truth location.
-
-%% \section{Pose from CNN over depth maps}
-
-%% We create a separate 'side-view' detection map for each 'frontal' detection map. This reduces the convolution operations, since we don't have to convolve over the whole 3D space.
